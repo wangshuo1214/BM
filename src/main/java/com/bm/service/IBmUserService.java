@@ -1,4 +1,7 @@
 package com.bm.service;
 
-public interface IBmUserService {
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.bm.domain.BmUser;
+
+public interface IBmUserService extends IService<BmUser> {
 }
