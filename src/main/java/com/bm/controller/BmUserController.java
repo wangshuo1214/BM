@@ -1,6 +1,6 @@
 package com.bm.controller;
 
-import com.bm.domain.BmUser;
+import com.bm.entity.BmUser;
 import com.bm.service.IBmUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
