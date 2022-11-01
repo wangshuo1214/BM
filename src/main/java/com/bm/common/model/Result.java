@@ -1,11 +1,11 @@
-package com.bm.common.domain;
+package com.bm.common.model;
 
 import lombok.Data;
 
 @Data
 public class Result {
     //返回code
-    private String resultCode;
+    private Integer code;
     //返回描述
     private String message;
     //返回数据
@@ -17,7 +17,7 @@ public class Result {
      * @param message
      * @return
      */
-    public static Result returnCodeMessage(String code, String message){
+    public static Result returnCodeMessage(Integer code, String message){
         return returnCodeMessage(code,message,null);
     }
 
@@ -28,9 +28,9 @@ public class Result {
      * @param data
      * @return
      */
-    public static Result returnCodeMessage(String code, String message, Object data){
+    public static Result returnCodeMessage(Integer code, String message, Object data){
         Result result = new Result();
-        result.setResultCode(code);
+        result.setCode(code);
         result.setMessage(message);
         result.setData(data);
         return result;

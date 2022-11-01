@@ -12,7 +12,7 @@
     <artifactId>BM</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>BM</name>
-    <description>Demo project for Spring Boot</description>
+    <description> Business Management </description>
     <properties>
         <java.version>1.8</java.version>
     </properties>
@@ -26,6 +26,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <!-- SpringBoot 集成redis -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
 
         <!-- mybatis-plus -->
@@ -62,6 +68,8 @@
             <artifactId>hutool-all</artifactId>
             <version>5.8.9</version>
         </dependency>
+
+
 
     </dependencies>
 
