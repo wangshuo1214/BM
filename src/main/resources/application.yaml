@@ -44,6 +44,8 @@ mybatis-plus:
       field-strategy: NOT_EMPTY
       #数据库类型
       db-type: MYSQL
+    #启动打印LOGO开关
+    banner: false
   configuration:
     # 是否开启自动驼峰命名规则映射:从数据库列名到Java属性驼峰命名的类似映射
     map-underscore-to-camel-case: true
