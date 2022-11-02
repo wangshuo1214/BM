@@ -176,6 +176,7 @@ CREATE TABLE `bm_dict_data` (
 -- 用户表
 CREATE TABLE `bm_user` (
                            `user_id` varchar(36) NOT NULL COMMENT '表主键',
+                           `dept_id` varchar(36) NOT NULL COMMENT '部门id',
                            `user_name` varchar(36) NOT NULL COMMENT '用户账号',
                            `password` varchar(100) NOT NULL COMMENT '密码',
                            `real_name` varchar(50) NOT NULL COMMENT '真实姓名',

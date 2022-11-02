@@ -17,7 +17,7 @@ public class BmLoginController extends BaseController {
     @PostMapping("/login")
     public Result login(@RequestBody LoginBody loginBody){
 
-        String token = iBmLoginService.login(loginBody.getUsername(), loginBody.getPassword(), loginBody.getCode(), loginBody.getUuid());
+        String token = iBmLoginService.login(loginBody);
 
         return error();
 

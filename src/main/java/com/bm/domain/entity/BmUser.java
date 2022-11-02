@@ -14,6 +14,8 @@ public class BmUser extends BaseEntity{
     @TableId(type = IdType.ASSIGN_UUID)
     private String userId;
 
+    private String deptId;
+
     private String userName;
 
     private String password;
