@@ -8,7 +8,7 @@ spring:
     #serverTimezone是定义时区,mysql高版本需要定义这些东西,useSSL也是高版本mysql需要问有没有用SSL连接
     url: jdbc:mysql://127.0.0.1:3306/bm?serverTimezone=GMT%2B8&useSSL=FALSE
     username: root
-    password: 971214
+    password: 19971214
     #使用druid数据源
     type: com.alibaba.druid.pool.DruidDataSource
   redis:

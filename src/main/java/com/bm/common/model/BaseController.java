@@ -1,19 +1,20 @@
 package com.bm.common.model;
 
 import com.bm.common.constant.HttpStatus;
+import com.bm.common.utils.MessageUtil;
 
 public class BaseController {
 
     public Result success(){
-        return Result.returnCodeMessage(HttpStatus.SUCCESS,"O(∩_∩)O 操作成功！");
+        return Result.returnCodeMessage(HttpStatus.SUCCESS, MessageUtil.getMessage("bm.sucess"));
     }
 
     public Result success(Object data) {
-        return Result.returnCodeMessage(HttpStatus.SUCCESS,"O(∩_∩)O 操作成功！",data);
+        return Result.returnCodeMessage(HttpStatus.SUCCESS,MessageUtil.getMessage("bm.sucess"),data);
     }
 
     public Result error() {
-        return Result.returnCodeMessage(HttpStatus.ERROR,"(ㄒoㄒ)/~~ 操作失败！");
+        return Result.returnCodeMessage(HttpStatus.ERROR,MessageUtil.getMessage("bm.false"));
     }
 
     public Result error(String msg){

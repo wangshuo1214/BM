@@ -7,13 +7,12 @@ import org.springframework.beans.factory.annotation.Value;
 
 public class PasswordUtil {
 
-    @Value("password.prefix")
-    private static String passwordPrefix;
+    private static String passwordPrefix = "business_management_pwd:";
 
     public static String pwdEncrypt(String data){
         if (StrUtil.isEmpty(data)){
             return "";
         }
-        return SmUtil.sm3(SecureUtil.md5(passwordPrefix+":"+data));
+        return SmUtil.sm3(SecureUtil.md5(passwordPrefix+data));
     }
 }
