@@ -1,5 +1,6 @@
 package com.bm.service.Impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.SmUtil;
@@ -17,9 +18,11 @@ import com.bm.exception.BaseException;
 import com.bm.exception.UserException;
 import com.bm.service.IBmLoginService;
 import com.bm.service.IBmUserService;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -67,5 +70,49 @@ public class BmLoginServiceImpl implements IBmLoginService {
         redisUtil.setCacheObject("bmUserToken:"+user.getUserId(),token,15, TimeUnit.MINUTES);
 
         return token;
+    }
+
+    @Override
+    public BmUser getUserInfoByToken(String token) {
+        
+        if (StrUtil.isEmpty(token)){
+            throw new UserException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.paramsError"));
+        }
+
+        //token解析结果
+        Claims claims = null;
+        try {
+            claims = jwtTokenUtil.getClaimsFromToken(token);
+            //用户id
+            String userId = (String) claims.get("userId");
+            BmUser bmUser = iBmUserService.getById(userId);
+            if (ObjectUtil.isNotEmpty(bmUser)){
+                return bmUser;
+            }
+            return null;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    @Override
+    public Boolean logout(HttpServletRequest httpServletRequest) {
+
+        String token = httpServletRequest.getHeader("BmToken");
+
+        //token解析结果
+        Claims claims = null;
+        try {
+            claims = jwtTokenUtil.getClaimsFromToken(token);
+            String userId = (String) claims.get("userId");
+            //删除缓存的token
+            redisUtil.deleteObject("bmUserToken:"+userId);
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 }

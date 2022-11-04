@@ -1,13 +1,14 @@
 #端口号
 server:
-  port: 8088
-#  context-path: /api/bm
+  port: 8066
+  servlet:
+    context-path: /api/bm
 
 #数据源配置
 spring:
   datasource:
     #serverTimezone是定义时区,mysql高版本需要定义这些东西,useSSL也是高版本mysql需要问有没有用SSL连接
-    url: jdbc:mysql://127.0.0.1:3306/bm?serverTimezone=GMT%2B8&useSSL=FALSE
+    url: jdbc:mysql://127.0.0.1:3306/bm?serverTimezone=GMT%2B8&useSSL=FALSE&allowPublicKeyRetrieval=true
     username: root
     password: 19971214
     #使用druid数据源

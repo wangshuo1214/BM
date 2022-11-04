@@ -2,7 +2,6 @@ package com.bm.common.utils;
 
 import io.jsonwebtoken.*;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +23,7 @@ public class JwtTokenUtil {
         //设置信息，过期时间，signnature
         return Jwts.builder()
                 .setClaims(claims)
-                .setExpiration(new Date(expiration))//设置Token过期时间
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))//设置Token过期时间
                 .signWith(SignatureAlgorithm.HS512, SECRET)
                 .compact();
     }
