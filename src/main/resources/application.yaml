@@ -1,6 +1,7 @@
 #端口号
 server:
   port: 8088
+#  context-path: /api/bm
 
 #数据源配置
 spring:
@@ -30,8 +31,6 @@ spring:
         # 连接池最大阻塞等待时间（使用负值表示没有限制）
         max-wait: 100000
 
-password:
-  prefix: business_management_pwd
 # mybatis-plus相关配置
 mybatis-plus:
   # xml扫描，多个目录用逗号或者分号分隔（告诉 Mapper 所对应的 XML 文件位置）

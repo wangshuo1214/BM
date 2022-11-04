@@ -3,7 +3,6 @@ package com.bm.common.utils;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.SmUtil;
-import org.springframework.beans.factory.annotation.Value;
 
 public class PasswordUtil {
 
