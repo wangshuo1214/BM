@@ -21,6 +21,15 @@ public class BaseController {
         return Result.returnCodeMessage(HttpStatus.ERROR,msg,null);
     }
 
+    public Result computeResult(Object t){
+        if ( t instanceof Boolean){
+            return (boolean)t ? success() : error();
+        }else if (t instanceof Integer){
+            return (int) t > 0 ? success() : error();
+        }
+        return error(MessageUtil.getMessage("bm.computedResultError"));
+    }
+
     public Result diyResut(Integer code, String msg){
         return Result.returnCodeMessage(code,msg);
     }

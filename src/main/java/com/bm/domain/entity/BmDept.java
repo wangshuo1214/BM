@@ -5,9 +5,11 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
 @TableName("bm_dept")
-public class BmDept extends BaseEntity{
+public class BmDept extends BaseEntity implements Serializable {
 
     @TableId(type = IdType.ASSIGN_UUID)
     private String deptId;
@@ -23,4 +25,5 @@ public class BmDept extends BaseEntity{
     private String phone;
 
     private String status;
+
 }
