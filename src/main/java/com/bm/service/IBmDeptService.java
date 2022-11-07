@@ -10,5 +10,7 @@ public interface IBmDeptService extends IService<BmDept> {
 
     List<BmDept> queryBmDept(BmDept bmDept);
 
-    boolean deleteDept(String bmDeptId);
+    boolean deleteBmDept(String bmDeptId);
+
+    boolean updateBmDept(BmDept bmDept);
 }

@@ -41,6 +41,11 @@ public class BmDeptController extends BaseController {
 
     @PostMapping("/delete")
     public Result deleteBmDept(String bmDeptId){
-        return computeResult(iBmDeptService.deleteDept(bmDeptId));
+        return computeResult(iBmDeptService.deleteBmDept(bmDeptId));
+    }
+
+    @PostMapping("/update")
+    public Result updateBmDept(@RequestBody BmDept bmDept){
+        return computeResult(iBmDeptService.updateBmDept(bmDept));
     }
 }

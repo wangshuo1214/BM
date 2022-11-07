@@ -74,7 +74,7 @@ public class BmDeptServiceImpl extends ServiceImpl<BmDeptMapper, BmDept> impleme
     }
 
     @Override
-    public boolean deleteDept(String bmDeptId) {
+    public boolean deleteBmDept(String bmDeptId) {
 
         if (StrUtil.isEmpty(bmDeptId)){
             throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.paramsError"));
@@ -102,6 +102,45 @@ public class BmDeptServiceImpl extends ServiceImpl<BmDeptMapper, BmDept> impleme
         dept.setDeleted(BaseConstant.TRUE);
         dept.setUpdateDate(new Date());
         return updateById(dept);
+    }
+
+    @Override
+    public boolean updateBmDept(BmDept newBmDept) {
+
+        if (ObjectUtil.isEmpty(newBmDept)){
+            throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.paramsError"));
+        }
+
+        BmDept oldBmDept = getById(newBmDept.getDeptId());
+        if (!updateFlag(newBmDept,oldBmDept)){
+            oldBmDept.setDeptName(newBmDept.getDeptName());
+            oldBmDept.setParentId(newBmDept.getParentId());
+            oldBmDept.setOrderNum(newBmDept.getOrderNum());
+            oldBmDept.setLeader(newBmDept.getLeader());
+            oldBmDept.setPhone(newBmDept.getPhone());
+            oldBmDept.setStatus(newBmDept.getStatus());
+        }
+
+        return updateById(oldBmDept);
+    }
+
+    public boolean updateFlag(BmDept newBmDept, BmDept oldBmDept){
+        StringBuffer sb1 = new StringBuffer("");
+        StringBuffer sb2 = new StringBuffer("");
+        sb1.append(newBmDept.getDeptName());
+        sb2.append(oldBmDept.getDeptName());
+        sb1.append(newBmDept.getParentId());
+        sb2.append(oldBmDept.getParentId());
+        sb1.append(newBmDept.getOrderNum());
+        sb2.append(oldBmDept.getOrderNum());
+        sb1.append(newBmDept.getLeader());
+        sb2.append(oldBmDept.getLeader());
+        sb1.append(newBmDept.getPhone());
+        sb2.append(oldBmDept.getPhone());
+        sb1.append(newBmDept.getStatus());
+        sb2.append(oldBmDept.getStatus());
+        return sb1.toString().equals(sb2.toString());
+
     }
 
     public boolean checkFiled(BmDept bmDept){
