@@ -69,6 +69,8 @@ public class BmDeptServiceImpl extends ServiceImpl<BmDeptMapper, BmDept> impleme
         if(StrUtil.isNotEmpty(bmDept.getStatus())){
             wrapper.lambda().eq(BmDept::getStatus,bmDept.getStatus());
         }
+        //排序
+        wrapper.lambda().orderByAsc(BmDept::getOrderNum).orderByDesc(BmDept::getUpdateDate);
 
         return list(wrapper);
     }
