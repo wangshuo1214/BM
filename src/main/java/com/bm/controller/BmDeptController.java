@@ -14,10 +14,7 @@ import com.bm.domain.entity.BmDept;
 import com.bm.exception.BaseException;
 import com.bm.service.IBmDeptService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -39,13 +36,23 @@ public class BmDeptController extends BaseController {
         return success(iBmDeptService.queryBmDept(bmDept));
     }
 
+    @GetMapping("/get")
+    public Result getBmDept(String deptId){
+        return success(iBmDeptService.getBmDept(deptId));
+    }
+
     @PostMapping("/delete")
-    public Result deleteBmDept(String bmDeptId){
-        return computeResult(iBmDeptService.deleteBmDept(bmDeptId));
+    public Result deleteBmDept(String deptId){
+        return computeResult(iBmDeptService.deleteBmDept(deptId));
     }
 
     @PostMapping("/update")
     public Result updateBmDept(@RequestBody BmDept bmDept){
         return computeResult(iBmDeptService.updateBmDept(bmDept));
+    }
+
+    @PostMapping("/exclude")
+    public Result queryBmDeptExcludeChild(String deptId){
+        return success(iBmDeptService.queryBmDeptExcludeChild(deptId));
     }
 }

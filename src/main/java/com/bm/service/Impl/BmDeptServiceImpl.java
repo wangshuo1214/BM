@@ -3,6 +3,7 @@ package com.bm.service.Impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.Query;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bm.common.constant.BaseConstant;
@@ -18,9 +19,8 @@ import com.bm.service.IBmUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class BmDeptServiceImpl extends ServiceImpl<BmDeptMapper, BmDept> implements IBmDeptService {
@@ -101,6 +101,9 @@ public class BmDeptServiceImpl extends ServiceImpl<BmDeptMapper, BmDept> impleme
 
         //对该部门进行删除
         BmDept dept = getById(bmDeptId);
+        if (ObjectUtil.isEmpty(dept)){
+            throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.dept.notexist"));
+        }
         dept.setDeleted(BaseConstant.TRUE);
         dept.setUpdateDate(new Date());
         return updateById(dept);
@@ -113,6 +116,22 @@ public class BmDeptServiceImpl extends ServiceImpl<BmDeptMapper, BmDept> impleme
             throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.paramsError"));
         }
 
+        //父部门停用时，该节点下不能创建部门
+        BmDept parenDept = getById(newBmDept.getParentId());
+        if (ObjectUtil.isEmpty(parenDept) || StrUtil.equals(BaseConstant.EXCEPTION,parenDept.getStatus())){
+            throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.dept.parentStatusError"));
+        }
+        //判断修改部门名称是否重复
+        QueryWrapper<BmDept> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(BmDept::getDeptName,newBmDept.getDeptName().trim());
+        wrapper.lambda().eq(BmDept::getDeleted,BaseConstant.FALSE);
+        wrapper.lambda().ne(BmDept::getDeptId,newBmDept.getDeptId());
+        List<BmDept> oldDepts = list(wrapper);
+        if (CollUtil.isNotEmpty(oldDepts)){
+            throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.dept.nameRepeat"));
+        }
+
+        //旧对象
         BmDept oldBmDept = getById(newBmDept.getDeptId());
         if (!updateFlag(newBmDept,oldBmDept)){
             oldBmDept.setDeptName(newBmDept.getDeptName());
@@ -126,7 +145,54 @@ public class BmDeptServiceImpl extends ServiceImpl<BmDeptMapper, BmDept> impleme
         return updateById(oldBmDept);
     }
 
-    public boolean updateFlag(BmDept newBmDept, BmDept oldBmDept){
+    @Override
+    public BmDept getBmDept(String bmDeptId) {
+        if (StrUtil.isEmpty(bmDeptId)){
+            throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.paramsError"));
+        }
+        BmDept bmDept = getById(bmDeptId);
+
+        if (ObjectUtil.isEmpty(bmDept)){
+            throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.dept.notexist"));
+        }
+        return bmDept;
+    }
+
+    @Override
+    public List<BmDept> queryBmDeptExcludeChild(String bmDeptId) {
+        if (StrUtil.isEmpty(bmDeptId)){
+            throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.paramsError"));
+        }
+
+        //查看该部门下的所有子部门
+        List<String> excludeIds = getChildren(Arrays.asList(bmDeptId));
+
+        QueryWrapper<BmDept> wrapper = new QueryWrapper();
+        wrapper.lambda().eq(BmDept::getDeleted,BaseConstant.FALSE);
+        wrapper.lambda().eq(BmDept::getStatus,BaseConstant.TRUE);
+        if (CollUtil.isNotEmpty(excludeIds)){
+            wrapper.lambda().notIn(BmDept::getDeptId,excludeIds);
+        }
+        return list(wrapper);
+    }
+
+    //递归查询出该部门的所有子节点
+    private List<String> getChildren(List<String> parentIds){
+        QueryWrapper<BmDept> wrapper = new QueryWrapper<>();
+        wrapper.lambda().select(BmDept::getDeptId);
+        wrapper.lambda().eq(BmDept::getDeleted,BaseConstant.FALSE);
+        wrapper.lambda().eq(BmDept::getStatus,BaseConstant.TRUE);
+        wrapper.lambda().in(BmDept::getParentId,parentIds);
+        List<String> ids = list(wrapper).stream().map(BmDept::getDeptId).collect(Collectors.toList());
+        if (CollUtil.isNotEmpty(ids)){
+            ids.addAll(getChildren(ids));
+            return ids;
+        }else {
+            return new ArrayList<>();
+        }
+    }
+
+    private boolean updateFlag(BmDept newBmDept, BmDept oldBmDept){
         StringBuffer sb1 = new StringBuffer("");
         StringBuffer sb2 = new StringBuffer("");
         sb1.append(newBmDept.getDeptName());
@@ -145,7 +211,7 @@ public class BmDeptServiceImpl extends ServiceImpl<BmDeptMapper, BmDept> impleme
 
     }
 
-    public boolean checkFiled(BmDept bmDept){
+    private boolean checkFiled(BmDept bmDept){
         if(ObjectUtil.isEmpty(bmDept) ||
                 StrUtil.hasEmpty(bmDept.getDeptName(),bmDept.getParentId()) ||
                 ObjectUtil.isEmpty(bmDept.getOrderNum())
