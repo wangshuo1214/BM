@@ -68,4 +68,23 @@
             <include refid="deleteFlagHql"/>
         </where>
     </select>
+
+    <select id="getBmDictType" parameterType="String" resultType="BmDictType">
+        <include refid="selectDictTypeHql"/>
+        <where>
+            id = #{bmDictId}
+        </where>
+    </select>
+
+    <update id="updateBmDictType" parameterType="BmDictType">
+        update bm_dict_type
+        <set>
+            <if test="dictName != null and dictName != ''">dict_name = #{dictName},</if>
+            <if test="dictType != null and dictType != ''">dict_type = #{dictType},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="remark != null and remark != ''">remark = #{remark},</if>
+            <if test="updateDate != null">update_date = #{updateDate},</if>
+        </set>
+        where id = #{id}
+    </update>
 </mapper>

@@ -1,5 +1,6 @@
 package com.bm.domain.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
@@ -18,5 +19,6 @@ public class BaseEntity {
     public String deleted;
 
     /** 请求参数 */
+    @TableField(exist = false)
     private Map<String, Object> params;
 }

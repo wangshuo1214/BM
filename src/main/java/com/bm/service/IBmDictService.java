@@ -9,4 +9,8 @@ public interface IBmDictService {
     int addBmDictType(BmDictType bmDictType);
 
     List<BmDictType> queryBmDictType(BmDictType bmDictType);
+
+    int updateBmDictType(BmDictType bmDictType);
+
+    BmDictType getBmDictType(String bmDictId);
 }

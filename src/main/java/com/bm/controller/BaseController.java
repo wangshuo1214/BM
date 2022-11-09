@@ -1,6 +1,7 @@
-package com.bm.common.model;
+package com.bm.controller;
 
 import com.bm.common.constant.HttpStatus;
+import com.bm.common.model.Result;
 import com.bm.common.utils.MessageUtil;
 
 public class BaseController {

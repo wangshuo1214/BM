@@ -13,4 +13,8 @@ public interface BmDictMapper {
     List<BmDictType> queryBmDictType(BmDictType bmDictType);
 
     List<BmDictType> queryDictByDictType(String dictType);
+
+    int updateBmDictType(BmDictType bmDictType);
+
+    BmDictType getBmDictType(String bmDictId);
 }
