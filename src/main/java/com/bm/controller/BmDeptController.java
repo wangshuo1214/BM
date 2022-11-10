@@ -1,6 +1,6 @@
 package com.bm.controller;
 
-import com.bm.common.model.Result;
+import com.bm.domain.model.Result;
 import com.bm.domain.entity.BmDept;
 import com.bm.service.IBmDeptService;
 import org.springframework.beans.factory.annotation.Autowired;

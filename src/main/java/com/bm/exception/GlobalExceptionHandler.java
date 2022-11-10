@@ -1,7 +1,7 @@
 package com.bm.exception;
 
 import com.bm.common.constant.HttpStatus;
-import com.bm.common.model.Result;
+import com.bm.domain.model.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ExceptionHandler;

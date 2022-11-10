@@ -2,7 +2,7 @@ package com.bm.controller;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import com.bm.common.model.Result;
+import com.bm.domain.model.Result;
 import com.bm.domain.entity.BmUser;
 import com.bm.domain.model.LoginBody;
 import com.bm.service.IBmLoginService;

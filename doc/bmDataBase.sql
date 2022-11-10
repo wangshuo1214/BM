@@ -161,7 +161,7 @@ CREATE TABLE `bm_dict_data` (
                                 `id` varchar(36) NOT NULL COMMENT '表主键',
                                 `dict_code` varchar(50) NOT NULL COMMENT '字典编码',
                                 `dict_name` varchar(50) NOT NULL COMMENT '字典名称',
-                                `table_name` varchar(36) NOT NULL COMMENT '父类型',
+                                `dict_type_id` varchar(36) NOT NULL COMMENT '父类型',
                                 `order_num` int NOT NULL COMMENT '序号',
                                 `status` char(1) NOT NULL COMMENT '状态（0关闭1开启）',
                                 `remark` varchar(1024) DEFAULT NULL COMMENT '备注',

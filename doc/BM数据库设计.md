@@ -188,7 +188,7 @@
 | 1    | id          | 表主键       | varchar(36)   | N      | Y    |            |
 | 2    | dict_code   | 字典编码     | varchar(50)   | N      |      |            |
 |      | dict_name   | 字典名称     | varchar(50)   | N      |      |            |
-|      | table_type  | 父类型       | varchar(36)   | N      |      |            |
+|      | dict_type_id  | 父类型       | varchar(36)   | N      |      |            |
 |      | order_num   | 序号         | Int           | N      |      |            |
 |      | status      | 状态         | char(1)       |        |      | 0关闭1开启 |
 |      | remark      | 备注         | Varchar(1024) |        |      |            |

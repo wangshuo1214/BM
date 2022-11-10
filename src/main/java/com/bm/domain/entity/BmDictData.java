@@ -16,7 +16,7 @@ public class BmDictData extends BaseEntity{
 
     private String dictName;
 
-    private String tableName;
+    private String dictTypeId;
 
     private Integer orderNum;
 

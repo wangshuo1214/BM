@@ -1,3 +1,6 @@
 
 2022.11.2
     user表中增加部门id（deptId）
+
+2022.11.10
+    table_type(tableName)修改为dict_type_id

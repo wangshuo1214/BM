@@ -1,4 +1,4 @@
-package com.bm.common.model;
+package com.bm.domain.model;
 
 import lombok.Data;
 

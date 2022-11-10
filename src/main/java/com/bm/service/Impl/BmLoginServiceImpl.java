@@ -98,7 +98,7 @@ public class BmLoginServiceImpl implements IBmLoginService {
     @Override
     public Boolean logout(HttpServletRequest httpServletRequest) {
 
-        String token = httpServletRequest.getHeader("BmToken");
+        String token = httpServletRequest.getHeader("Authorization");
 
         //token解析结果
         Claims claims = null;

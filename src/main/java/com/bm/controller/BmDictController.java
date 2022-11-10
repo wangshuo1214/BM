@@ -1,10 +1,14 @@
 package com.bm.controller;
 
-import com.bm.common.model.Result;
+import com.bm.common.page.PageQuery;
+import com.bm.domain.entity.BmDictData;
+import com.bm.domain.model.Result;
 import com.bm.domain.entity.BmDictType;
 import com.bm.service.IBmDictService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController()
 @RequestMapping("/dict")
@@ -19,7 +23,9 @@ public class BmDictController extends BaseController {
     }
 
     @PostMapping("/type/query")
-    public Result queryBmDictType(@RequestBody BmDictType bmDictType){
+    public Result queryBmDictType(@RequestBody PageQuery pageQuery){
+        startPage(pageQuery);
+        BmDictType bmDictType = getPageItem(pageQuery,BmDictType.class);
         return success(iBmDictService.queryBmDictType(bmDictType));
     }
 
@@ -30,11 +36,39 @@ public class BmDictController extends BaseController {
 
     @PostMapping("/type/update")
     public Result updateBmDictType(@RequestBody BmDictType bmDictType){
-        int result = iBmDictService.updateBmDictType(bmDictType);
-        if (result == -1){
-            return success();
-        }else {
-            return computeResult(result);
-        }
+        return computeResult(iBmDictService.updateBmDictType(bmDictType));
     }
+
+    @PostMapping("/type/delete")
+    public Result deleteBmDictType(@RequestBody List<String> bmDictIds){
+        return computeResult(iBmDictService.deleteBmDictType(bmDictIds));
+    }
+
+    @PostMapping("/data/add")
+    public Result addBmDictData(@RequestBody BmDictData bmDictData){
+        return computeResult(iBmDictService.addBmDictData(bmDictData));
+    }
+
+    @PostMapping("/data/update")
+    public Result updateBmDictData(@RequestBody BmDictData bmDictData){
+        return computeResult(iBmDictService.updateBmDictData(bmDictData));
+    }
+
+    @GetMapping("/data/get")
+    public Result getBmDictData(String bmDictId){
+        return success(iBmDictService.getBmDictData(bmDictId));
+    }
+
+    @PostMapping("/data/query")
+    public Result queryBmDictData(@RequestBody PageQuery pageQuery){
+        startPage(pageQuery);
+        BmDictData bmDictData = getPageItem(pageQuery,BmDictData.class);
+        return success(iBmDictService.queryBmDictData(bmDictData));
+    }
+
+    @PostMapping("/data/delete")
+    public Result deleteBmDictData(@RequestBody List<String> bmDictIds){
+        return computeResult(iBmDictService.deleteBmDictData(bmDictIds));
+    }
+
 }
