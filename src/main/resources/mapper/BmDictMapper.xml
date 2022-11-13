@@ -57,7 +57,7 @@
                 and dict_name like concat('%', #{dictName}, '%')
             </if>
             <if test="dictType != null and dictType != ''">
-                and dictType like concat('%', #{dictType}, '%')
+                and dict_type like concat('%', #{dictType}, '%')
             </if>
             <if test="status != null and status != ''">
                 and status = #{status}
@@ -86,6 +86,7 @@
         <set>
             <if test="dictName != null and dictName != ''">dict_name = #{dictName},</if>
             <if test="dictType != null and dictType != ''">dict_type = #{dictType},</if>
+            <if test="orderNum != null and orderNum != ''">order_num = #{orderNum},</if>
             <if test="status != null and status != ''">status = #{status},</if>
             <if test="remark != null and remark != ''">remark = #{remark},</if>
             <if test="updateDate != null">update_date = #{updateDate},</if>
@@ -184,4 +185,16 @@
             #{bmDictId}
         </foreach>
     </update>
+
+    <select id="getDictDataByType" parameterType="String" resultType="BmDictData">
+        <include refid="selectDictDataHql"/>
+        <where>
+            dict_type_id = (
+            select id from bm_dict_type where dict_type = #{dictType}
+            <include refid="deleteFlagHql"/>
+            )
+        </where>
+        <include refid="deleteFlagHql"/>
+        order by order_num asc
+    </select>
 </mapper>

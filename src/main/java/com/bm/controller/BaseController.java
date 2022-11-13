@@ -8,10 +8,13 @@ import com.bm.common.page.PageQuery;
 import com.bm.common.utils.CreateGsonUtil;
 import com.bm.domain.model.Result;
 import com.bm.common.utils.MessageUtil;
+import com.bm.domain.model.TableDataInfo;
 import com.bm.exception.BaseException;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.gson.Gson;
+
+import java.util.List;
 
 public class BaseController {
 
@@ -60,6 +63,13 @@ public class BaseController {
         Integer pageSize = page.getPageSize();
         String orderBy = page.getOrderBy();
         PageHelper.startPage(pageNum, pageSize, orderBy);
+    }
+
+    protected TableDataInfo formatTableData(List<?> formatList){
+        TableDataInfo rspData = new TableDataInfo();
+        rspData.setRows(formatList);
+        rspData.setTotal(new PageInfo(formatList).getTotal());
+        return rspData;
     }
 
     protected <T> T getPageItem(PageQuery pageQuery,Class<T> clazz){

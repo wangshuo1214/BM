@@ -63,6 +63,7 @@ public class BmDictServiceImpl implements IBmDictService {
         if(!dictTypeUpdateFlag(old,bmDictType)){
             old.setDictType(bmDictType.getDictType());
             old.setDictName(bmDictType.getDictName());
+            old.setOrderNum(bmDictType.getOrderNum());
             old.setStatus(bmDictType.getStatus());
             old.setRemark(bmDictType.getRemark());
             old.setUpdateDate(new Date());
@@ -155,6 +156,15 @@ public class BmDictServiceImpl implements IBmDictService {
         return bmDictMapper.deleteBmDictData(bmDictIds);
     }
 
+    @Override
+    public List<BmDictData> getDictDataByType(String bmDictType) {
+
+        if (StrUtil.isEmpty(bmDictType)){
+            throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
+        }
+        return bmDictMapper.getDictDataByType(bmDictType);
+    }
+
     private boolean dictTypeUpdateFlag(BmDictType oldObj,BmDictType newObj){
         StringBuffer sb1 = new StringBuffer("");
         StringBuffer sb2 = new StringBuffer("");
@@ -162,6 +172,8 @@ public class BmDictServiceImpl implements IBmDictService {
         sb2.append(newObj.getDictType());
         sb1.append(oldObj.getDictName());
         sb2.append(newObj.getDictName());
+        sb1.append(oldObj.getOrderNum());
+        sb2.append(newObj.getOrderNum());
         sb1.append(oldObj.getStatus());
         sb2.append(newObj.getStatus());
         sb1.append(oldObj.getRemark());

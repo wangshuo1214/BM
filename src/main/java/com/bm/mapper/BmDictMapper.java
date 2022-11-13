@@ -32,4 +32,6 @@ public interface BmDictMapper {
     List<BmDictData> queryBmDictData(BmDictData bmDictData);
 
     int deleteBmDictData(List<String> bmDictIds);
+
+    List<BmDictData> getDictDataByType(String bmDictType);
 }

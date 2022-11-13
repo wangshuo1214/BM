@@ -26,7 +26,7 @@ public class BmDictController extends BaseController {
     public Result queryBmDictType(@RequestBody PageQuery pageQuery){
         startPage(pageQuery);
         BmDictType bmDictType = getPageItem(pageQuery,BmDictType.class);
-        return success(iBmDictService.queryBmDictType(bmDictType));
+        return success(formatTableData(iBmDictService.queryBmDictType(bmDictType)));
     }
 
     @GetMapping("/type/get")
@@ -69,6 +69,11 @@ public class BmDictController extends BaseController {
     @PostMapping("/data/delete")
     public Result deleteBmDictData(@RequestBody List<String> bmDictIds){
         return computeResult(iBmDictService.deleteBmDictData(bmDictIds));
+    }
+
+    @GetMapping("/data/getDataByType")
+    public Result getBmDictDataByType(String bmDictType){
+        return success(iBmDictService.getDictDataByType(bmDictType));
     }
 
 }
