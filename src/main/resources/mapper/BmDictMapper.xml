@@ -24,7 +24,7 @@
         <if test="dictType != null and dictType != ''">dict_type,</if>
         <if test="dictName != null and dictName != ''">dict_name,</if>
         <if test="status != null and status != ''">status,</if>
-        <if test="orderNum != null and orderNum != ''">order_num,</if>
+        <if test="orderNum != null">order_num,</if>
         <if test="remark != null and remark != ''">remark,</if>
         <if test="createDate != null">create_date,</if>
         <if test="updateDate != null">update_date,</if>
@@ -34,7 +34,7 @@
         <if test="dictType != null and dictType != ''">#{dictType},</if>
         <if test="dictName != null and dictName != ''">#{dictName},</if>
         <if test="status != null and status != ''">#{status},</if>
-        <if test="orderNum != null and orderNum != ''">#{orderNum},</if>
+        <if test="orderNum != null">#{orderNum},</if>
         <if test="remark != null and remark != ''">#{remark},</if>
         <if test="createDate != null">#{createDate},</if>
         <if test="updateDate != null">#{updateDate},</if>
@@ -86,7 +86,7 @@
         <set>
             <if test="dictName != null and dictName != ''">dict_name = #{dictName},</if>
             <if test="dictType != null and dictType != ''">dict_type = #{dictType},</if>
-            <if test="orderNum != null and orderNum != ''">order_num = #{orderNum},</if>
+            <if test="orderNum != null">order_num = #{orderNum},</if>
             <if test="status != null and status != ''">status = #{status},</if>
             <if test="remark != null and remark != ''">remark = #{remark},</if>
             <if test="updateDate != null">update_date = #{updateDate},</if>
@@ -116,7 +116,7 @@
         <if test="dictCode != null and dictCode != ''">dict_code,</if>
         <if test="dictName != null and dictName != ''">dict_name,</if>
         <if test="dictTypeId != null and dictTypeId != ''">dict_type_id,</if>
-        <if test="orderNum != null and orderNum != ''">order_num,</if>
+        <if test="orderNum != null">order_num,</if>
         <if test="status != null and status != ''">status,</if>
         <if test="remark != null and remark != ''">remark,</if>
         <if test="listClass != null and listClass != ''">list_class,</if>
@@ -129,7 +129,7 @@
         <if test="dictCode != null and dictCode != ''">#{dictCode},</if>
         <if test="dictName != null and dictName != ''">#{dictName},</if>
         <if test="dictTypeId != null and dictTypeId != ''">#{dictTypeId},</if>
-        <if test="orderNum != null and orderNum != ''">#{orderNum},</if>
+        <if test="orderNum != null">#{orderNum},</if>
         <if test="status != null and status != ''">#{status},</if>
         <if test="remark != null and remark != ''">#{remark},</if>
         <if test="listClass != null and listClass != ''">#{listClass},</if>
@@ -145,12 +145,12 @@
         <set>
             <if test="dictCode != null and dictCode != ''">dict_code = #{dictCode},</if>
             <if test="dictName != null and dictName != ''">dict_name = #{dictName},</if>
-            <if test="orderNum != null and orderNum != ''">order_num = #{orderNum},</if>
+            <if test="orderNum != null">order_num = #{orderNum},</if>
             <if test="status != null and status != ''">status = #{status},</if>
             <if test="remark != null and remark != ''">remark = #{remark},</if>
             <if test="listClass != null and listClass != ''">list_class = #{listClass},</if>
             <if test="cssClass != null and cssClass != ''">css_class = #{cssClass},</if>
-            <if test="updateDate != null and updateDate != ''">update_date = #{updateDate},</if>
+            <if test="updateDate != null">update_date = #{updateDate},</if>
         </set>
         where id = #{id}
     </update>

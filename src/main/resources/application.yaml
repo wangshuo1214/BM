@@ -62,5 +62,5 @@ jwt:
   data:
     #    jwt加密密钥
     SECRET: jwt-token-secret
-    #      jwt的过期时间(5h)
-    expiration: 18000000
+    #      jwt的过期时间(24h)
+    expiration: 86400000
