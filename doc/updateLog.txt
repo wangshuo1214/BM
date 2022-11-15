@@ -7,3 +7,4 @@
 
 2022.11.15
     bm_dict_data表中删除css_class和list_class字段
+    部门、字典两个表、菜单、角色中的status都删除

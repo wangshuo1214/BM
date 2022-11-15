@@ -24,6 +24,4 @@ public class BmDept extends BaseEntity implements Serializable {
 
     private String phone;
 
-    private String status;
-
 }

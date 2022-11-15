@@ -16,8 +16,6 @@ public class BmDictType extends BaseEntity{
 
     private String dictName;
 
-    private String status;
-
     private Integer orderNum;
 
     private String remark;

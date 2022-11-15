@@ -24,7 +24,5 @@ public class BmRole extends BaseEntity{
 
     private Integer deptCheckStrictly;
 
-    private String status;
-
     private String remark;
 }

@@ -27,7 +27,7 @@ public class BmDictServiceImpl implements IBmDictService {
     @Override
     public int addBmDictType(BmDictType bmDictType) {
         //参数校验
-        if(ObjectUtil.isEmpty(bmDictType) || StrUtil.hasEmpty(bmDictType.getDictType(),bmDictType.getDictName(),bmDictType.getStatus()) || ObjectUtil.isEmpty(bmDictType.getOrderNum())){
+        if(ObjectUtil.isEmpty(bmDictType) || StrUtil.hasEmpty(bmDictType.getDictType(),bmDictType.getDictName()) || ObjectUtil.isEmpty(bmDictType.getOrderNum())){
             throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
         }
         //校验字典类型名称是否重复
@@ -49,7 +49,7 @@ public class BmDictServiceImpl implements IBmDictService {
 
     @Override
     public int updateBmDictType(BmDictType bmDictType) {
-        if(ObjectUtil.isEmpty(bmDictType) || StrUtil.hasEmpty(bmDictType.getDictType(),bmDictType.getDictName(),bmDictType.getStatus()) || ObjectUtil.isEmpty(bmDictType.getOrderNum())){
+        if(ObjectUtil.isEmpty(bmDictType) || StrUtil.hasEmpty(bmDictType.getDictType(),bmDictType.getDictName()) || ObjectUtil.isEmpty(bmDictType.getOrderNum())){
             throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
         }
         //校验字典类型名称是否重复
@@ -64,7 +64,6 @@ public class BmDictServiceImpl implements IBmDictService {
             old.setDictType(bmDictType.getDictType());
             old.setDictName(bmDictType.getDictName());
             old.setOrderNum(bmDictType.getOrderNum());
-            old.setStatus(bmDictType.getStatus());
             old.setRemark(bmDictType.getRemark());
             old.setUpdateDate(new Date());
         }
@@ -123,7 +122,6 @@ public class BmDictServiceImpl implements IBmDictService {
         if (!dictDataUpdateFlag(old,bmDictData)){
             old.setDictCode(bmDictData.getDictCode());
             old.setDictName(bmDictData.getDictName());
-            old.setStatus(bmDictData.getStatus());
             old.setOrderNum(bmDictData.getOrderNum());
             old.setRemark(bmDictData.getRemark());
             old.setUpdateDate(new Date());
@@ -172,8 +170,6 @@ public class BmDictServiceImpl implements IBmDictService {
         sb2.append(newObj.getDictName());
         sb1.append(oldObj.getOrderNum());
         sb2.append(newObj.getOrderNum());
-        sb1.append(oldObj.getStatus());
-        sb2.append(newObj.getStatus());
         sb1.append(oldObj.getRemark());
         sb2.append(newObj.getRemark());
 
@@ -187,8 +183,6 @@ public class BmDictServiceImpl implements IBmDictService {
         sb2.append(newObj.getDictCode());
         sb1.append(oldObj.getDictName());
         sb2.append(newObj.getDictName());
-        sb1.append(oldObj.getStatus());
-        sb2.append(newObj.getStatus());
         sb1.append(oldObj.getOrderNum());
         sb2.append(newObj.getOrderNum());
         sb1.append(oldObj.getRemark());

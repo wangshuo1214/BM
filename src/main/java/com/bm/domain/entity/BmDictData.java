@@ -20,7 +20,5 @@ public class BmDictData extends BaseEntity{
 
     private Integer orderNum;
 
-    private String status;
-
     private String remark;
 }

@@ -174,7 +174,6 @@
 | 1    | id          | 表主键   | varchar(36)   | N      | Y    |            |
 | 2    | dict_type   | 字典类型 | varchar(100)  | N      |      |            |
 |      | dict_name   | 字典名称 | varchar(100)  | N      |      |            |
-|      | status      | 状态     | char(1)       | N      |      | 0关闭1开启 |
 |      | order_num   | 序号     | int           | N      |      |            |
 |      | remark      | 备注     | varchar(1024) |        |      |            |
 |      | create_date | 创建日期 | datetime      | N      |      |            |
@@ -190,7 +189,6 @@
 |      | dict_name   | 字典名称     | varchar(50)   | N      |      |            |
 |      | dict_type_id  | 父类型       | varchar(36)   | N      |      |            |
 |      | order_num   | 序号         | Int           | N      |      |            |
-|      | status      | 状态         | char(1)       |        |      | 0关闭1开启 |
 |      | remark      | 备注         | Varchar(1024) |        |      |            |
 |      | create_date | 创建日期     | datetime      | N      |      |            |
 |      | update_date | 修改日期     | datetime      | N      |      |            |
@@ -226,7 +224,6 @@
 |      | order_num   | 序号     | int         | N      |      |            |
 |      | leader      | 负责人   | varchar(36) |        |      |            |
 |      | phone       | 电话     | varchar(11) |        |      |            |
-|      | status      | 账号状态 | char(1)     | N      |      | 0停用1正常 |
 |      | create_date | 创建日期 | datetime    | N      |      |            |
 |      | update_date | 修改日期 | datetime    | N      |      |            |
 |      | deleted     | 删除标志 | char(1)     | N      |      |            |
@@ -248,7 +245,6 @@
 |      | is_cache    | 是否缓存   | char(1)       | N      |      |                   |
 |      | menu_type   | 菜单类型   | char(1)       | N      |      | M目录 C菜单 F按钮 |
 |      | visible     | 显示标志   | char(1)       | N      |      |                   |
-|      | status      | 菜单状态   | char(1)       | N      |      | 0停用1正常        |
 |      | perms       | 权限标识   | varchar(100)  |        |      |                   |
 |      | icon        | 菜单图标   | varchar(100)  | N      |      |                   |
 |      | remark      | 备注       | varchar(1024) |        |      |                   |
@@ -268,8 +264,7 @@
 |      | oder_num           | 序号                     | int           | N      |      |                                                              |
 |      | data_scope          | 数据范围                 | char(1)      |        |      | 1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限 |
 |      | menu_check_strictly | 菜单树选择项是否关联显示 | tinyint(1)    | N      |      |                                                              |
-|      | dept_check_strictly | 部门树选择项是否关联显示 | tinyint(1)    | N      |      |                                                              |
-|      | status              | 角色状态                 | char(1)       | N      |      | 0停用 1正常                                                  |
+|      | dept_check_strictly | 部门树选择项是否关联显示 | tinyint(1)    | N      |      |                                                              | |
 |      | remark              | 备注                     | varchar(1024) |        |      |                                                              |
 |      | create_date         | 创建日期                 | datetime      | N      |      |                                                              |
 |      | update_date         | 修改日期                 | datetime      | N      |      |                                                              |

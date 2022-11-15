@@ -32,8 +32,6 @@ public class BmMenu extends BaseEntity{
 
     private String visible;
 
-    private String status;
-
     private String perms;
 
     private String icon;

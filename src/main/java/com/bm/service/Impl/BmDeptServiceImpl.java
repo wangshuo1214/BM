@@ -3,7 +3,6 @@ package com.bm.service.Impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.Query;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bm.common.constant.BaseConstant;
@@ -34,9 +33,9 @@ public class BmDeptServiceImpl extends ServiceImpl<BmDeptMapper, BmDept> impleme
         if (checkFiled(bmDept)){
             throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
         }
-        //父部门停用时，该节点下不能创建部门
+        //没有父部门不能创建部门
         BmDept parenDept = getById(bmDept.getParentId());
-        if (ObjectUtil.isEmpty(parenDept) || StrUtil.equals(BaseConstant.EXCEPTION,parenDept.getStatus())){
+        if (ObjectUtil.isEmpty(parenDept)){
             throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.dept.parentStatusError"));
         }
         //判断创建部门名称是否重复
@@ -52,7 +51,6 @@ public class BmDeptServiceImpl extends ServiceImpl<BmDeptMapper, BmDept> impleme
             throw new BaseException(HttpStatus.ERROR,MessageUtil.getMessage("bm.initFieldError"));
         }
         bmDept.setDeptId(UUID.randomUUID().toString());
-        bmDept.setStatus(BaseConstant.TRUE);
         return save(bmDept);
     }
 
@@ -64,10 +62,6 @@ public class BmDeptServiceImpl extends ServiceImpl<BmDeptMapper, BmDept> impleme
         //查询条件-部门名称
         if (StrUtil.isNotEmpty(bmDept.getDeptName())){
             wrapper.lambda().like(BmDept::getDeptName,bmDept.getDeptName().trim());
-        }
-        //查询条件-状态
-        if(StrUtil.isNotEmpty(bmDept.getStatus())){
-            wrapper.lambda().eq(BmDept::getStatus,bmDept.getStatus());
         }
         //排序
         wrapper.lambda().orderByAsc(BmDept::getOrderNum).orderByDesc(BmDept::getUpdateDate);
@@ -116,9 +110,9 @@ public class BmDeptServiceImpl extends ServiceImpl<BmDeptMapper, BmDept> impleme
             throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.paramsError"));
         }
 
-        //父部门停用时，该节点下不能创建部门
+        //没有父部门不能创建部门
         BmDept parenDept = getById(newBmDept.getParentId());
-        if (ObjectUtil.isEmpty(parenDept) || StrUtil.equals(BaseConstant.EXCEPTION,parenDept.getStatus())){
+        if (ObjectUtil.isEmpty(parenDept)){
             throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.dept.parentStatusError"));
         }
         //判断修改部门名称是否重复
@@ -139,7 +133,6 @@ public class BmDeptServiceImpl extends ServiceImpl<BmDeptMapper, BmDept> impleme
             oldBmDept.setOrderNum(newBmDept.getOrderNum());
             oldBmDept.setLeader(newBmDept.getLeader());
             oldBmDept.setPhone(newBmDept.getPhone());
-            oldBmDept.setStatus(newBmDept.getStatus());
         }
 
         return updateById(oldBmDept);
@@ -169,7 +162,6 @@ public class BmDeptServiceImpl extends ServiceImpl<BmDeptMapper, BmDept> impleme
 
         QueryWrapper<BmDept> wrapper = new QueryWrapper();
         wrapper.lambda().eq(BmDept::getDeleted,BaseConstant.FALSE);
-        wrapper.lambda().eq(BmDept::getStatus,BaseConstant.TRUE);
         if (CollUtil.isNotEmpty(excludeIds)){
             wrapper.lambda().notIn(BmDept::getDeptId,excludeIds);
         }
@@ -181,7 +173,6 @@ public class BmDeptServiceImpl extends ServiceImpl<BmDeptMapper, BmDept> impleme
         QueryWrapper<BmDept> wrapper = new QueryWrapper<>();
         wrapper.lambda().select(BmDept::getDeptId);
         wrapper.lambda().eq(BmDept::getDeleted,BaseConstant.FALSE);
-        wrapper.lambda().eq(BmDept::getStatus,BaseConstant.TRUE);
         wrapper.lambda().in(BmDept::getParentId,parentIds);
         List<String> ids = list(wrapper).stream().map(BmDept::getDeptId).collect(Collectors.toList());
         if (CollUtil.isNotEmpty(ids)){
@@ -205,8 +196,6 @@ public class BmDeptServiceImpl extends ServiceImpl<BmDeptMapper, BmDept> impleme
         sb2.append(oldBmDept.getLeader());
         sb1.append(newBmDept.getPhone());
         sb2.append(oldBmDept.getPhone());
-        sb1.append(newBmDept.getStatus());
-        sb2.append(oldBmDept.getStatus());
         return sb1.toString().equals(sb2.toString());
 
     }
