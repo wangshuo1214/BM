@@ -192,8 +192,6 @@
 |      | order_num   | 序号         | Int           | N      |      |            |
 |      | status      | 状态         | char(1)       |        |      | 0关闭1开启 |
 |      | remark      | 备注         | Varchar(1024) |        |      |            |
-|      | list_class  | 表单回显样式 | Varchar(100)  |        |      |            |
-|      | css_class   | 自定义样式   | Varchar(1024) |        |      |            |
 |      | create_date | 创建日期     | datetime      | N      |      |            |
 |      | update_date | 修改日期     | datetime      | N      |      |            |
 |      | deleted     | 删除标志     | char(1)       | N      |      |            |

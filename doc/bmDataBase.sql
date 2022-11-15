@@ -165,8 +165,6 @@ CREATE TABLE `bm_dict_data` (
                                 `order_num` int NOT NULL COMMENT '序号',
                                 `status` char(1) NOT NULL COMMENT '状态（0关闭1开启）',
                                 `remark` varchar(1024) DEFAULT NULL COMMENT '备注',
-                                `list_class` varchar(100) DEFAULT NULL COMMENT '表单回显样式',
-                                `css_class` varchar(1024) DEFAULT NULL COMMENT '自定义样式',
                                 `create_date` datetime NOT NULL COMMENT '创建日期',
                                 `update_date` datetime NOT NULL COMMENT '修改日期',
                                 `deleted` char(1) NOT NULL COMMENT '删除标志',

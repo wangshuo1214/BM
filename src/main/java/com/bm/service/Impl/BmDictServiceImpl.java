@@ -126,8 +126,6 @@ public class BmDictServiceImpl implements IBmDictService {
             old.setStatus(bmDictData.getStatus());
             old.setOrderNum(bmDictData.getOrderNum());
             old.setRemark(bmDictData.getRemark());
-            old.setCssClass(bmDictData.getCssClass());
-            old.setListClass(bmDictData.getListClass());
             old.setUpdateDate(new Date());
         }
 
@@ -195,10 +193,6 @@ public class BmDictServiceImpl implements IBmDictService {
         sb2.append(newObj.getOrderNum());
         sb1.append(oldObj.getRemark());
         sb2.append(newObj.getRemark());
-        sb1.append(oldObj.getCssClass());
-        sb2.append(newObj.getCssClass());
-        sb1.append(oldObj.getListClass());
-        sb2.append(newObj.getListClass());
 
         return sb1.toString().equals(sb2.toString());
     }

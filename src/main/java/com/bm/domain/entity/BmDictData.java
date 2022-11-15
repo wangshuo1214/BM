@@ -23,8 +23,4 @@ public class BmDictData extends BaseEntity{
     private String status;
 
     private String remark;
-
-    private String listClass;
-
-    private String cssClass;
 }

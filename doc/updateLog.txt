@@ -4,3 +4,6 @@
 
 2022.11.10
     table_type(tableName)修改为dict_type_id
+
+2022.11.15
+    bm_dict_data表中删除css_class和list_class字段
