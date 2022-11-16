@@ -34,8 +34,8 @@ public class BmMenuServiceImpl extends ServiceImpl<BmMenuMapper, BmMenu> impleme
         //父菜单
         BmMenu parentMenu = getById(bmMenu.getParentId());
 
-        //判断父节点状态
-        if (ObjectUtil.isEmpty(parentMenu) || StrUtil.equals(parentMenu.getDeleted(),BaseConstant.TRUE)){
+        //如果不在顶级创建 则需要判断父节点状态
+        if (StrUtil.equals(bmMenu.getParentId(), BaseConstant.TRUE) && (ObjectUtil.isEmpty(parentMenu) || StrUtil.equals(parentMenu.getDeleted(),BaseConstant.TRUE))){
             throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.parentStatusError"));
         }
 
