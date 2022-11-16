@@ -35,15 +35,15 @@ public class BmDeptServiceImpl extends ServiceImpl<BmDeptMapper, BmDept> impleme
         }
         //没有父部门不能创建部门
         BmDept parenDept = getById(bmDept.getParentId());
-        if (ObjectUtil.isEmpty(parenDept)){
-            throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.dept.parentStatusError"));
+        if (ObjectUtil.isEmpty(parenDept) || StrUtil.equals(parenDept.getDeleted(),BaseConstant.TRUE)){
+            throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.parentStatusError"));
         }
         //判断创建部门名称是否重复
         QueryWrapper<BmDept> wrapper = new QueryWrapper<>();
         wrapper.lambda().eq(BmDept::getDeptName,bmDept.getDeptName().trim());
         wrapper.lambda().eq(BmDept::getDeleted,BaseConstant.FALSE);
-        List<BmDept> oldDepts = list(wrapper);
-        if (CollUtil.isNotEmpty(oldDepts)){
+        List<BmDept> repeatDepts = list(wrapper);
+        if (CollUtil.isNotEmpty(repeatDepts)){
             throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.dept.nameRepeat"));
         }
         //初始化基本属性
@@ -106,22 +106,22 @@ public class BmDeptServiceImpl extends ServiceImpl<BmDeptMapper, BmDept> impleme
     @Override
     public boolean updateBmDept(BmDept newBmDept) {
 
-        if (ObjectUtil.isEmpty(newBmDept)){
+        if (checkFiled(newBmDept)){
             throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.paramsError"));
         }
 
         //没有父部门不能创建部门
         BmDept parenDept = getById(newBmDept.getParentId());
         if (ObjectUtil.isEmpty(parenDept)){
-            throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.dept.parentStatusError"));
+            throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.parentStatusError"));
         }
         //判断修改部门名称是否重复
         QueryWrapper<BmDept> wrapper = new QueryWrapper<>();
         wrapper.lambda().eq(BmDept::getDeptName,newBmDept.getDeptName().trim());
         wrapper.lambda().eq(BmDept::getDeleted,BaseConstant.FALSE);
         wrapper.lambda().ne(BmDept::getDeptId,newBmDept.getDeptId());
-        List<BmDept> oldDepts = list(wrapper);
-        if (CollUtil.isNotEmpty(oldDepts)){
+        List<BmDept> repeatDepts = list(wrapper);
+        if (CollUtil.isNotEmpty(repeatDepts)){
             throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.dept.nameRepeat"));
         }
 
@@ -145,7 +145,7 @@ public class BmDeptServiceImpl extends ServiceImpl<BmDeptMapper, BmDept> impleme
         }
         BmDept bmDept = getById(bmDeptId);
 
-        if (ObjectUtil.isEmpty(bmDept)){
+        if (ObjectUtil.isEmpty(bmDept) || StrUtil.equals(bmDept.getDeleted(),BaseConstant.TRUE)){
             throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.dept.notexist"));
         }
         return bmDept;

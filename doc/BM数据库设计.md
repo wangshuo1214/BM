@@ -243,7 +243,7 @@
 |      | query       | 路由参数   | varchar(255)  |        |      |                   |
 |      | is_frame    | 是否为外链 | char(1)       | N      |      |                   |
 |      | is_cache    | 是否缓存   | char(1)       | N      |      |                   |
-|      | menu_type   | 菜单类型   | char(1)       | N      |      | M目录 C菜单 F按钮 |
+|      | menu_type   | 菜单类型   | char(1)       | N      |      | C目录 M菜单 B按钮 |
 |      | visible     | 显示标志   | char(1)       | N      |      |                   |
 |      | perms       | 权限标识   | varchar(100)  |        |      |                   |
 |      | icon        | 菜单图标   | varchar(100)  | N      |      |                   |

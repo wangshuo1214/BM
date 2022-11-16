@@ -25,6 +25,7 @@ public class InitFieldUtil {
             }
         }catch (Exception e){
             logger.info("初始化id属性失败，报错信息为{}",e.getMessage());
+            return false;
         }
         //初始化状态
         try {
@@ -35,6 +36,7 @@ public class InitFieldUtil {
             }
         }catch (Exception e){
             logger.info("初始化status属性失败，报错信息为{}",e.getMessage());
+            return false;
         }
 
         try{
