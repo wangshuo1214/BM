@@ -35,7 +35,7 @@ public class BmMenuServiceImpl extends ServiceImpl<BmMenuMapper, BmMenu> impleme
         BmMenu parentMenu = getById(bmMenu.getParentId());
 
         //如果不在顶级创建 则需要判断父节点状态
-        if (StrUtil.equals(bmMenu.getParentId(), BaseConstant.TRUE) && (ObjectUtil.isEmpty(parentMenu) || StrUtil.equals(parentMenu.getDeleted(),BaseConstant.TRUE))){
+        if ( !StrUtil.equals(bmMenu.getParentId(), BaseConstant.FALSE) && (ObjectUtil.isEmpty(parentMenu) || StrUtil.equals(parentMenu.getDeleted(),BaseConstant.TRUE))){
             throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.parentStatusError"));
         }
 
@@ -73,7 +73,7 @@ public class BmMenuServiceImpl extends ServiceImpl<BmMenuMapper, BmMenu> impleme
     @Override
     public BmMenu getBmMenu(String bmMenuId) {
 
-        if (StrUtil.isNotEmpty(bmMenuId)){
+        if (StrUtil.isEmpty(bmMenuId)){
             throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.paramsError"));
         }
         BmMenu bmMenu = getById(bmMenuId);
@@ -92,7 +92,7 @@ public class BmMenuServiceImpl extends ServiceImpl<BmMenuMapper, BmMenu> impleme
         BmMenu parentMenu = getById(newBmMenu.getParentId());
 
         //判断父节点状态
-        if (ObjectUtil.isEmpty(parentMenu) || StrUtil.equals(parentMenu.getDeleted(),BaseConstant.TRUE)){
+        if ( !StrUtil.equals(newBmMenu.getParentId(), BaseConstant.FALSE) && (ObjectUtil.isEmpty(parentMenu) || StrUtil.equals(parentMenu.getDeleted(),BaseConstant.TRUE))){
             throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.parentStatusError"));
         }
 
@@ -116,7 +116,7 @@ public class BmMenuServiceImpl extends ServiceImpl<BmMenuMapper, BmMenu> impleme
             oldBmMenu.setOrderNum(newBmMenu.getOrderNum());
             oldBmMenu.setIsFrame(newBmMenu.getIsFrame());
             oldBmMenu.setPath(newBmMenu.getPath());
-            oldBmMenu.setComponet(newBmMenu.getComponet());
+            oldBmMenu.setCompoent(newBmMenu.getCompoent());
             oldBmMenu.setPerms(newBmMenu.getPerms());
             oldBmMenu.setQuery(newBmMenu.getQuery());
             oldBmMenu.setIsCache(newBmMenu.getIsCache());
@@ -170,8 +170,8 @@ public class BmMenuServiceImpl extends ServiceImpl<BmMenuMapper, BmMenu> impleme
         sb2.append(oldBmMenu.getIsFrame());
         sb1.append(newBmMenu.getPath());
         sb2.append(oldBmMenu.getPath());
-        sb1.append(newBmMenu.getComponet());
-        sb2.append(oldBmMenu.getComponet());
+        sb1.append(newBmMenu.getCompoent());
+        sb2.append(oldBmMenu.getCompoent());
         sb1.append(newBmMenu.getPerms());
         sb2.append(oldBmMenu.getPerms());
         sb1.append(newBmMenu.getQuery());
@@ -186,9 +186,20 @@ public class BmMenuServiceImpl extends ServiceImpl<BmMenuMapper, BmMenu> impleme
 
     private boolean checkField(BmMenu bmMenu){
 
+        //非空校验
         if (ObjectUtil.isEmpty(bmMenu) || StrUtil.isEmpty(bmMenu.getMenuType()) ||
                 ((StrUtil.equals(bmMenu.getMenuType(), BaseConstant.CATALOGUE ) || StrUtil.equals(bmMenu.getMenuType(), BaseConstant.MENU)) && (StrUtil.hasEmpty(bmMenu.getMenuName(),bmMenu.getPath(),bmMenu.getIsFrame(),bmMenu.getVisible(),bmMenu.getParentId()) || ObjectUtil.isEmpty(bmMenu.getOrderNum()))) ||
                 (StrUtil.equals(bmMenu.getMenuType(), BaseConstant.BUTTON) && (StrUtil.hasEmpty(bmMenu.getMenuName(),bmMenu.getParentId()) || ObjectUtil.isEmpty(bmMenu.getOrderNum())))
+        ){
+            return true;
+        }
+        //对菜单类型进行校验,菜单类型只能是 C M B
+        if (!StrUtil.equalsAny(bmMenu.getMenuType(),BaseConstant.CATALOGUE,BaseConstant.MENU,BaseConstant.BUTTON)){
+            return true;
+        }
+        //选了目录、菜单、按钮其中之一后，有的选项必须为空，此处进行校验
+        if ((StrUtil.equals(bmMenu.getMenuType(), BaseConstant.CATALOGUE) && !StrUtil.hasEmpty(bmMenu.getPath(),bmMenu.getPerms(),bmMenu.getQuery(),bmMenu.getIsCache())) ||
+                (StrUtil.equals(bmMenu.getMenuType(), BaseConstant.BUTTON) && !StrUtil.hasEmpty(bmMenu.getIcon(),bmMenu.getIsFrame(),bmMenu.getPath(),bmMenu.getVisible(),bmMenu.getCompoent(),bmMenu.getQuery(),bmMenu.getIsCache()))
         ){
             return true;
         }

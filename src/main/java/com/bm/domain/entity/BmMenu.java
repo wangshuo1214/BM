@@ -20,7 +20,7 @@ public class BmMenu extends BaseEntity{
 
     private String path;
 
-    private String componet;
+    private String compoent;
 
     private String query;
 

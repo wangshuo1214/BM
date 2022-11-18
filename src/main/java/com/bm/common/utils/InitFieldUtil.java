@@ -1,6 +1,7 @@
 package com.bm.common.utils;
 
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.json.JSON;
 import com.bm.common.constant.BaseConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +25,7 @@ public class InitFieldUtil {
                 id.set(t, UUID.randomUUID().toString());
             }
         }catch (Exception e){
-            logger.info("初始化id属性失败，报错信息为{}",e.getMessage());
-            return false;
+            logger.info("初始化id属性失败，报错信息为{}", e.getMessage());
         }
         //初始化状态
         try {
@@ -36,7 +36,6 @@ public class InitFieldUtil {
             }
         }catch (Exception e){
             logger.info("初始化status属性失败，报错信息为{}",e.getMessage());
-            return false;
         }
 
         try{
