@@ -13,3 +13,6 @@
     给菜单表的两个字段设置了默认值
     ALTER TABLE bm_menu MODIFY icon varchar(255) DEFAULT "#" COMMENT "菜单图标"
     ALTER TABLE bm_menu MODIFY is_cache int DEFAULT "1" COMMENT "是否缓存"
+
+2022.11.23
+    菜单表的component写错了

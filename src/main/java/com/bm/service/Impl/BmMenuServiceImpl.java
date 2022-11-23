@@ -116,7 +116,7 @@ public class BmMenuServiceImpl extends ServiceImpl<BmMenuMapper, BmMenu> impleme
             oldBmMenu.setOrderNum(newBmMenu.getOrderNum());
             oldBmMenu.setIsFrame(newBmMenu.getIsFrame());
             oldBmMenu.setPath(newBmMenu.getPath());
-            oldBmMenu.setCompoent(newBmMenu.getCompoent());
+            oldBmMenu.setComponent(newBmMenu.getComponent());
             oldBmMenu.setPerms(newBmMenu.getPerms());
             oldBmMenu.setQuery(newBmMenu.getQuery());
             oldBmMenu.setIsCache(newBmMenu.getIsCache());
@@ -170,8 +170,8 @@ public class BmMenuServiceImpl extends ServiceImpl<BmMenuMapper, BmMenu> impleme
         sb2.append(oldBmMenu.getIsFrame());
         sb1.append(newBmMenu.getPath());
         sb2.append(oldBmMenu.getPath());
-        sb1.append(newBmMenu.getCompoent());
-        sb2.append(oldBmMenu.getCompoent());
+        sb1.append(newBmMenu.getComponent());
+        sb2.append(oldBmMenu.getComponent());
         sb1.append(newBmMenu.getPerms());
         sb2.append(oldBmMenu.getPerms());
         sb1.append(newBmMenu.getQuery());
@@ -199,7 +199,7 @@ public class BmMenuServiceImpl extends ServiceImpl<BmMenuMapper, BmMenu> impleme
         }
         //选了目录、菜单、按钮其中之一后，有的选项必须为空，此处进行校验
         if ((StrUtil.equals(bmMenu.getMenuType(), BaseConstant.CATALOGUE) && !StrUtil.hasEmpty(bmMenu.getPath(),bmMenu.getPerms(),bmMenu.getQuery(),bmMenu.getIsCache())) ||
-                (StrUtil.equals(bmMenu.getMenuType(), BaseConstant.BUTTON) && !StrUtil.hasEmpty(bmMenu.getIcon(),bmMenu.getIsFrame(),bmMenu.getPath(),bmMenu.getVisible(),bmMenu.getCompoent(),bmMenu.getQuery(),bmMenu.getIsCache()))
+                (StrUtil.equals(bmMenu.getMenuType(), BaseConstant.BUTTON) && !StrUtil.hasEmpty(bmMenu.getIcon(),bmMenu.getIsFrame(),bmMenu.getPath(),bmMenu.getVisible(),bmMenu.getComponent(),bmMenu.getQuery(),bmMenu.getIsCache()))
         ){
             return true;
         }
