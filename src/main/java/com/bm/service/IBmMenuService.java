@@ -17,4 +17,6 @@ public interface IBmMenuService extends IService<BmMenu> {
 
     boolean deleteBmMenu(String bmMenuId);
 
+    List<BmMenu> queryBmMenuExcludeChild(String bmMenuId);
+
 }

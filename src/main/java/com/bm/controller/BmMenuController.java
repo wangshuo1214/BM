@@ -37,4 +37,9 @@ public class BmMenuController extends BaseController{
     public Result deleteBmMenu(String bmMenuId){
         return success(iBmMenuService.deleteBmMenu(bmMenuId));
     }
+
+    @PostMapping("/exclude")
+    public Result queryBmMenuExcludeChild(String bmMenuId){
+        return success(iBmMenuService.queryBmMenuExcludeChild(bmMenuId));
+    }
 }

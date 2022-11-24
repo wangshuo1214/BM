@@ -18,9 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sun.reflect.misc.FieldUtil;
 
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class BmMenuServiceImpl extends ServiceImpl<BmMenuMapper, BmMenu> implements IBmMenuService {
@@ -149,6 +148,37 @@ public class BmMenuServiceImpl extends ServiceImpl<BmMenuMapper, BmMenu> impleme
         bmMenu.setUpdateDate(new Date());
 
         return updateById(bmMenu);
+    }
+
+    @Override
+    public List<BmMenu> queryBmMenuExcludeChild(String bmMenuId) {
+        if (StrUtil.isEmpty(bmMenuId)){
+            throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.paramsError"));
+        }
+
+        List<String> excludeIds = getChildren(Arrays.asList(bmMenuId));
+
+        QueryWrapper<BmMenu> wrapper = new QueryWrapper();
+        wrapper.lambda().eq(BmMenu::getDeleted,BaseConstant.FALSE);
+        if (CollUtil.isNotEmpty(excludeIds)){
+            wrapper.lambda().notIn(BmMenu::getMenuId,excludeIds);
+        }
+
+        return list(wrapper);
+    }
+
+    private List<String> getChildren(List<String> parentIds){
+        QueryWrapper<BmMenu> wrapper = new QueryWrapper<>();
+        wrapper.lambda().select(BmMenu::getMenuId);
+        wrapper.lambda().eq(BmMenu::getDeleted,BaseConstant.FALSE);
+        wrapper.lambda().in(BmMenu::getParentId,parentIds);
+        List<String> ids = list(wrapper).stream().map(BmMenu::getMenuId).collect(Collectors.toList());
+        if (CollUtil.isNotEmpty(ids)){
+            ids.addAll(getChildren(ids));
+            return ids;
+        }else {
+            return new ArrayList<>();
+        }
     }
 
     private boolean updateFlag(BmMenu newBmMenu, BmMenu oldBmMenu){
