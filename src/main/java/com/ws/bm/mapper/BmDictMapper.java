@@ -3,6 +3,7 @@ package com.ws.bm.mapper;
 import com.ws.bm.domain.entity.BmDictData;
 import com.ws.bm.domain.entity.BmDictType;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -34,4 +35,6 @@ public interface BmDictMapper {
     int deleteBmDictData(List<String> bmDictIds);
 
     List<BmDictData> getDictDataByType(String bmDictType);
+
+    BmDictData getSoleDict(@Param("dictType") String bmDictType,@Param("dictCode") String bmDictCode);
 }

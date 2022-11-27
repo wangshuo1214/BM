@@ -28,4 +28,6 @@ public interface IBmDictService {
     int deleteBmDictData(List<String> bmDictIds);
 
     List<BmDictData> getDictDataByType(String bmDictType);
+
+    BmDictData getSoleDict(String bmDictType, String bmDictCode);
 }

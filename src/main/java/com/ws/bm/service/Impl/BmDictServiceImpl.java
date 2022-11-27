@@ -161,6 +161,16 @@ public class BmDictServiceImpl implements IBmDictService {
         return bmDictMapper.getDictDataByType(bmDictType);
     }
 
+    //根据字典类型和字典名称获得唯一的字典
+    @Override
+    public BmDictData getSoleDict(String bmDictType, String bmDictCode){
+        if (StrUtil.hasEmpty(bmDictType, bmDictCode)){
+            throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
+        }
+
+        return bmDictMapper.getSoleDict(bmDictType,bmDictCode);
+    }
+
     private boolean dictTypeUpdateFlag(BmDictType oldObj,BmDictType newObj){
         StringBuffer sb1 = new StringBuffer("");
         StringBuffer sb2 = new StringBuffer("");

@@ -65,7 +65,7 @@ public class BmLoginServiceImpl implements IBmLoginService {
         String token = jwtTokenUtil.createToken(claims);
 
         //Token放在缓存里,用户每次请求的时候使用
-        redisUtil.setCacheObject("bmUserToken:"+user.getUserId(),token,1, TimeUnit.HOURS);
+        redisUtil.setCacheObject("bmUserToken:"+user.getUserId(),token,5, TimeUnit.HOURS);
 
         return token;
     }

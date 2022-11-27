@@ -179,4 +179,16 @@
         <include refid="deleteFlagHql"/>
         order by order_num asc
     </select>
+
+    <select id="getSoleDict" resultType="BmDictData">
+        <include refid="selectDictDataHql"/>
+        <where>
+            dict_type_id = (
+            select id from bm_dict_type where dict_type = #{dictType}
+            <include refid="deleteFlagHql"/>
+            ) and dict_code = #{dictCode}
+        </where>
+        <include refid="deleteFlagHql"/>
+        order by order_num asc
+    </select>
 </mapper>

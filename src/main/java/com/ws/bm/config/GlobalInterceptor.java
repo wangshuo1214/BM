@@ -57,7 +57,7 @@ public class GlobalInterceptor implements HandlerInterceptor {
                 throw new BaseException(HttpStatus.UNAUTHORIZED, MessageUtil.getMessage("bm.loginTimeOut"));
             }
             //重新刷新token在缓存中的时间，实现长时间未登录就会重新登录，一直点击就不会重新登录
-            redisUtil.expire("bmUserToken:"+userId,15, TimeUnit.MINUTES);
+            redisUtil.expire("bmUserToken:"+userId,5, TimeUnit.HOURS);
 
 
         }catch (Exception e){

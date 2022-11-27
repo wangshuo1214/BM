@@ -81,4 +81,9 @@ public class BmDictController extends BaseController {
         return success(iBmDictService.getDictDataByType(bmDictType));
     }
 
+    @GetMapping("/data/sole")
+    public Result getSoleDict(String bmDictType, String bmDictCode){
+        return success(iBmDictService.getSoleDict(bmDictType,bmDictCode));
+    }
+
 }
