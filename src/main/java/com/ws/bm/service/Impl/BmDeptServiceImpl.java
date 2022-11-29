@@ -42,8 +42,7 @@ public class BmDeptServiceImpl extends ServiceImpl<BmDeptMapper, BmDept> impleme
         QueryWrapper<BmDept> wrapper = new QueryWrapper<>();
         wrapper.lambda().eq(BmDept::getDeptName,bmDept.getDeptName().trim());
         wrapper.lambda().eq(BmDept::getDeleted,BaseConstant.FALSE);
-        List<BmDept> repeatDepts = list(wrapper);
-        if (CollUtil.isNotEmpty(repeatDepts)){
+        if (CollUtil.isNotEmpty(list(wrapper))){
             throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.dept.nameRepeat"));
         }
         //初始化基本属性

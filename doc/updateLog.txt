@@ -16,3 +16,7 @@
 
 2022.11.23
     菜单表的component写错了
+
+2022.11.29
+    角色表中删除dept_check_strictly部门树是否关联显示
+    角色表中删除data_scope数据权限

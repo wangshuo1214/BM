@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @TableName("bm_role")
 public class BmRole extends BaseEntity{
@@ -18,11 +20,9 @@ public class BmRole extends BaseEntity{
 
     private Integer orderNum;
 
-    private String dataScope;
-
     private Integer menuCheckStrictly;
 
-    private Integer deptCheckStrictly;
-
     private String remark;
+
+    private List<String> menuIds;
 }
