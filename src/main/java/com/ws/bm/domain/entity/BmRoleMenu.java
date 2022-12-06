@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @TableName("bm_role_menu")
-public class BmRoleMenu {
+public class BmRoleMenu extends BaseEntity{
 
     @TableId(type = IdType.ASSIGN_UUID)
     private String roleId;

@@ -12,4 +12,8 @@ public interface IBmRoleService extends IService<BmRole> {
     List<BmRole> queryBmRole(BmRole role);
 
     BmRole getBmRole(String bmRoleId);
+
+    boolean updateBmRole(BmRole role);
+
+    boolean deleteBmRole(List<String> bmRoleIds);
 }

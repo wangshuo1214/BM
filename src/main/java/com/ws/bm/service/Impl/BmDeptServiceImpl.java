@@ -183,7 +183,7 @@ public class BmDeptServiceImpl extends ServiceImpl<BmDeptMapper, BmDept> impleme
         }
     }
 
-    private boolean updateFlag(BmDept newBmDept, BmDept oldBmDept){
+    private boolean updateFlag (BmDept newBmDept, BmDept oldBmDept){
         StringBuffer sb1 = new StringBuffer("");
         StringBuffer sb2 = new StringBuffer("");
         sb1.append(newBmDept.getDeptName());

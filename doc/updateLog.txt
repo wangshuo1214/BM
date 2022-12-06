@@ -20,3 +20,7 @@
 2022.11.29
     角色表中删除dept_check_strictly部门树是否关联显示
     角色表中删除data_scope数据权限
+
+2022.12.06
+    角色菜单表增create_date、update_date、deleted
+    用户角色表create_date、update_date、deleted

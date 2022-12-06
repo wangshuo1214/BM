@@ -2,12 +2,17 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ws.bm.mapper.BmDictMapper">
+<mapper namespace="com.ws.bm.mapper.BmRoleMenuMapper">
 
     <insert id="batchAddRoleMenu">
-        insert into bm_role_menu(role_id, menu_id) values
+        insert into bm_role_menu(role_id, menu_id,create_date,update_date,deleted) values
         <foreach item="item" index="index" collection="list" separator=",">
-            (#{item.roleId},#{item.menuId})
+            (#{item.roleId},#{item.menuId},sysdate(),sysdate(),${@com.ws.bm.common.constant.BaseConstant@TRUE})
         </foreach>
     </insert>
+
+    <update id="deleteRoleMenuByRoleId" parameterType="String">
+        update bm_role_menu set deleted = ${@com.ws.bm.common.constant.BaseConstant@TRUE} , update_date = sysdate()
+        where role_id  = #{roleId}
+    </update>
 </mapper>
