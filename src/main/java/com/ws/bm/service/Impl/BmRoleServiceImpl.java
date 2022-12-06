@@ -82,9 +82,7 @@ public class BmRoleServiceImpl extends ServiceImpl<BmRoleMapper, BmRole> impleme
         if (ObjectUtil.isNull(bmRole) || StrUtil.equals(bmRole.getDeleted(), BaseConstant.TRUE)){
             throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.role.notexist"));
         }
-        QueryWrapper<BmRoleMenu> wrapper = new QueryWrapper();
-        wrapper.lambda().eq(BmRoleMenu::getRoleId, bmRoleId);
-        List<BmRoleMenu> bmRoles = bmRoleMenuMapper.selectList(wrapper);
+        List<BmRoleMenu> bmRoles = bmRoleMenuMapper.selectRoleMenuByRoleId(bmRoleId);
         bmRole.setMenuIds(bmRoles.stream().map(BmRoleMenu::getMenuId).collect(Collectors.toList()));
         return bmRole;
     }

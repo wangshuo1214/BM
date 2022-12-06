@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
 @Mapper
-public interface BmRoleMenuMapper extends BaseMapper<BmRoleMenu>{
+public interface BmRoleMenuMapper {
 
     /**
      * 批量新增角色菜单
@@ -23,4 +23,11 @@ public interface BmRoleMenuMapper extends BaseMapper<BmRoleMenu>{
      * @return 结果
      */
     int deleteRoleMenuByRoleId(String roleId);
+
+    /**
+     * 根据角色ID查询角色菜单关联
+     * @param roleId
+     * @return
+     */
+    List<BmRoleMenu> selectRoleMenuByRoleId(String roleId);
 }

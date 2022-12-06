@@ -4,6 +4,15 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ws.bm.mapper.BmRoleMenuMapper">
 
+    <sql id="selectRoleMenuHql">
+        select role_id, menu_id, create_date, update_date, deleted
+        from bm_role_menu
+    </sql>
+
+    <sql id="deleteFlagHql">
+        and deleted = ${@com.ws.bm.common.constant.BaseConstant@FALSE}
+    </sql>
+
     <insert id="batchAddRoleMenu">
         insert into bm_role_menu(role_id, menu_id,create_date,update_date,deleted) values
         <foreach item="item" index="index" collection="list" separator=",">
@@ -15,4 +24,12 @@
         update bm_role_menu set deleted = ${@com.ws.bm.common.constant.BaseConstant@TRUE} , update_date = sysdate()
         where role_id  = #{roleId}
     </update>
+
+    <select id="selectRoleMenuByRoleId" parameterType="String" resultType="BmRoleMenu">
+        <include refid="selectRoleMenuHql"/>
+        <where>
+            role_id = #{roleId}
+        </where>
+        <include refid="deleteFlagHql"/>
+    </select>
 </mapper>
