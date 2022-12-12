@@ -13,10 +13,7 @@ import com.ws.bm.domain.entity.BmMenu;
 import com.ws.bm.exception.BaseException;
 import com.ws.bm.mapper.BmMenuMapper;
 import com.ws.bm.service.IBmMenuService;
-import org.bouncycastle.jcajce.provider.symmetric.ARC4;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sun.reflect.misc.FieldUtil;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -164,6 +161,11 @@ public class BmMenuServiceImpl extends ServiceImpl<BmMenuMapper, BmMenu> impleme
             }
             return list(wrapper);
         }
+    }
+
+    @Override
+    public List<BmMenu> selectMenuList(BmMenu menu, String userId) {
+        return null;
     }
 
     private List<String> getChildren(List<String> parentIds){

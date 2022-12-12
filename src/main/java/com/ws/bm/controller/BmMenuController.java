@@ -6,6 +6,8 @@ import com.ws.bm.service.IBmMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/menu")
 public class BmMenuController extends BaseController{
@@ -41,5 +43,16 @@ public class BmMenuController extends BaseController{
     @PostMapping("/exclude")
     public Result queryBmMenuExcludeChild(String bmMenuId){
         return success(iBmMenuService.queryBmMenuExcludeChild(bmMenuId));
+    }
+
+    /**
+     * 获取菜单下拉树列表
+     */
+    @GetMapping("/treeselect")
+    public Result treeselect(BmMenu menu)
+    {
+        List<BmMenu> menus = iBmMenuService.selectMenuList(menu, getUserId());
+//        return success(menuService.buildMenuTreeSelect(menus));
+        return success();
     }
 }

@@ -19,4 +19,6 @@ public interface IBmMenuService extends IService<BmMenu> {
 
     List<BmMenu> queryBmMenuExcludeChild(String bmMenuId);
 
+    List<BmMenu> selectMenuList(BmMenu menu, String userId);
+
 }
