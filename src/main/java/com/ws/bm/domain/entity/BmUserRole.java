@@ -8,10 +8,10 @@ import lombok.Data;
 @Data
 @TableName("bm_user_role")
 public class BmUserRole {
-
     @TableId(type = IdType.ASSIGN_UUID)
+    private String id;
+
     private String userId;
 
-    @TableId(type = IdType.ASSIGN_UUID)
     private String roleId;
 }

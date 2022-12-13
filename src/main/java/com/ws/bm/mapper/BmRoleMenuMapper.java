@@ -30,4 +30,7 @@ public interface BmRoleMenuMapper {
      * @return
      */
     List<BmRoleMenu> selectRoleMenuByRoleId(String roleId);
+
+    /**根据角色ID查询菜单树信息*/
+    List<String> selectMenuListByRoleId(String bmRoleId);
 }

@@ -1,9 +1,13 @@
 package com.ws.bm.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @TableName("bm_menu")
@@ -37,4 +41,8 @@ public class BmMenu extends BaseEntity{
     private String icon;
 
     private String remark;
+
+    /** 子菜单 */
+    @TableField(exist = false)
+    private List<BmMenu> children = new ArrayList<BmMenu>();
 }

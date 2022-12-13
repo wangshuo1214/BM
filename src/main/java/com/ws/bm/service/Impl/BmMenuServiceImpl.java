@@ -10,9 +10,12 @@ import com.ws.bm.common.constant.HttpStatus;
 import com.ws.bm.common.utils.InitFieldUtil;
 import com.ws.bm.common.utils.MessageUtil;
 import com.ws.bm.domain.entity.BmMenu;
+import com.ws.bm.domain.model.TreeSelect;
 import com.ws.bm.exception.BaseException;
 import com.ws.bm.mapper.BmMenuMapper;
+import com.ws.bm.mapper.BmRoleMenuMapper;
 import com.ws.bm.service.IBmMenuService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -20,6 +23,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class BmMenuServiceImpl extends ServiceImpl<BmMenuMapper, BmMenu> implements IBmMenuService {
+
+    @Autowired
+    BmRoleMenuMapper roleMenuMapper;
 
     @Override
     public boolean addBmMenu(BmMenu bmMenu) {
@@ -164,8 +170,74 @@ public class BmMenuServiceImpl extends ServiceImpl<BmMenuMapper, BmMenu> impleme
     }
 
     @Override
-    public List<BmMenu> selectMenuList(BmMenu menu, String userId) {
-        return null;
+    public List<BmMenu> buildMenuTree(List<BmMenu> menus) {
+        List<BmMenu> returnList = new ArrayList<>();
+        List<String> tempList = new ArrayList<>();
+        for (BmMenu menu : menus) {
+            tempList.add(menu.getMenuId());
+        }
+        for (Iterator<BmMenu> iterator = menus.iterator(); iterator.hasNext();) {
+            BmMenu menu = (BmMenu) iterator.next();
+            // 如果是顶级节点, 遍历该父节点的所有子节点
+            if (!tempList.contains(menu.getParentId())) {
+                recursionFn(menus, menu);
+                returnList.add(menu);
+            }
+        }
+        if (returnList.isEmpty()) {
+            returnList = menus;
+        }
+        return returnList;
+    }
+
+    @Override
+    public List<TreeSelect> buildMenuTreeSelect(List<BmMenu> menus) {
+        List<BmMenu> menuTrees = buildMenuTree(menus);
+        return menuTrees.stream().map(TreeSelect::new).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<String> selectMenuListByRoleId(String bmRoleId) {
+        return roleMenuMapper.selectMenuListByRoleId(bmRoleId);
+    }
+
+    /**
+     * 递归列表
+     *
+     * @param list
+     * @param t
+     */
+    private void recursionFn(List<BmMenu> list, BmMenu t) {
+        // 得到子节点列表
+        List<BmMenu> childList = getChildList(list, t);
+        t.setChildren(childList);
+        for (BmMenu tChild : childList) {
+            if (hasChild(list, tChild)) {
+                recursionFn(list, tChild);
+            }
+        }
+    }
+
+    /**
+     * 得到子节点列表
+     */
+    private List<BmMenu> getChildList(List<BmMenu> list, BmMenu t) {
+        List<BmMenu> tlist = new ArrayList<>();
+        Iterator<BmMenu> it = list.iterator();
+        while (it.hasNext()) {
+            BmMenu n = (BmMenu) it.next();
+            if (StrUtil.equals(n.getParentId(),t.getMenuId())) {
+                tlist.add(n);
+            }
+        }
+        return tlist;
+    }
+
+    /**
+     * 判断是否有子节点
+     */
+    private boolean hasChild(List<BmMenu> list, BmMenu t) {
+        return getChildList(list, t).size() > 0;
     }
 
     private List<String> getChildren(List<String> parentIds){

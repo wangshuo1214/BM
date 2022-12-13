@@ -6,7 +6,9 @@ import com.ws.bm.service.IBmMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/menu")
@@ -49,10 +51,17 @@ public class BmMenuController extends BaseController{
      * 获取菜单下拉树列表
      */
     @GetMapping("/treeselect")
-    public Result treeselect(BmMenu menu)
-    {
-        List<BmMenu> menus = iBmMenuService.selectMenuList(menu, getUserId());
-//        return success(menuService.buildMenuTreeSelect(menus));
-        return success();
+    public Result treeselect(BmMenu menu) {
+        List<BmMenu> menus = iBmMenuService.queryBmMenu(menu);
+        return success(iBmMenuService.buildMenuTreeSelect(menus));
+    }
+
+    @GetMapping("/roleMenuTreeselect")
+    public Result roleMenuTreeselect(String bmRoleId){
+        List<BmMenu> menus = iBmMenuService.queryBmMenu(new BmMenu());
+        Map<String, Object> result = new HashMap<>();
+        result.put("checkedKeys",iBmMenuService.selectMenuListByRoleId(bmRoleId));
+        result.put("menus",iBmMenuService.buildMenuTreeSelect(menus));
+        return success(result);
     }
 }

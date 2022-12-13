@@ -21,7 +21,7 @@ public class BmRole extends BaseEntity{
 
     private Integer orderNum;
 
-    private Integer menuCheckStrictly;
+    private Boolean menuCheckStrictly;
 
     private String remark;
 

@@ -24,3 +24,7 @@
 2022.12.06
     角色菜单表增create_date、update_date、deleted
     用户角色表create_date、update_date、deleted
+
+2022.12.13
+    角色菜单表增加id主键
+    用户角色表增加id主键

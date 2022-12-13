@@ -10,8 +10,9 @@ import lombok.Data;
 public class BmRoleMenu extends BaseEntity{
 
     @TableId(type = IdType.ASSIGN_UUID)
+    private String id;
+
     private String roleId;
 
-    @TableId(type = IdType.ASSIGN_UUID)
     private String menuId;
 }

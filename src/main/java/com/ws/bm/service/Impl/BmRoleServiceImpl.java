@@ -36,7 +36,7 @@ public class BmRoleServiceImpl extends ServiceImpl<BmRoleMapper, BmRole> impleme
             throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
         }
         //检查角色名称是否重复
-        if (checkNameRepeat(role.getRoleName().trim())){
+        if (checkNameRepeat(role)){
             throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.role.nameRepeat"));
         }
         //初始化基本上属性
@@ -50,6 +50,7 @@ public class BmRoleServiceImpl extends ServiceImpl<BmRoleMapper, BmRole> impleme
             List<BmRoleMenu> bmRoleMenus = new ArrayList<>();
             role.getMenuIds().forEach(menuId -> {
                 BmRoleMenu bmRoleMenu = new BmRoleMenu();
+                bmRoleMenu.setId(UUID.randomUUID().toString());
                 bmRoleMenu.setRoleId(role.getRoleId());
                 bmRoleMenu.setMenuId(menuId);
                 bmRoleMenus.add(bmRoleMenu);
@@ -92,7 +93,7 @@ public class BmRoleServiceImpl extends ServiceImpl<BmRoleMapper, BmRole> impleme
         if (checkField(newBmRole)){
             throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.paramsError"));
         }
-        if (checkNameRepeat(newBmRole.getRoleName().trim())){
+        if (checkNameRepeat(newBmRole)){
             throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.role.nameRepeat"));
         }
         //旧对象
@@ -114,6 +115,7 @@ public class BmRoleServiceImpl extends ServiceImpl<BmRoleMapper, BmRole> impleme
             List<BmRoleMenu> bmRoleMenus = new ArrayList<>();
             newBmRole.getMenuIds().forEach(menuId -> {
                 BmRoleMenu bmRoleMenu = new BmRoleMenu();
+                bmRoleMenu.setId(UUID.randomUUID().toString());
                 bmRoleMenu.setRoleId(newBmRole.getRoleId());
                 bmRoleMenu.setMenuId(menuId);
                 bmRoleMenus.add(bmRoleMenu);
@@ -150,11 +152,14 @@ public class BmRoleServiceImpl extends ServiceImpl<BmRoleMapper, BmRole> impleme
         return false;
     }
 
-    private boolean checkNameRepeat(String roleName){
+    private boolean checkNameRepeat(BmRole role){
         //检查角色名称是否重复
         QueryWrapper<BmRole> wrapper = new QueryWrapper();
-        wrapper.lambda().eq(BmRole::getRoleName,roleName);
+        wrapper.lambda().eq(BmRole::getRoleName,role.getRoleName().trim());
         wrapper.lambda().eq(BmRole::getDeleted, BaseConstant.FALSE);
+        if (StrUtil.isNotEmpty(role.getRoleId())){
+            wrapper.lambda().ne(BmRole::getRoleId,role.getRoleId());
+        }
         if (CollUtil.isNotEmpty(list(wrapper))){
             return true;
         }
