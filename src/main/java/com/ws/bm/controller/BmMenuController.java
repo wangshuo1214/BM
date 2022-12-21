@@ -56,6 +56,9 @@ public class BmMenuController extends BaseController{
         return success(iBmMenuService.buildMenuTreeSelect(menus));
     }
 
+    /**
+     * 获取菜单下拉树列表以及已经选中的菜单
+     */
     @GetMapping("/roleMenuTreeselect")
     public Result roleMenuTreeselect(String bmRoleId){
         List<BmMenu> menus = iBmMenuService.queryBmMenu(new BmMenu());

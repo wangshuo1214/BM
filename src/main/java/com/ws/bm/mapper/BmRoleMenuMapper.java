@@ -25,12 +25,22 @@ public interface BmRoleMenuMapper {
     int deleteRoleMenuByRoleId(String roleId);
 
     /**
+     * 根据角色集合删除角色菜单关联
+     * @param roleIds
+     * @return
+     */
+    int batchDeleteRoleMenuByRoleIds(List<String> roleIds);
+
+    /**
      * 根据角色ID查询角色菜单关联
      * @param roleId
      * @return
      */
     List<BmRoleMenu> selectRoleMenuByRoleId(String roleId);
 
-    /**根据角色ID查询菜单树信息*/
+    /**
+     * 根据角色ID查询关联的菜单id
+     *
+     * */
     List<String> selectMenuListByRoleId(String bmRoleId);
 }

@@ -140,6 +140,9 @@ public class BmRoleServiceImpl extends ServiceImpl<BmRoleMapper, BmRole> impleme
             bmRole.setUpdateDate(new Date());
         });
 
+        //删除角色的同时，删除角色菜单的关联关系
+        bmRoleMenuMapper.batchDeleteRoleMenuByRoleIds(bmRoleIds);
+
         return updateBatchById(bmRoles);
     }
 
