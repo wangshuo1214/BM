@@ -24,7 +24,5 @@ public class BmUser extends BaseEntity{
 
     private String status;
 
-    private String loginIp;
-
     private String remark;
 }

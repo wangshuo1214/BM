@@ -14,6 +14,7 @@ import com.ws.bm.domain.entity.BmRoleMenu;
 import com.ws.bm.exception.BaseException;
 import com.ws.bm.mapper.BmRoleMapper;
 import com.ws.bm.mapper.BmRoleMenuMapper;
+import com.ws.bm.mapper.BmUserRoleMapper;
 import com.ws.bm.service.IBmRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,9 @@ public class BmRoleServiceImpl extends ServiceImpl<BmRoleMapper, BmRole> impleme
 
     @Autowired
     BmRoleMenuMapper bmRoleMenuMapper;
+
+    @Autowired
+    BmUserRoleMapper bmUserRoleMapper;
 
     @Override
     public boolean addBmRole(BmRole role) {
@@ -130,6 +134,10 @@ public class BmRoleServiceImpl extends ServiceImpl<BmRoleMapper, BmRole> impleme
     public boolean deleteBmRole(List<String> bmRoleIds) {
         if (CollUtil.isEmpty(bmRoleIds)){
             throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.paramsError"));
+        }
+
+        if (CollUtil.isNotEmpty(bmUserRoleMapper.queryUserRolesByRoleIds(bmRoleIds))){
+            throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.role.roleRelateUser"));
         }
         List<BmRole> bmRoles = listByIds(bmRoleIds);
         if (CollUtil.isEmpty(bmRoles)){

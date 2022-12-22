@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ws.bm.mapper.BmUserRoleMapper">
+
+    <sql id="selectUserRoleHql">
+        select id,user_id, role_id, create_date, update_date, deleted
+        from bm_user_role
+    </sql>
+    <sql id="deleteFlagHql">
+        and deleted = ${@com.ws.bm.common.constant.BaseConstant@FALSE}
+    </sql>
+
+    <select id="queryUserRolesByRoleIds" parameterType="String" resultType="List">
+        <include refid="selectUserRoleHql"/>
+        <where>
+            role_id in (#{roleIds})
+        </where>
+        <include refid="deleteFlagHql"/>
+    </select>
+
+    <select id="queryUserRolesByUserIds" parameterType="String" resultType="List">
+        <include refid="selectUserRoleHql"/>
+        <where>
+            user_id in (#{userIds})
+        </where>
+        <include refid="deleteFlagHql"/>
+    </select>
+
+</mapper>
