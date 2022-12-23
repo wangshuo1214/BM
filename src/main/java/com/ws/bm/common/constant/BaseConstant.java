@@ -29,4 +29,6 @@ public class BaseConstant {
     /** 重置密码 */
     public static final String BASEPASSWORD = "666888";
 
+    public static final String TOPNODE = "0";
+
 }

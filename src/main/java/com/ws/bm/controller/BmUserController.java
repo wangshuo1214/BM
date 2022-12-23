@@ -1,5 +1,6 @@
 package com.ws.bm.controller;
 
+import com.ws.bm.common.page.PageQuery;
 import com.ws.bm.domain.entity.BmUser;
 import com.ws.bm.domain.model.Result;
 import com.ws.bm.service.IBmUserService;
@@ -24,8 +25,10 @@ public class BmUserController extends BaseController{
     }
 
     @PostMapping("/query")
-    public Result queryBmUser(@RequestBody BmUser bmUser){
-        return success(iBmUserService.queryBmUser(bmUser));
+    public Result queryBmUser(@RequestBody PageQuery pageQuery){
+        startPage(pageQuery);
+        BmUser bmUser = getPageItem(pageQuery,BmUser.class);
+        return success(formatTableData(iBmUserService.queryBmUser(bmUser)));
     }
 
     @PostMapping("/delete")

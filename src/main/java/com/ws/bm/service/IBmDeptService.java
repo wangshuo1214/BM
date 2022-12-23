@@ -2,6 +2,7 @@ package com.ws.bm.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ws.bm.domain.entity.BmDept;
+import com.ws.bm.domain.model.TreeSelect;
 
 import java.util.List;
 
@@ -17,4 +18,6 @@ public interface IBmDeptService extends IService<BmDept> {
     BmDept getBmDept(String bmDeptId);
 
     List<BmDept> queryBmDeptExcludeChild(String bmDeptId);
+
+    TreeSelect getDeptTree();
 }

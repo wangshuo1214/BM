@@ -1,11 +1,14 @@
 package com.ws.bm.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @TableName("bm_dept")
@@ -23,5 +26,9 @@ public class BmDept extends BaseEntity implements Serializable {
     private String leader;
 
     private String phone;
+
+    /** 子菜单 */
+    @TableField(exist = false)
+    private List<BmDept> children;
 
 }

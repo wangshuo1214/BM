@@ -10,6 +10,7 @@ import com.ws.bm.common.constant.HttpStatus;
 import com.ws.bm.common.utils.InitFieldUtil;
 import com.ws.bm.common.utils.MessageUtil;
 import com.ws.bm.domain.entity.BmUser;
+import com.ws.bm.domain.model.TreeSelect;
 import com.ws.bm.exception.BaseException;
 import com.ws.bm.mapper.BmDeptMapper;
 import com.ws.bm.domain.entity.BmDept;
@@ -159,7 +160,7 @@ public class BmDeptServiceImpl extends ServiceImpl<BmDeptMapper, BmDept> impleme
             return list(wrapper);
         }else {
             //查看该部门下的所有子部门
-            List<String> excludeIds = getChildren(Arrays.asList(bmDeptId));
+            List<String> excludeIds = getAllChildren(Arrays.asList(bmDeptId));
             if (CollUtil.isNotEmpty(excludeIds)){
                 wrapper.lambda().notIn(BmDept::getDeptId,excludeIds);
             }
@@ -168,15 +169,44 @@ public class BmDeptServiceImpl extends ServiceImpl<BmDeptMapper, BmDept> impleme
 
     }
 
+    @Override
+    public TreeSelect getDeptTree() {
+        //获取顶级节点
+        QueryWrapper<BmDept> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(BmDept::getDeleted,BaseConstant.FALSE);
+        wrapper.lambda().eq(BmDept::getParentId,BaseConstant.TOPNODE);
+        List<BmDept> toplist =  list(wrapper);
+        if (CollUtil.isEmpty(toplist) || toplist.size() > 1){
+            throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.dept.topNodeError"));
+        }
+        BmDept topDept = toplist.get(0);
+        buildDeptTree(topDept);
+        return new TreeSelect(topDept);
+    }
+
+    //递归，建立子树形结构
+    public void buildDeptTree(BmDept pNode){
+        QueryWrapper<BmDept> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(BmDept::getDeleted,BaseConstant.FALSE);
+        wrapper.lambda().eq(BmDept::getParentId,pNode.getDeptId());
+        List<BmDept> chilDepts = list(wrapper);
+        if (CollUtil.isNotEmpty(chilDepts)){
+            for(BmDept deptNode : chilDepts) {
+                buildDeptTree(deptNode);
+            }
+        }
+        pNode.setChildren(chilDepts);
+    }
+
     //递归查询出该部门的所有子节点
-    private List<String> getChildren(List<String> parentIds){
+    private List<String> getAllChildren(List<String> parentIds){
         QueryWrapper<BmDept> wrapper = new QueryWrapper<>();
         wrapper.lambda().select(BmDept::getDeptId);
         wrapper.lambda().eq(BmDept::getDeleted,BaseConstant.FALSE);
         wrapper.lambda().in(BmDept::getParentId,parentIds);
         List<String> ids = list(wrapper).stream().map(BmDept::getDeptId).collect(Collectors.toList());
         if (CollUtil.isNotEmpty(ids)){
-            ids.addAll(getChildren(ids));
+            ids.addAll(getAllChildren(ids));
             return ids;
         }else {
             return new ArrayList<>();

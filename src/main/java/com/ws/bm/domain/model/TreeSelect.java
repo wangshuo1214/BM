@@ -1,6 +1,7 @@
 package com.ws.bm.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.ws.bm.domain.entity.BmDept;
 import com.ws.bm.domain.entity.BmMenu;
 import lombok.Data;
 
@@ -20,10 +21,15 @@ public class TreeSelect {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<TreeSelect> children;
 
-    public TreeSelect(BmMenu menu)
-    {
+    public TreeSelect(BmMenu menu) {
         this.id = menu.getMenuId();
         this.name = menu.getMenuName();
         this.children = menu.getChildren().stream().map(TreeSelect::new).collect(Collectors.toList());
+    }
+
+    public TreeSelect(BmDept dept) {
+        this.id = dept.getDeptId();
+        this.name = dept.getDeptName();
+        this.children = dept.getChildren().stream().map(TreeSelect::new).collect(Collectors.toList());
     }
 }

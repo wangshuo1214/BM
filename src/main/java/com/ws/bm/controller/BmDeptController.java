@@ -42,4 +42,9 @@ public class BmDeptController extends BaseController {
     public Result queryBmDeptExcludeChild(String bmDeptId){
         return success(iBmDeptService.queryBmDeptExcludeChild(bmDeptId));
     }
+
+    @GetMapping("/deptTree")
+    public Result getDeptTree(){
+        return success(iBmDeptService.getDeptTree());
+    }
 }
