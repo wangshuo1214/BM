@@ -28,15 +28,15 @@ public class InitFieldUtil {
             logger.info("初始化id属性失败，报错信息为{}", e.getMessage());
         }
         //初始化状态
-        try {
-            Field status = clazz.getDeclaredField("status");
-            if (ObjectUtil.isNotEmpty(status)){
-                status.setAccessible(true);
-                status.set(t,BaseConstant.TRUE);
-            }
-        }catch (Exception e){
-            logger.info("初始化status属性失败，报错信息为{}",e.getMessage());
-        }
+//        try {
+//            Field status = clazz.getDeclaredField("status");
+//            if (ObjectUtil.isNotEmpty(status)){
+//                status.setAccessible(true);
+//                status.set(t,BaseConstant.TRUE);
+//            }
+//        }catch (Exception e){
+//            logger.info("初始化status属性失败，报错信息为{}",e.getMessage());
+//        }
 
         try{
             //初始化创建时间

@@ -2,9 +2,13 @@ package com.ws.bm.controller;
 
 import com.ws.bm.domain.model.Result;
 import com.ws.bm.domain.entity.BmDept;
+import com.ws.bm.domain.model.TreeSelect;
 import com.ws.bm.service.IBmDeptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/dept")
@@ -45,6 +49,8 @@ public class BmDeptController extends BaseController {
 
     @GetMapping("/deptTree")
     public Result getDeptTree(){
-        return success(iBmDeptService.getDeptTree());
+        List<TreeSelect> result = new ArrayList<>();
+        result.add(iBmDeptService.getDeptTree());
+        return success(result);
     }
 }

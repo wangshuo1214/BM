@@ -10,23 +10,28 @@ import com.ws.bm.common.constant.HttpStatus;
 import com.ws.bm.common.utils.InitFieldUtil;
 import com.ws.bm.common.utils.MessageUtil;
 import com.ws.bm.common.utils.PasswordUtil;
+import com.ws.bm.domain.entity.BmDept;
 import com.ws.bm.exception.BaseException;
+import com.ws.bm.mapper.BmDeptMapper;
 import com.ws.bm.mapper.BmUserMapper;
 import com.ws.bm.domain.entity.BmUser;
 import com.ws.bm.mapper.BmUserRoleMapper;
+import com.ws.bm.service.IBmDeptService;
 import com.ws.bm.service.IBmUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class BmUserServiceImpl extends ServiceImpl<BmUserMapper, BmUser> implements IBmUserService {
 
     @Autowired
     private BmUserRoleMapper bmUserRoleMapper;
+
+    @Autowired
+    private BmDeptMapper bmDeptMapper;
 
     @Override
     public boolean addBmUser(BmUser bmUser) {
@@ -52,7 +57,10 @@ public class BmUserServiceImpl extends ServiceImpl<BmUserMapper, BmUser> impleme
         QueryWrapper<BmUser> wrapper = new QueryWrapper<>();
         wrapper.lambda().eq(BmUser::getDeleted,BaseConstant.FALSE);
         if (StrUtil.isNotEmpty(bmUser.getDeptId())){
-            wrapper.lambda().eq(BmUser::getDeptId,bmUser.getDeptId());
+            //查找出该部门的所有子部门
+            List<String> deptAllChildren = getDeptAllChildren(Arrays.asList(bmUser.getDeptId()));
+            deptAllChildren.add(bmUser.getDeptId());
+            wrapper.lambda().in(BmUser::getDeptId,deptAllChildren);
         }
         if (StrUtil.isNotEmpty(bmUser.getUserName())){
             wrapper.lambda().like(BmUser::getUserName,bmUser.getUserName());
@@ -135,6 +143,21 @@ public class BmUserServiceImpl extends ServiceImpl<BmUserMapper, BmUser> impleme
             bmUser.setUpdateDate(new Date());
         });
         return updateBatchById(bmUsers);
+    }
+
+    //递归查询出该部门的所有子节点
+    public List<String> getDeptAllChildren(List<String> parentIds){
+        QueryWrapper<BmDept> wrapper = new QueryWrapper<>();
+        wrapper.lambda().select(BmDept::getDeptId);
+        wrapper.lambda().eq(BmDept::getDeleted,BaseConstant.FALSE);
+        wrapper.lambda().in(BmDept::getParentId,parentIds);
+        List<String> ids = bmDeptMapper.selectList(wrapper).stream().map(BmDept::getDeptId).collect(Collectors.toList());
+        if (CollUtil.isNotEmpty(ids)){
+            ids.addAll(getDeptAllChildren(ids));
+            return ids;
+        }else {
+            return new ArrayList<>();
+        }
     }
 
     private boolean updateFlag(BmUser newObj, BmUser oldObj){

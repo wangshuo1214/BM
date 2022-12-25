@@ -14,6 +14,7 @@ import com.ws.bm.domain.model.TreeSelect;
 import com.ws.bm.exception.BaseException;
 import com.ws.bm.mapper.BmDeptMapper;
 import com.ws.bm.domain.entity.BmDept;
+import com.ws.bm.mapper.BmUserMapper;
 import com.ws.bm.service.IBmDeptService;
 import com.ws.bm.service.IBmUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 public class BmDeptServiceImpl extends ServiceImpl<BmDeptMapper, BmDept> implements IBmDeptService {
 
     @Autowired
-    private IBmUserService iBmUserService;
+    private BmUserMapper bmUserMapper;
 
     @Override
     public boolean addBmDept(BmDept bmDept) {
@@ -88,7 +89,7 @@ public class BmDeptServiceImpl extends ServiceImpl<BmDeptMapper, BmDept> impleme
         //如果部门下面有用户，那么不能删除
         QueryWrapper<BmUser> userWrapper = new QueryWrapper<>();
         userWrapper.lambda().eq(BmUser::getDeptId,bmDeptId);
-        List<BmUser> userList = iBmUserService.list(userWrapper);
+        List<BmUser> userList = bmUserMapper.selectList(userWrapper);
         if(CollUtil.isNotEmpty(userList)){
             throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.dept.hasUser"));
         }
@@ -199,7 +200,7 @@ public class BmDeptServiceImpl extends ServiceImpl<BmDeptMapper, BmDept> impleme
     }
 
     //递归查询出该部门的所有子节点
-    private List<String> getAllChildren(List<String> parentIds){
+    public List<String> getAllChildren(List<String> parentIds){
         QueryWrapper<BmDept> wrapper = new QueryWrapper<>();
         wrapper.lambda().select(BmDept::getDeptId);
         wrapper.lambda().eq(BmDept::getDeleted,BaseConstant.FALSE);
