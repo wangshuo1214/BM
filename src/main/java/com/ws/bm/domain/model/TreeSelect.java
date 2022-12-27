@@ -15,7 +15,7 @@ public class TreeSelect {
     private String id;
 
     /** 节点名称 */
-    private String name;
+    private String label;
 
     /** 子节点 */
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -23,13 +23,13 @@ public class TreeSelect {
 
     public TreeSelect(BmMenu menu) {
         this.id = menu.getMenuId();
-        this.name = menu.getMenuName();
+        this.label = menu.getMenuName();
         this.children = menu.getChildren().stream().map(TreeSelect::new).collect(Collectors.toList());
     }
 
     public TreeSelect(BmDept dept) {
         this.id = dept.getDeptId();
-        this.name = dept.getDeptName();
+        this.label = dept.getDeptName();
         this.children = dept.getChildren().stream().map(TreeSelect::new).collect(Collectors.toList());
     }
 }

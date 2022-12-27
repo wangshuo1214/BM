@@ -5,10 +5,7 @@ import com.ws.bm.domain.entity.BmUser;
 import com.ws.bm.domain.model.Result;
 import com.ws.bm.service.IBmUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -41,7 +38,7 @@ public class BmUserController extends BaseController{
         return computeResult(iBmUserService.updateBmUser(bmUser));
     }
 
-    @PostMapping("/get")
+    @GetMapping("/get")
     public Result getBmUser(String bmUserId){
         return success(iBmUserService.getBmUser(bmUserId));
     }
