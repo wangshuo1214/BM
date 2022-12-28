@@ -3,6 +3,7 @@ package com.ws.bm.service.Impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.setting.yaml.YamlUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ws.bm.common.constant.BaseConstant;
@@ -71,7 +72,14 @@ public class BmUserServiceImpl extends ServiceImpl<BmUserMapper, BmUser> impleme
         if (StrUtil.isNotEmpty(bmUser.getStatus())){
             wrapper.lambda().eq(BmUser::getStatus,bmUser.getStatus());
         }
-        return list(wrapper);
+        List<BmUser> result = list(wrapper);
+        if (CollUtil.isNotEmpty(result)){
+            result.stream().forEach(user ->{
+                BmDept bmDept = bmDeptMapper.selectById(user.getDeptId());
+                user.setDeptName(bmDept.getDeptName());
+            });
+        }
+        return result;
     }
 
     @Override
@@ -99,16 +107,10 @@ public class BmUserServiceImpl extends ServiceImpl<BmUserMapper, BmUser> impleme
         if (checkFiled(newBmUser)){
             throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
         }
-        QueryWrapper<BmUser> wrapper = new QueryWrapper<>();
-        wrapper.lambda().eq(BmUser::getUserName,newBmUser.getUserName());
-        wrapper.lambda().eq(BmUser::getDeleted,BaseConstant.FALSE);
-        if (CollUtil.isNotEmpty(list(wrapper))){
-            throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.user.nameRepeat"));
-        }
         BmUser oldBmUser = getById(newBmUser.getUserId());
-        if (updateFlag(newBmUser,oldBmUser)){
+        if (!updateFlag(newBmUser,oldBmUser)){
             oldBmUser.setRealName(newBmUser.getRealName());
-            oldBmUser.setDeleted(newBmUser.getDeptId());
+            oldBmUser.setDeptId(newBmUser.getDeptId());
             oldBmUser.setStatus(newBmUser.getStatus());
             oldBmUser.setRemark(newBmUser.getRemark());
             oldBmUser.setUpdateDate(new Date());
@@ -129,20 +131,35 @@ public class BmUserServiceImpl extends ServiceImpl<BmUserMapper, BmUser> impleme
     }
 
     @Override
-    public boolean resetBmUserPassword(List<String> bmUserIds) {
-        if (CollUtil.isEmpty(bmUserIds)){
+    public boolean resetBmUserPassword(String bmUserId) {
+        if (StrUtil.isEmpty(bmUserId)){
             throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
         }
-        List<BmUser> bmUsers = listByIds(bmUserIds);
-        if(CollUtil.isEmpty(bmUsers)){
+        BmUser bmUser = getById(bmUserId);
+        if(ObjectUtil.isEmpty(bmUser)){
             throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
         }
 
-        bmUsers.forEach(bmUser -> {
-            bmUser.setPassword(PasswordUtil.pwdEncrypt(BaseConstant.BASEPASSWORD));
-            bmUser.setUpdateDate(new Date());
-        });
-        return updateBatchById(bmUsers);
+        bmUser.setPassword(PasswordUtil.pwdEncrypt(BaseConstant.BASEPASSWORD));
+        bmUser.setUpdateDate(new Date());
+
+        return updateById(bmUser);
+    }
+
+    @Override
+    public boolean changeBmUserStatus(String bmUserId, String status) {
+        if (StrUtil.hasEmpty(bmUserId,status)){
+            throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
+        }
+        if (!StrUtil.equals(status,BaseConstant.TRUE) && !StrUtil.equals(status,BaseConstant.FALSE)){
+            throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.user.statusException"));
+        }
+        BmUser bmUser = getById(bmUserId);
+        if (ObjectUtil.isEmpty(bmUser) || StrUtil.equals(bmUser.getDeleted(),BaseConstant.TRUE)){
+            throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
+        }
+        bmUser.setStatus(status);
+        return updateById(bmUser);
     }
 
     //递归查询出该部门的所有子节点

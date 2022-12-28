@@ -29,7 +29,7 @@ public class BmUserController extends BaseController{
     }
 
     @PostMapping("/delete")
-    public Result deleteBmUser(List<String> bmUserIds){
+    public Result deleteBmUser(@RequestBody List<String> bmUserIds){
         return computeResult(iBmUserService.deleteBmUser(bmUserIds));
     }
 
@@ -44,7 +44,12 @@ public class BmUserController extends BaseController{
     }
 
     @PostMapping("/reset")
-    public Result resetBmUserPassword(@RequestBody List<String> bmUserIds){
-        return computeResult(iBmUserService.resetBmUserPassword(bmUserIds));
+    public Result resetBmUserPassword(String bmUserId){
+        return computeResult(iBmUserService.resetBmUserPassword(bmUserId));
+    }
+
+    @PostMapping("/changeStatus")
+    public Result changeBmUserStatus(String bmUserId, String status){
+        return computeResult(iBmUserService.changeBmUserStatus(bmUserId,status));
     }
 }
