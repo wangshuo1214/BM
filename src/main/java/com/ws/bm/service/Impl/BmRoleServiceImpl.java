@@ -11,6 +11,7 @@ import com.ws.bm.common.utils.InitFieldUtil;
 import com.ws.bm.common.utils.MessageUtil;
 import com.ws.bm.domain.entity.BmRole;
 import com.ws.bm.domain.entity.BmRoleMenu;
+import com.ws.bm.domain.entity.BmUserRole;
 import com.ws.bm.exception.BaseException;
 import com.ws.bm.mapper.BmRoleMapper;
 import com.ws.bm.mapper.BmRoleMenuMapper;
@@ -152,6 +153,30 @@ public class BmRoleServiceImpl extends ServiceImpl<BmRoleMapper, BmRole> impleme
         bmRoleMenuMapper.batchDeleteRoleMenuByRoleIds(bmRoleIds);
 
         return updateBatchById(bmRoles);
+    }
+
+    @Override
+    public int allocatedUsers(BmRole bmRole) {
+        if (ObjectUtil.isEmpty(bmRole) || StrUtil.isEmpty(bmRole.getRoleId()) || CollUtil.isEmpty(bmRole.getUserIds())){
+            throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.paramsError"));
+        }
+        List<BmUserRole> urs = new ArrayList<>();
+        bmRole.getUserIds().forEach(item -> {
+            BmUserRole ur = new BmUserRole();
+            InitFieldUtil.initField(ur);
+            ur.setRoleId(bmRole.getRoleId());
+            ur.setUserId(item);
+            urs.add(ur);
+        });
+        return bmUserRoleMapper.allocateUsers(urs);
+    }
+
+    @Override
+    public int unAllocatedUsers(BmRole bmRole) {
+        if (ObjectUtil.isEmpty(bmRole) || StrUtil.isEmpty(bmRole.getRoleId()) || CollUtil.isEmpty(bmRole.getUserIds())){
+            throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.paramsError"));
+        }
+        return bmUserRoleMapper.unAllocateUsers(bmRole);
     }
 
     private boolean checkField(BmRole role){

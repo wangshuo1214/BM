@@ -22,4 +22,6 @@ public interface IBmUserService extends IService<BmUser> {
     boolean changeBmUserStatus(String bmUserId, String status);
 
     List<BmUser> queryAllocatedUserList(BmUser bmUser);
+
+    List<BmUser> queryUnAllocatedUserList(BmUser bmUser);
 }

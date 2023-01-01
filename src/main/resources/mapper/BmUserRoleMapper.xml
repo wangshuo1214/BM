@@ -33,6 +33,24 @@
         <include refid="deleteFlagHql"/>
     </select>
 
+    <select id="queryUnUserIdsByRoleId" parameterType="String" resultType="String">
+        select user_id from bm_user_role where role_id != #{roleId}
+        <include refid="deleteFlagHql"/>
+    </select>
 
+    <insert id="allocatedUsers">
+        insert into bm_user_role (id,user_id,role_id,create_date,update_date,deleted) values
+        <foreach item="item" index="index" collection="list" separator="," >
+            (#{item.id},#{item.userId},#{item.roleId},#{item.createDate},#{item.updateDate},#{item.deleted})
+        </foreach>
+    </insert>
+
+    <update id="unAllocatedUsers" parameterType="String">
+        update bm_user_role set deleted = ${@com.ws.bm.common.constant.BaseConstant@TRUE} , update_date = sysdate()
+        where role_id = #{roleId} and userId =
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </update>
 
 </mapper>

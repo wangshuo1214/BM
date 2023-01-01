@@ -2,7 +2,6 @@ package com.ws.bm.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ws.bm.domain.entity.BmRole;
-import com.ws.bm.domain.entity.BmUser;
 
 import java.util.List;
 
@@ -17,4 +16,8 @@ public interface IBmRoleService extends IService<BmRole> {
     boolean updateBmRole(BmRole role);
 
     boolean deleteBmRole(List<String> bmRoleIds);
+
+    int allocatedUsers(BmRole bmRole);
+
+    int unAllocatedUsers(BmRole bmRole);
 }

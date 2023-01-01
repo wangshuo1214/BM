@@ -54,9 +54,16 @@ public class BmUserController extends BaseController{
     }
 
     @PostMapping("/allocated")
-    public Result queryAllocatedUserList(@RequestBody PageQuery pageQuery){
+    public Result queryAlllocatedUserList(@RequestBody PageQuery pageQuery){
         startPage(pageQuery);
         BmUser bmUser = getPageItem(pageQuery,BmUser.class);
         return success(formatTableData(iBmUserService.queryAllocatedUserList(bmUser)));
+    }
+
+    @PostMapping("/unAllocated")
+    public Result queryUnlocatedUserList(@RequestBody PageQuery pageQuery){
+        startPage(pageQuery);
+        BmUser bmUser = getPageItem(pageQuery,BmUser.class);
+        return success(formatTableData(iBmUserService.queryUnAllocatedUserList(bmUser)));
     }
 }

@@ -27,4 +27,7 @@ public class BmRole extends BaseEntity{
 
     @TableField(exist=false)
     private List<String> menuIds;
+
+    @TableField(exist=false)
+    private List<String> userIds;
 }

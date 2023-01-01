@@ -42,4 +42,15 @@ public class BmRoleController extends BaseController {
     public Result deleteBmRole(@RequestBody List<String> bmRoleIds){
         return computeResult(iBmRoleService.deleteBmRole(bmRoleIds));
     }
+
+    @PostMapping("/allocate")
+    public Result allocatedUsers(@RequestBody BmRole bmRole){
+        return computeResult(iBmRoleService.allocatedUsers(bmRole));
+    }
+
+    @PostMapping("/unAllocate")
+    public Result unAllocatedUsers(@RequestBody BmRole bmRole){
+        return computeResult(iBmRoleService.unAllocatedUsers(bmRole));
+    }
+
 }
