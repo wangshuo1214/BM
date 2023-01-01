@@ -162,6 +162,27 @@ public class BmUserServiceImpl extends ServiceImpl<BmUserMapper, BmUser> impleme
         return updateById(bmUser);
     }
 
+    @Override
+    public List<BmUser> queryAllocatedUserList(BmUser bmUser) {
+        if(ObjectUtil.isEmpty(bmUser) || StrUtil.isEmpty(bmUser.getRoleId())){
+            throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
+        }
+        List<String> userIds = bmUserRoleMapper.queryUserIdsByRoleId(bmUser.getRoleId());
+        if (CollUtil.isEmpty(userIds)){
+            return new ArrayList<>();
+        }
+        QueryWrapper<BmUser> wrapper = new QueryWrapper<>();
+        wrapper.lambda().in(BmUser::getUserId,userIds);
+        if (StrUtil.isNotEmpty(bmUser.getUserName())){
+            wrapper.lambda().like(BmUser::getUserName,bmUser.getUserName());
+        }
+        if (StrUtil.isNotEmpty(bmUser.getRealName())){
+            wrapper.lambda().like(BmUser::getRealName,bmUser.getRealName());
+        }
+        wrapper.lambda().eq(BmUser::getDeleted,BaseConstant.FALSE);
+        return list(wrapper);
+    }
+
     //递归查询出该部门的所有子节点
     public List<String> getDeptAllChildren(List<String> parentIds){
         QueryWrapper<BmDept> wrapper = new QueryWrapper<>();

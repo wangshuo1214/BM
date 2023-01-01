@@ -20,4 +20,6 @@ public interface IBmUserService extends IService<BmUser> {
     boolean resetBmUserPassword(String bmUserId);
 
     boolean changeBmUserStatus(String bmUserId, String status);
+
+    List<BmUser> queryAllocatedUserList(BmUser bmUser);
 }

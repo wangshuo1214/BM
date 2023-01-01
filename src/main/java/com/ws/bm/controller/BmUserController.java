@@ -52,4 +52,11 @@ public class BmUserController extends BaseController{
     public Result changeBmUserStatus(String bmUserId, String status){
         return computeResult(iBmUserService.changeBmUserStatus(bmUserId,status));
     }
+
+    @PostMapping("/allocated")
+    public Result queryAllocatedUserList(@RequestBody PageQuery pageQuery){
+        startPage(pageQuery);
+        BmUser bmUser = getPageItem(pageQuery,BmUser.class);
+        return success(formatTableData(iBmUserService.queryAllocatedUserList(bmUser)));
+    }
 }

@@ -2,6 +2,7 @@ package com.ws.bm.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ws.bm.domain.entity.BmRole;
+import com.ws.bm.domain.entity.BmUser;
 
 import java.util.List;
 

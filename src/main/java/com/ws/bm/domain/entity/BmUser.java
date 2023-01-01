@@ -29,4 +29,8 @@ public class BmUser extends BaseEntity{
     private String status;
 
     private String remark;
+
+    //用于角色页面授权用户使用
+    @TableField(exist = false)
+    private String roleId;
 }
