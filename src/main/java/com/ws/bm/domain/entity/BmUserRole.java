@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @TableName("bm_user_role")
-public class BmUserRole {
+public class BmUserRole extends BaseEntity{
     @TableId(type = IdType.ASSIGN_UUID)
     private String id;
 

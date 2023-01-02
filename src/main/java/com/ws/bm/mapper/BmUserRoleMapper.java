@@ -31,13 +31,6 @@ public interface BmUserRoleMapper {
     List<String> queryUserIdsByRoleId(String roleId);
 
     /**
-     * 根据角色id获取没关联的用户id集合
-     * @param roleId
-     * @return
-     */
-    List<String> queryUnUserIdsByRoleId(String roleId);
-
-    /**
      * 角色授权用户
      * @param bmUserRoles
      * @return

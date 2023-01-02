@@ -180,7 +180,14 @@ public class BmUserServiceImpl extends ServiceImpl<BmUserMapper, BmUser> impleme
             wrapper.lambda().like(BmUser::getRealName,bmUser.getRealName());
         }
         wrapper.lambda().eq(BmUser::getDeleted,BaseConstant.FALSE);
-        return list(wrapper);
+        List<BmUser> results = list(wrapper);
+        if(CollUtil.isNotEmpty(results)){
+            results.stream().forEach(user ->{
+                BmDept bmDept = bmDeptMapper.selectById(user.getDeptId());
+                user.setDeptName(bmDept.getDeptName());
+            });
+        }
+        return results;
     }
 
     @Override
@@ -188,12 +195,12 @@ public class BmUserServiceImpl extends ServiceImpl<BmUserMapper, BmUser> impleme
         if(ObjectUtil.isEmpty(bmUser) || StrUtil.isEmpty(bmUser.getRoleId())){
             throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
         }
-        List<String> userIds = bmUserRoleMapper.queryUnUserIdsByRoleId(bmUser.getRoleId());
+        List<String> userIds = bmUserRoleMapper.queryUserIdsByRoleId(bmUser.getRoleId());
         if (CollUtil.isEmpty(userIds)){
             return new ArrayList<>();
         }
         QueryWrapper<BmUser> wrapper = new QueryWrapper<>();
-        wrapper.lambda().in(BmUser::getUserId,userIds);
+        wrapper.lambda().notIn(BmUser::getUserId,userIds);
         if (StrUtil.isNotEmpty(bmUser.getUserName())){
             wrapper.lambda().like(BmUser::getUserName,bmUser.getUserName());
         }
@@ -201,7 +208,14 @@ public class BmUserServiceImpl extends ServiceImpl<BmUserMapper, BmUser> impleme
             wrapper.lambda().like(BmUser::getRealName,bmUser.getRealName());
         }
         wrapper.lambda().eq(BmUser::getDeleted,BaseConstant.FALSE);
-        return list(wrapper);
+        List<BmUser> results = list(wrapper);
+        if(CollUtil.isNotEmpty(results)){
+            results.stream().forEach(user ->{
+                BmDept bmDept = bmDeptMapper.selectById(user.getDeptId());
+                user.setDeptName(bmDept.getDeptName());
+            });
+        }
+        return results;
     }
 
     //递归查询出该部门的所有子节点

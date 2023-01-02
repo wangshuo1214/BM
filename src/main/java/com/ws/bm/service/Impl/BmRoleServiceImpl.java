@@ -162,6 +162,9 @@ public class BmRoleServiceImpl extends ServiceImpl<BmRoleMapper, BmRole> impleme
         }
         List<BmUserRole> urs = new ArrayList<>();
         bmRole.getUserIds().forEach(item -> {
+            if (StrUtil.isEmpty(item)){
+                throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.paramsError"));
+            }
             BmUserRole ur = new BmUserRole();
             InitFieldUtil.initField(ur);
             ur.setRoleId(bmRole.getRoleId());
