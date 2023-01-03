@@ -33,6 +33,11 @@
         <include refid="deleteFlagHql"/>
     </select>
 
+    <select id="queryRoleIdsByUserId" parameterType="String" resultType="String">
+        select role_id from bm_user_role where user_id = #{userId}
+        <include refid="deleteFlagHql"/>
+    </select>
+
     <insert id="allocateUsers">
         insert into bm_user_role (id,user_id,role_id,create_date,update_date,deleted) values
         <foreach item="item" index="index" collection="list" separator="," >

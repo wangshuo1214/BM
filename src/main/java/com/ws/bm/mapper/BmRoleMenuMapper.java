@@ -42,5 +42,12 @@ public interface BmRoleMenuMapper {
      * 根据角色ID查询关联的菜单id
      *
      * */
-    List<String> selectMenuListByRoleId(String bmRoleId);
+    List<String> selectMenuIdsByRoleId(String bmRoleId);
+
+    /**
+     * 根据角色id集合查询菜单集合
+     * @param bmRoleIds
+     * @return
+     */
+    List<String> selectMenuIdsByRoleIds(List<String> bmRoleIds);
 }

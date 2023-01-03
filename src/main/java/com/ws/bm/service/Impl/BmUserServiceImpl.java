@@ -196,11 +196,10 @@ public class BmUserServiceImpl extends ServiceImpl<BmUserMapper, BmUser> impleme
             throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
         }
         List<String> userIds = bmUserRoleMapper.queryUserIdsByRoleId(bmUser.getRoleId());
-        if (CollUtil.isEmpty(userIds)){
-            return new ArrayList<>();
-        }
         QueryWrapper<BmUser> wrapper = new QueryWrapper<>();
-        wrapper.lambda().notIn(BmUser::getUserId,userIds);
+        if (CollUtil.isNotEmpty(userIds)){
+            wrapper.lambda().notIn(BmUser::getUserId,userIds);
+        }
         if (StrUtil.isNotEmpty(bmUser.getUserName())){
             wrapper.lambda().like(BmUser::getUserName,bmUser.getUserName());
         }

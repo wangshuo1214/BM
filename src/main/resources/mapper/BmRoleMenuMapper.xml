@@ -33,9 +33,18 @@
         <include refid="deleteFlagHql"/>
     </select>
 
-    <select id="selectMenuListByRoleId" parameterType="String" resultType="String">
+    <select id="selectMenuIdsByRoleId" parameterType="String" resultType="String">
         select menu_id from bm_role_menu
         where role_id = #{bmRoleId} and deleted = ${@com.ws.bm.common.constant.BaseConstant@FALSE}
+    </select>
+
+    <select id="selectMenuIdsByRoleIds" parameterType="String" resultType="String">
+        select menu_id from bm_role_menu
+        where role_id in
+        <foreach collection="bmRoleIds" item="bmRoleId" open="(" separator="," close=")">
+            #{bmRoleId}
+        </foreach>
+         and deleted = ${@com.ws.bm.common.constant.BaseConstant@FALSE}
     </select>
 
     <update id="batchDeleteRoleMenuByRoleIds" parameterType="String">

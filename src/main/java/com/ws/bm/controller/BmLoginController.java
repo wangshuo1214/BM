@@ -2,21 +2,27 @@ package com.ws.bm.controller;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.ws.bm.domain.entity.BmMenu;
 import com.ws.bm.domain.model.Result;
 import com.ws.bm.domain.entity.BmUser;
 import com.ws.bm.domain.model.LoginBody;
 import com.ws.bm.service.IBmLoginService;
+import com.ws.bm.service.IBmMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
 @RequestMapping
 public class BmLoginController extends BaseController {
 
     @Autowired
-    private IBmLoginService iBmLoginService;
+    IBmLoginService iBmLoginService;
+
+    @Autowired
+    IBmMenuService iBmMenuService;
 
     @PostMapping("/login")
     public Result login(@RequestBody LoginBody loginBody){
@@ -51,6 +57,11 @@ public class BmLoginController extends BaseController {
         }
 
         return error();
+    }
+
+    @GetMapping("/getRouters")
+    public Result GetRouters(){
+        return success(iBmMenuService.queryMenuTreeByUserId(getBmUser()));
     }
 
 }

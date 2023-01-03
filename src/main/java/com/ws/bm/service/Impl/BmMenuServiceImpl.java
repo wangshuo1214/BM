@@ -10,10 +10,12 @@ import com.ws.bm.common.constant.HttpStatus;
 import com.ws.bm.common.utils.InitFieldUtil;
 import com.ws.bm.common.utils.MessageUtil;
 import com.ws.bm.domain.entity.BmMenu;
+import com.ws.bm.domain.entity.BmUser;
 import com.ws.bm.domain.model.TreeSelect;
 import com.ws.bm.exception.BaseException;
 import com.ws.bm.mapper.BmMenuMapper;
 import com.ws.bm.mapper.BmRoleMenuMapper;
+import com.ws.bm.mapper.BmUserRoleMapper;
 import com.ws.bm.service.IBmMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,9 @@ public class BmMenuServiceImpl extends ServiceImpl<BmMenuMapper, BmMenu> impleme
 
     @Autowired
     BmRoleMenuMapper roleMenuMapper;
+
+    @Autowired
+    BmUserRoleMapper userRoleMapper;
 
     @Override
     public boolean addBmMenu(BmMenu bmMenu) {
@@ -198,7 +203,27 @@ public class BmMenuServiceImpl extends ServiceImpl<BmMenuMapper, BmMenu> impleme
 
     @Override
     public List<String> selectMenuListByRoleId(String bmRoleId) {
-        return roleMenuMapper.selectMenuListByRoleId(bmRoleId);
+        return roleMenuMapper.selectMenuIdsByRoleId(bmRoleId);
+    }
+
+    @Override
+    public List<BmMenu> queryMenuTreeByUserId(BmUser bmUser) {
+        if (ObjectUtil.isEmpty(bmUser)){
+            throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.paramsError"));
+        }
+        List<String> roleIds = userRoleMapper.queryRoleIdsByUserId(bmUser.getUserId());
+        if (CollUtil.isNotEmpty(roleIds)){
+            List<String> menuIds = roleMenuMapper.selectMenuIdsByRoleIds(roleIds);
+            if (CollUtil.isNotEmpty(menuIds)){
+                List<BmMenu> bmMenus = listByIds(menuIds);
+                bmMenus.stream().filter(bmMenu -> bmMenu.getMenuType() != "B").collect(Collectors.toList());
+                if (CollUtil.isNotEmpty(bmMenus)){
+                    return buildMenuTree(bmMenus);
+                }
+            }
+        }
+        return new ArrayList<>();
+
     }
 
     /**

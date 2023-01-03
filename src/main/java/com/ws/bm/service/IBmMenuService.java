@@ -2,6 +2,7 @@ package com.ws.bm.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ws.bm.domain.entity.BmMenu;
+import com.ws.bm.domain.entity.BmUser;
 import com.ws.bm.domain.model.TreeSelect;
 
 import java.util.List;
@@ -28,5 +29,12 @@ public interface IBmMenuService extends IService<BmMenu> {
 
     /**根据角色ID查询菜单树信息*/
     List<String> selectMenuListByRoleId(String bmRoleId);
+
+    /**
+     * 根据用户id查询菜单树
+     * @param bmUser
+     * @return
+     */
+    List<BmMenu> queryMenuTreeByUserId(BmUser bmUser);
 
 }
