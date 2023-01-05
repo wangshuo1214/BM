@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ws.bm.mapper.BmRoleMenuMapper">
+<mapper namespace="com.ws.bm.mapper.system.BmRoleMenuMapper">
 
     <sql id="selectRoleMenuHql">
         select id,role_id, menu_id, create_date, update_date, deleted
@@ -23,6 +23,11 @@
     <update id="deleteRoleMenuByRoleId" parameterType="String">
         update bm_role_menu set deleted = ${@com.ws.bm.common.constant.BaseConstant@TRUE} , update_date = sysdate()
         where role_id  = #{roleId}
+    </update>
+
+    <update id="deleteRoleMenuByMenuId" parameterType="String">
+        update bm_role_menu set deleted = ${@com.ws.bm.common.constant.BaseConstant@TRUE} , update_date = sysdate()
+        where menu_id  = #{menuId}
     </update>
 
     <select id="selectRoleMenuByRoleId" parameterType="String" resultType="BmRoleMenu">
@@ -51,4 +56,13 @@
         update bm_role_menu set deleted = ${@com.ws.bm.common.constant.BaseConstant@TRUE} , update_date = sysdate()
         where role_id  in (#{roleIds})
     </update>
+
+
+    <select id="selectRoleMenuByMenuId" parameterType="String" resultType="BmRoleMenu">
+        <include refid="selectRoleMenuHql"/>
+        <where>
+            menu_id = #{bmMenuId}
+        </where>
+        <include refid="deleteFlagHql"/>
+    </select>
 </mapper>

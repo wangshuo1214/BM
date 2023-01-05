@@ -1,8 +1,8 @@
 package com.ws.bm.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.ws.bm.domain.entity.BmDept;
-import com.ws.bm.domain.entity.BmMenu;
+import com.ws.bm.domain.entity.system.BmDept;
+import com.ws.bm.domain.entity.system.BmMenu;
 import lombok.Data;
 
 import java.util.List;

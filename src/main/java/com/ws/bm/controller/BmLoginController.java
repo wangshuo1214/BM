@@ -2,17 +2,15 @@ package com.ws.bm.controller;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import com.ws.bm.domain.entity.BmMenu;
 import com.ws.bm.domain.model.Result;
-import com.ws.bm.domain.entity.BmUser;
+import com.ws.bm.domain.entity.system.BmUser;
 import com.ws.bm.domain.model.LoginBody;
-import com.ws.bm.service.IBmLoginService;
-import com.ws.bm.service.IBmMenuService;
+import com.ws.bm.service.system.IBmLoginService;
+import com.ws.bm.service.system.IBmMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 @RestController
 @RequestMapping

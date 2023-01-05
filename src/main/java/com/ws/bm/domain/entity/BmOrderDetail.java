@@ -10,7 +10,7 @@ import java.util.Date;
 
 @Data
 @TableName("bm_order_detail")
-public class BmOrderDetail extends BaseEntity{
+public class BmOrderDetail extends BaseEntity {
 
     @TableId(type = IdType.ASSIGN_UUID)
     private String id;

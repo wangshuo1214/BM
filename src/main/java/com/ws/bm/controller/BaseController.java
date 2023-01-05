@@ -8,7 +8,7 @@ import com.ws.bm.common.page.PageQuery;
 import com.ws.bm.common.utils.CreateGsonUtil;
 import com.ws.bm.common.utils.JwtTokenUtil;
 import com.ws.bm.common.utils.ServletUtils;
-import com.ws.bm.domain.entity.BmUser;
+import com.ws.bm.domain.entity.system.BmUser;
 import com.ws.bm.domain.model.Result;
 import com.ws.bm.common.utils.MessageUtil;
 import com.ws.bm.domain.model.TableDataInfo;
@@ -16,7 +16,7 @@ import com.ws.bm.exception.BaseException;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.gson.Gson;
-import com.ws.bm.service.IBmUserService;
+import com.ws.bm.service.system.IBmUserService;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 
