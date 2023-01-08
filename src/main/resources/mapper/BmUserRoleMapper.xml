@@ -15,7 +15,10 @@
     <select id="queryUserRolesByRoleIds" parameterType="String" resultType="List">
         <include refid="selectUserRoleHql"/>
         <where>
-            role_id in (#{roleIds})
+            role_id in
+            <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+                #{roleId}
+            </foreach>
         </where>
         <include refid="deleteFlagHql"/>
     </select>
@@ -23,7 +26,10 @@
     <select id="queryUserRolesByUserIds" parameterType="String" resultType="List">
         <include refid="selectUserRoleHql"/>
         <where>
-            user_id in (#{userIds})
+            user_id in
+            <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+                #{userId}
+            </foreach>
         </where>
         <include refid="deleteFlagHql"/>
     </select>
