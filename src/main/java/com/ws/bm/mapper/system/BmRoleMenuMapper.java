@@ -1,5 +1,6 @@
 package com.ws.bm.mapper.system;
 
+import com.ws.bm.domain.entity.system.BmMenu;
 import com.ws.bm.domain.entity.system.BmRoleMenu;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -56,6 +57,13 @@ public interface BmRoleMenuMapper {
      * @return
      */
     List<String> selectMenuIdsByRoleIds(List<String> bmRoleIds);
+
+    /**
+     * 根据角色ids查询关联菜单集合
+     * @param bmRoleIds
+     * @return
+     */
+    List<BmRoleMenu> selectMenusByRoleIds(List<String> bmRoleIds);
 
     /**
      * 根据菜单id查询角色菜单关联关系

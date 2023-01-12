@@ -52,6 +52,15 @@
          and deleted = ${@com.ws.bm.common.constant.BaseConstant@FALSE}
     </select>
 
+    <select id="selectMenusByRoleIds" parameterType="String" resultType="BmRoleMenu">
+        <include refid="selectRoleMenuHql"/>
+        where role_id in
+        <foreach collection="bmRoleIds" item="bmRoleId" open="(" separator="," close=")">
+            #{bmRoleId}
+        </foreach>
+        and deleted = ${@com.ws.bm.common.constant.BaseConstant@FALSE}
+    </select>
+
     <update id="batchDeleteRoleMenuByRoleIds" parameterType="String">
         update bm_role_menu set deleted = ${@com.ws.bm.common.constant.BaseConstant@TRUE} , update_date = sysdate()
         where role_id  in (#{roleIds})

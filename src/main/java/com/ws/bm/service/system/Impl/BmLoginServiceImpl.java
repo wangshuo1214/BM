@@ -1,5 +1,6 @@
 package com.ws.bm.service.system.Impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -9,11 +10,16 @@ import com.ws.bm.common.utils.JwtTokenUtil;
 import com.ws.bm.common.utils.MessageUtil;
 import com.ws.bm.common.utils.PasswordUtil;
 import com.ws.bm.common.utils.RedisUtil;
+import com.ws.bm.domain.entity.system.BmMenu;
+import com.ws.bm.domain.entity.system.BmRoleMenu;
 import com.ws.bm.domain.entity.system.BmUser;
 import com.ws.bm.domain.model.LoginBody;
 import com.ws.bm.exception.BaseException;
 import com.ws.bm.exception.UserException;
+import com.ws.bm.mapper.system.BmRoleMenuMapper;
+import com.ws.bm.mapper.system.BmUserRoleMapper;
 import com.ws.bm.service.system.IBmLoginService;
+import com.ws.bm.service.system.IBmMenuService;
 import com.ws.bm.service.system.IBmUserService;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +27,10 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 public class BmLoginServiceImpl implements IBmLoginService {
@@ -35,6 +43,15 @@ public class BmLoginServiceImpl implements IBmLoginService {
 
     @Autowired
     private RedisUtil redisUtil;
+
+    @Autowired
+    private BmUserRoleMapper bmUserRoleMapper;
+
+    @Autowired
+    private BmRoleMenuMapper bmRoleMenuMapper;
+
+    @Autowired
+    private IBmMenuService iBmMenuService;
 
     @Override
     public String login(LoginBody loginBody) {
@@ -84,6 +101,16 @@ public class BmLoginServiceImpl implements IBmLoginService {
             //用户id
             String userId = (String) claims.get("userId");
             BmUser bmUser = iBmUserService.getById(userId);
+            //用户关联角色ids
+            List<String> roleIds = bmUserRoleMapper.queryRoleIdsByUserId(userId);
+            bmUser.setRoles(roleIds);
+            if (CollUtil.isNotEmpty(roleIds)){
+                //角色关联的菜单集合
+                List<String> menuIds = bmRoleMenuMapper.selectMenuIdsByRoleIds(roleIds);
+                if (CollUtil.isNotEmpty(menuIds)){
+                    bmUser.setPermissions(iBmMenuService.listByIds(menuIds).stream().map(BmMenu::getPerms).collect(Collectors.toList()));
+                }
+            }
             if (ObjectUtil.isNotEmpty(bmUser)){
                 return bmUser;
             }

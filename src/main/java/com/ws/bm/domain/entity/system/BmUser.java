@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.ws.bm.domain.entity.BaseEntity;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @TableName("bm_user")
 public class BmUser extends BaseEntity {
@@ -32,4 +34,10 @@ public class BmUser extends BaseEntity {
     //用于角色页面授权用户使用
     @TableField(exist = false)
     private String roleId;
+
+    @TableField(exist = false)
+    private List<String> permissions;
+
+    @TableField(exist = false)
+    private List<String> roles;
 }
