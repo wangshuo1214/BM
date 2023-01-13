@@ -9,9 +9,12 @@ import com.ws.bm.common.constant.BaseConstant;
 import com.ws.bm.common.constant.HttpStatus;
 import com.ws.bm.common.utils.InitFieldUtil;
 import com.ws.bm.common.utils.MessageUtil;
+import com.ws.bm.common.utils.StringUtils;
 import com.ws.bm.domain.entity.system.BmMenu;
 import com.ws.bm.domain.entity.system.BmRoleMenu;
 import com.ws.bm.domain.entity.system.BmUser;
+import com.ws.bm.domain.model.MetaVo;
+import com.ws.bm.domain.model.RouterVo;
 import com.ws.bm.domain.model.TreeSelect;
 import com.ws.bm.exception.BaseException;
 import com.ws.bm.mapper.system.BmMenuMapper;
@@ -209,7 +212,7 @@ public class BmMenuServiceImpl extends ServiceImpl<BmMenuMapper, BmMenu> impleme
     }
 
     @Override
-    public List<BmMenu> queryMenuTreeByUserId(BmUser bmUser) {
+    public List<RouterVo> queryMenuTreeByUserId(BmUser bmUser) {
         if (ObjectUtil.isEmpty(bmUser)){
             throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.paramsError"));
         }
@@ -220,7 +223,7 @@ public class BmMenuServiceImpl extends ServiceImpl<BmMenuMapper, BmMenu> impleme
                 List<BmMenu> bmMenus = listByIds(menuIds);
                 bmMenus.stream().filter(bmMenu -> bmMenu.getMenuType() != "B").collect(Collectors.toList());
                 if (CollUtil.isNotEmpty(bmMenus)){
-                    return buildMenuTree(bmMenus);
+                    return buildMenus(buildMenuTree(bmMenus));
                 }
             }
         }
@@ -335,4 +338,92 @@ public class BmMenuServiceImpl extends ServiceImpl<BmMenuMapper, BmMenu> impleme
         }
         return false;
     }
+
+    /**
+     * 构建前端路由所需要的菜单
+     *
+     * @param menus 菜单列表
+     * @return 路由列表
+     */
+    public List<RouterVo> buildMenus(List<BmMenu> menus)
+    {
+        List<RouterVo> routers = new LinkedList<RouterVo>();
+        for (BmMenu menu : menus)
+        {
+            RouterVo router = new RouterVo();
+            router.setHidden(BaseConstant.FALSE.equals(menu.getVisible()));
+            router.setName(menu.getMenuName());
+            router.setPath(menu.getPath());
+            router.setComponent(menu.getComponent());
+            router.setQuery(menu.getQuery());
+            router.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon(), StrUtil.equals("1", menu.getIsCache()), menu.getPath()));
+            List<BmMenu> cMenus = menu.getChildren();
+            if (!cMenus.isEmpty() && cMenus.size() > 0 && BaseConstant.CATALOGUE.equals(menu.getMenuType())) {
+                router.setAlwaysShow(true);
+                router.setRedirect("noRedirect");
+                router.setChildren(buildMenus(cMenus));
+            }
+            else if (isMenuFrame(menu)) {
+                router.setMeta(null);
+                List<RouterVo> childrenList = new ArrayList<RouterVo>();
+                RouterVo children = new RouterVo();
+                children.setPath(menu.getPath());
+                children.setComponent(menu.getComponent());
+                children.setName(StringUtils.capitalize(menu.getPath()));
+                children.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon(), StringUtils.equals("1", menu.getIsCache()), menu.getPath()));
+                children.setQuery(menu.getQuery());
+                childrenList.add(children);
+                router.setChildren(childrenList);
+            }
+            else if (menu.getParentId().equals(BaseConstant.TOPNODE) && isInnerLink(menu)) {
+                router.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon()));
+                router.setPath("/");
+                List<RouterVo> childrenList = new ArrayList<RouterVo>();
+                RouterVo children = new RouterVo();
+                String routerPath = innerLinkReplaceEach(menu.getPath());
+                children.setPath(routerPath);
+                children.setComponent(BaseConstant.INNER_LINK);
+                children.setName(StringUtils.capitalize(routerPath));
+                children.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon(), menu.getPath()));
+                childrenList.add(children);
+                router.setChildren(childrenList);
+            }
+            routers.add(router);
+        }
+        return routers;
+    }
+
+    /**
+     * 是否为菜单内部跳转
+     *
+     * @param menu 菜单信息
+     * @return 结果
+     */
+    public boolean isMenuFrame(BmMenu menu)
+    {
+        return menu.getParentId().equals(BaseConstant.TOPNODE)&& BaseConstant.MENU.equals(menu.getMenuType())
+                && menu.getIsFrame().equals(BaseConstant.FALSE);
+    }
+
+    /**
+     * 是否为内链组件
+     *
+     * @param menu 菜单信息
+     * @return 结果
+     */
+    public boolean isInnerLink(BmMenu menu) {
+        return menu.getIsFrame().equals(BaseConstant.FALSE) && StringUtils.ishttp(menu.getPath());
+    }
+
+    /**
+     * 内链域名特殊字符替换
+     *
+     * @return
+     */
+    public String innerLinkReplaceEach(String path)
+    {
+        return StringUtils.replaceEach(path, new String[] { BaseConstant.HTTP, BaseConstant.HTTPS, BaseConstant.WWW, "." },
+                new String[] { "", "", "", "/" });
+    }
+
 }

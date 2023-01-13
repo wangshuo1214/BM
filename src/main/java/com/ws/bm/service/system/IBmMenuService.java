@@ -3,6 +3,7 @@ package com.ws.bm.service.system;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ws.bm.domain.entity.system.BmMenu;
 import com.ws.bm.domain.entity.system.BmUser;
+import com.ws.bm.domain.model.RouterVo;
 import com.ws.bm.domain.model.TreeSelect;
 
 import java.util.List;
@@ -35,6 +36,6 @@ public interface IBmMenuService extends IService<BmMenu> {
      * @param bmUser
      * @return
      */
-    List<BmMenu> queryMenuTreeByUserId(BmUser bmUser);
+    List<RouterVo> queryMenuTreeByUserId(BmUser bmUser);
 
 }

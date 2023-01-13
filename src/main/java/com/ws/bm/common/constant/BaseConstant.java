@@ -31,4 +31,22 @@ public class BaseConstant {
 
     public static final String TOPNODE = "0";
 
+    /**
+     * http请求
+     */
+    public static final String HTTP = "http://";
+
+    /**
+     * https请求
+     */
+    public static final String HTTPS = "https://";
+
+    /**
+     * www主域
+     */
+    public static final String WWW = "www.";
+
+    /** InnerLink组件标识 */
+    public final static String INNER_LINK = "InnerLink";
+
 }
