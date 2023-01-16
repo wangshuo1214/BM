@@ -49,4 +49,10 @@ public class BaseConstant {
     /** InnerLink组件标识 */
     public final static String INNER_LINK = "InnerLink";
 
+    /** Layout组件标识 */
+    public final static String LAYOUT = "Layout";
+
+    /** ParentView组件标识 */
+    public final static String PARENT_VIEW = "ParentView";
+
 }

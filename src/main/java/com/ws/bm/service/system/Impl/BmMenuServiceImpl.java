@@ -338,23 +338,20 @@ public class BmMenuServiceImpl extends ServiceImpl<BmMenuMapper, BmMenu> impleme
         }
         return false;
     }
-
     /**
      * 构建前端路由所需要的菜单
      *
      * @param menus 菜单列表
      * @return 路由列表
      */
-    public List<RouterVo> buildMenus(List<BmMenu> menus)
-    {
+    public List<RouterVo> buildMenus(List<BmMenu> menus) {
         List<RouterVo> routers = new LinkedList<RouterVo>();
-        for (BmMenu menu : menus)
-        {
+        for (BmMenu menu : menus) {
             RouterVo router = new RouterVo();
             router.setHidden(BaseConstant.FALSE.equals(menu.getVisible()));
-            router.setName(menu.getMenuName());
-            router.setPath(menu.getPath());
-            router.setComponent(menu.getComponent());
+            router.setName(getRouteName(menu));
+            router.setPath(getRouterPath(menu));
+            router.setComponent(getComponent(menu));
             router.setQuery(menu.getQuery());
             router.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon(), StrUtil.equals("1", menu.getIsCache()), menu.getPath()));
             List<BmMenu> cMenus = menu.getChildren();
@@ -362,29 +359,14 @@ public class BmMenuServiceImpl extends ServiceImpl<BmMenuMapper, BmMenu> impleme
                 router.setAlwaysShow(true);
                 router.setRedirect("noRedirect");
                 router.setChildren(buildMenus(cMenus));
-            }
-            else if (isMenuFrame(menu)) {
+            } else if (isMenuFrame(menu)) {
                 router.setMeta(null);
                 List<RouterVo> childrenList = new ArrayList<RouterVo>();
                 RouterVo children = new RouterVo();
                 children.setPath(menu.getPath());
                 children.setComponent(menu.getComponent());
                 children.setName(StringUtils.capitalize(menu.getPath()));
-                children.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon(), StringUtils.equals("1", menu.getIsCache()), menu.getPath()));
-                children.setQuery(menu.getQuery());
-                childrenList.add(children);
-                router.setChildren(childrenList);
-            }
-            else if (menu.getParentId().equals(BaseConstant.TOPNODE) && isInnerLink(menu)) {
-                router.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon()));
-                router.setPath("/");
-                List<RouterVo> childrenList = new ArrayList<RouterVo>();
-                RouterVo children = new RouterVo();
-                String routerPath = innerLinkReplaceEach(menu.getPath());
-                children.setPath(routerPath);
-                children.setComponent(BaseConstant.INNER_LINK);
-                children.setName(StringUtils.capitalize(routerPath));
-                children.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon(), menu.getPath()));
+                children.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon(), StringUtils.equals("1", menu.getIsCache())));
                 childrenList.add(children);
                 router.setChildren(childrenList);
             }
@@ -392,38 +374,73 @@ public class BmMenuServiceImpl extends ServiceImpl<BmMenuMapper, BmMenu> impleme
         }
         return routers;
     }
-
+    /**
+     * 获取路由名称
+     *
+     * @param menu 菜单信息
+     * @return 路由名称
+     */
+    public String getRouteName(BmMenu menu) {
+        String routerName = StringUtils.capitalize(menu.getPath());
+        // 非外链并且是一级目录（类型为菜单）
+        if (isMenuFrame(menu)) {
+            routerName = StringUtils.EMPTY;
+        }
+        return routerName;
+    }
+    /**
+     * 获取路由地址
+     *
+     * @param menu 菜单信息
+     * @return 路由地址
+     */
+    public String getRouterPath(BmMenu menu) {
+        String routerPath = menu.getPath();
+        // 非外链并且是一级目录（类型为目录）
+        if ( BaseConstant.TOPNODE.equals(menu.getParentId()) && BaseConstant.CATALOGUE.equals(menu.getMenuType())
+                && BaseConstant.FALSE.equals(menu.getIsFrame())) {
+            routerPath = "/" + menu.getPath();
+        }
+        // 非外链并且是一级目录（类型为菜单）
+        else if (isMenuFrame(menu)) {
+            routerPath = "/";
+        }
+        return routerPath;
+    }
+    /**
+     * 获取组件信息
+     *
+     * @param menu 菜单信息
+     * @return 组件信息
+     */
+    public String getComponent(BmMenu menu)
+    {
+        String component = BaseConstant.LAYOUT;
+        if (StringUtils.isNotEmpty(menu.getComponent()) && !isMenuFrame(menu)) {
+            component = menu.getComponent();
+        } else if (StringUtils.isEmpty(menu.getComponent()) && isParentView(menu)) {
+            component = BaseConstant.PARENT_VIEW;
+        }
+        return component;
+    }
+    /**
+     * 是否为parent_view组件
+     *
+     * @param menu 菜单信息
+     * @return 结果
+     */
+    public boolean isParentView(BmMenu menu) {
+        return !(BaseConstant.TOPNODE.equals(menu.getParentId())) && BaseConstant.CATALOGUE.equals(menu.getMenuType());
+    }
     /**
      * 是否为菜单内部跳转
      *
      * @param menu 菜单信息
      * @return 结果
      */
-    public boolean isMenuFrame(BmMenu menu)
-    {
+    public boolean isMenuFrame(BmMenu menu) {
         return menu.getParentId().equals(BaseConstant.TOPNODE)&& BaseConstant.MENU.equals(menu.getMenuType())
                 && menu.getIsFrame().equals(BaseConstant.FALSE);
-    }
-
-    /**
-     * 是否为内链组件
-     *
-     * @param menu 菜单信息
-     * @return 结果
-     */
-    public boolean isInnerLink(BmMenu menu) {
-        return menu.getIsFrame().equals(BaseConstant.FALSE) && StringUtils.ishttp(menu.getPath());
-    }
-
-    /**
-     * 内链域名特殊字符替换
-     *
-     * @return
-     */
-    public String innerLinkReplaceEach(String path)
-    {
-        return StringUtils.replaceEach(path, new String[] { BaseConstant.HTTP, BaseConstant.HTTPS, BaseConstant.WWW, "." },
-                new String[] { "", "", "", "/" });
     }
 
 }
