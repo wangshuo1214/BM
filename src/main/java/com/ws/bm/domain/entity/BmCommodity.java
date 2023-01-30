@@ -8,19 +8,15 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
-@TableName("bm_product")
-public class BmProduct extends BaseEntity {
+@TableName("bm_commodity")
+public class BmCommodity extends BaseEntity {
 
     @TableId(type = IdType.ASSIGN_UUID)
-    private String productId;
+    private String commodityId;
 
-    private String productName;
+    private String commodityName;
 
-    private BigDecimal price;
-
-    private BigDecimal costPrice;
-
-    private BigDecimal wage;
+    private String commodityType;//0销售商品  1采购商品
 
     private Integer weight;
 

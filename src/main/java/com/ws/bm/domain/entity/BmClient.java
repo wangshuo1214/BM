@@ -14,9 +14,13 @@ public class BmClient extends BaseEntity {
 
     private String clientName;
 
+    private String clientType;
+
     private String address;
 
     private String phone;
+
+    private String remark;
 
     private Integer weight;
 
