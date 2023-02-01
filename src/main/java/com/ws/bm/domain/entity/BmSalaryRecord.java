@@ -9,17 +9,15 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
-@TableName("bm_client_pay_record")
-public class BmClientPayRecord {
+@TableName("bm_salary_record")
+public class BmSalaryRecord extends BaseEntity{
 
     @TableId(type = IdType.ASSIGN_UUID)
     private String id;
 
-    private String clientId;
+    private BigDecimal salary;
 
-    private BigDecimal payAmount;
+    private Date salaryDate;
 
-    private Date payDate;
-
-    private String payWay;
+    private String remark;
 }

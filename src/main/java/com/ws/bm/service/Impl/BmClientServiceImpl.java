@@ -15,6 +15,7 @@ import com.ws.bm.mapper.BmClientMapper;
 import com.ws.bm.service.IBmClientService;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -38,6 +39,7 @@ public class BmClientServiceImpl extends ServiceImpl<BmClientMapper, BmClient> i
             throw new BaseException(HttpStatus.ERROR,MessageUtil.getMessage("bm.initFieldError"));
         }
         bmClient.setClientId(UUID.randomUUID().toString());
+        bmClient.setDebt(BigDecimal.ZERO);
         bmClient.setWeight(0);
         return save(bmClient);
     }

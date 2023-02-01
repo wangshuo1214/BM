@@ -9,17 +9,23 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
-@TableName("bm_client_circular_moeny")
-public class BmClientCircularMoney {
+@TableName("bm_return_record")
+public class BmReturnRecord extends BaseEntity{
 
     @TableId(type = IdType.ASSIGN_UUID)
     private String id;
 
     private String clientId;
 
-    private BigDecimal circularMoney;
+    private String materialId;
 
-    private BigDecimal debt;
+    private String orderId;
 
-    private Date lastCircularDate;
+    private Integer num;
+
+    private BigDecimal moeny;
+
+    private Date returnDate;
+
+    private String remark;
 }

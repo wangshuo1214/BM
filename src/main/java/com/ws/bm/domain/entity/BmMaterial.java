@@ -5,25 +5,20 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
 @Data
-@TableName("bm_purchase")
-public class BmPurchase {
+@TableName("bm_material")
+public class BmMaterial {
 
     @TableId(type = IdType.ASSIGN_UUID)
-    private String id;
+    private String materialId;
 
-    private String clientIds;
-
-    private BigDecimal purchaseMoney;
-
-    private Date purchaseDate;
+    private String materialName;
 
     private String remark;
 
-    private Date updateDate;
+    private Integer sellWeight;
 
-    private String deleted;
+    private Integer buyWeight;
+
+    private Integer makeWeight;
 }

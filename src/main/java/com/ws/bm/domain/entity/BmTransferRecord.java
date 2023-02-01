@@ -5,28 +5,23 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
-@TableName("bm_employee_production_record")
-public class BmEmployeeProductionRecord {
+@TableName("bm_transfer_record")
+public class BmTransferRecord extends BaseEntity{
 
     @TableId(type = IdType.ASSIGN_UUID)
     private String id;
 
-    private String workerId;
+    private String clientId;
 
-    private String productId;
+    private BigDecimal transferMoney;
 
-    private Integer productNum;
+    private String transferWay;
 
-    private Date completedDate;
-
-    private String payWageFlag;
+    private Date transferDate;
 
     private String remark;
-
-    private Date updateDate;
-
-    private String deleted;
 }

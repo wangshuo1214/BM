@@ -1,30 +1,44 @@
 
 1.客户信息
 	对客户(姓名、欠款、手机号码、地址、备注、权重)进行维护
+	客户表(bm_client): clientId clientName debt phone address remark weight
 
 2.供应商信息
 	对供应商(姓名、手机号码、地址、备注、权重)进行维护
+	供应商表(bm_supplier): supplierId supplierName phone address remark weight
 
 3.员工信息
 	对员工(姓名、电话、备注)进行维护
+	员工表(bm_employee): employeeId employeeName phone
 
 4.商品信息
 	对商品(姓名、备注、销售权重、采购权重、生产权重)进行维护
+	商品表(bm_material): materialId  materialName remark sellWeight buyWeight makeWeight
+
+5.订单表
+    相对采购记录以及销售记录的主表
+    订单表(bm_order): orderId orderName(自动生成) orderType dealerId dealDate payFlag remark
 
 5.采购记录
-	针对供应商、商品、数量、采购金额、采购日期、备注进行维护，并且会增加供应商权重、商品采购权重
+	针对商品、数量、金额、采购日期、备注、订单id进行维护，并且会增加供应商权重、商品采购权重
+	订单记录表(bm_order_detail): id materialId  num  money remark orderId
 
 6.生产记录
-	针对员工、商品、数量、工费、完成日期、工资支付标志、备注进行维护，并且会增加生产权重，结算工资会有工资支付记	录
+	针对员工、商品、数量、工费、完成日期、工资支付标志、备注进行维护，并且会增加生产权重，结算工资会有工资支付记录
+	生产记录表(bm_make_record): id employeeId materialId  num  wage completeDate wageFlag salaryId remark
 
 7.销售记录
-	针对客户、订单名称、商品、数量、销售日期、金额、支付标志、备注，并且会增加客户权重、商品销售权重
+	针对商品、数量、金额、销售日期、支付标志、备注，并且会增加客户权重、商品销售权重
+	订单记录表(bm_order_detail)
+	转账记录表(bm_transfer_record): id clientId transferMoney transferWay transferDate remark
 
-8.退货管理
-	针对客户、商品、关联销售订单、数量、金额、退货日期、备注，并且会减少客户权重以及商品销售权重
+8.退货记录
+	针对客户、商品、订单id、数量、金额、退货日期、备注，并且会减少客户权重以及商品销售权重
+	退货记录(bm_return_record): id clientId materialId orderId num moeny returnDate remark
 
 9.工资记录
 	生产记录结算工资明细
+	工资记录表(bm_salary_record): id salary salaryDate remark
 
 10.统计分析
 	今日销售、本月销售、今日采购、本月采购、总利润

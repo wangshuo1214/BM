@@ -5,19 +5,20 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
-import java.math.BigDecimal;
-
 @Data
-@TableName("bm_commodity")
-public class BmCommodity extends BaseEntity {
+@TableName("bm_supplier")
+public class BmSupplier extends BaseEntity{
 
     @TableId(type = IdType.ASSIGN_UUID)
-    private String commodityId;
+    private String employeeId;
 
-    private String commodityName;
+    private String employeeName;
 
-    private String commodityType;//0销售商品  1采购商品
+    private String phone;
+
+    private String address;
+
+    private String remark;
 
     private Integer weight;
-
 }

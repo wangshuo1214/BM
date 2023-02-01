@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 @TableName("bm_client")
 public class BmClient extends BaseEntity {
@@ -14,11 +16,11 @@ public class BmClient extends BaseEntity {
 
     private String clientName;
 
-    private String clientType;
-
-    private String address;
+    private BigDecimal debt;
 
     private String phone;
+
+    private String address;
 
     private String remark;
 

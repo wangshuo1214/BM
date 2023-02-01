@@ -1,5 +1,6 @@
 package com.ws.bm.domain.entity;
 
+import cn.hutool.db.DaoTemplate;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -9,23 +10,25 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
-@TableName("bm_employee_salary_record")
-public class BmEmployeeSalaryRecord {
+@TableName("bm_make_record")
+public class BmMakeRecord {
 
     @TableId(type = IdType.ASSIGN_UUID)
     private String id;
 
-    private String workerId;
+    private String employeeId;
 
-    private String productionIds;
+    private String materialId;
+
+    private Integer num;
 
     private BigDecimal wage;
 
-    private Date wageDate;
+    private Date completeDate;
+
+    private String wageFlag;
+
+    private String salaryId;
 
     private String remark;
-
-    private Date updateDate;
-
-    private String deleted;
 }
