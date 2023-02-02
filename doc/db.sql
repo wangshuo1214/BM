@@ -15,8 +15,9 @@ CREATE TABLE `bm_client` (
 
 CREATE TABLE `bm_employee` (
                                `employee_id` varchar(36) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '员工id',
-                               `worker_name` varchar(36) NOT NULL COMMENT '员工姓名',
+                               `employee_name` varchar(36) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '员工姓名',
                                `phone` varchar(11) DEFAULT NULL,
+                               `remark` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '备注',
                                `create_date` datetime NOT NULL COMMENT '创建日期',
                                `update_date` datetime NOT NULL COMMENT '修改日期',
                                `deleted` char(1) NOT NULL COMMENT '删除标志',
@@ -44,6 +45,7 @@ CREATE TABLE `bm_make_record` (
 CREATE TABLE `bm_material` (
                                `material_id` varchar(36) NOT NULL COMMENT '商品id',
                                `material_name` varchar(50) NOT NULL COMMENT '商品名称',
+                               `material_type` char(1) NOT NULL COMMENT '商品类型',
                                `remark` varchar(500) DEFAULT NULL COMMENT '备注',
                                `sell_weight` int NOT NULL COMMENT '销售权重',
                                `buy_weight` int NOT NULL COMMENT '采购权重',
@@ -112,8 +114,8 @@ CREATE TABLE `bm_salary_record` (
 
 
 CREATE TABLE `bm_supplier` (
-                               `supplierId` varchar(36) NOT NULL COMMENT '表主键',
-                               `supplierName` varchar(50) NOT NULL COMMENT '供应商名称',
+                               `supplier_id` varchar(36) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '表主键',
+                               `supplier_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '供应商名称',
                                `phone` varchar(11) DEFAULT NULL COMMENT '电话',
                                `address` varchar(128) DEFAULT NULL COMMENT '地址',
                                `remark` varchar(500) DEFAULT NULL COMMENT '备注',
@@ -121,7 +123,7 @@ CREATE TABLE `bm_supplier` (
                                `create_date` datetime NOT NULL COMMENT '创建时间',
                                `update_date` datetime NOT NULL COMMENT '修改时间',
                                `deleted` char(1) NOT NULL COMMENT '删除标志',
-                               PRIMARY KEY (`supplierId`)
+                               PRIMARY KEY (`supplier_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

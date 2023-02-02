@@ -55,4 +55,9 @@ public class BaseConstant {
     /** ParentView组件标识 */
     public final static String PARENT_VIEW = "ParentView";
 
+    //商品排序标识
+    public final static String MaterialOrderBySell = "0"; //Sell
+    public final static String MaterialOrderByBuy = "1"; //Buy
+    public final static String MaterialOrderByMake = "2"; //Make
+
 }

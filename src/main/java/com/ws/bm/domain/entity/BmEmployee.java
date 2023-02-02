@@ -15,4 +15,6 @@ public class BmEmployee extends BaseEntity {
     private String employeeName;
 
     private String phone;
+
+    private String remark;
 }

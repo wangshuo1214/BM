@@ -77,7 +77,7 @@ public class BmMenuServiceImpl extends ServiceImpl<BmMenuMapper, BmMenu> impleme
         if (StrUtil.isNotEmpty(bmMenu.getMenuName())){
             wrapper.lambda().like(BmMenu::getMenuName,bmMenu.getMenuName().trim());
         }
-        wrapper.lambda().orderByAsc(BmMenu::getOrderNum).orderByDesc(BmMenu::getCreateDate);
+        wrapper.lambda().orderByAsc(BmMenu::getOrderNum).orderByDesc(BmMenu::getUpdateDate);
         return list(wrapper);
     }
 
@@ -167,6 +167,7 @@ public class BmMenuServiceImpl extends ServiceImpl<BmMenuMapper, BmMenu> impleme
     public List<BmMenu> queryBmMenuExcludeChild(String bmMenuId) {
         QueryWrapper<BmMenu> wrapper = new QueryWrapper();
         wrapper.lambda().eq(BmMenu::getDeleted,BaseConstant.FALSE);
+        wrapper.lambda().orderByAsc(BmMenu::getOrderNum).orderByDesc(BmMenu::getUpdateDate);
         //bmMenuId为空认为是点击的添加按钮
         if (StrUtil.isEmpty(bmMenuId)){
             return list(wrapper);
@@ -220,7 +221,11 @@ public class BmMenuServiceImpl extends ServiceImpl<BmMenuMapper, BmMenu> impleme
         if (CollUtil.isNotEmpty(roleIds)){
             List<String> menuIds = roleMenuMapper.selectMenuIdsByRoleIds(roleIds);
             if (CollUtil.isNotEmpty(menuIds)){
-                List<BmMenu> bmMenus = listByIds(menuIds);
+                QueryWrapper<BmMenu> wrapper = new QueryWrapper<>();
+                wrapper.lambda().in(BmMenu::getMenuId,menuIds);
+                wrapper.lambda().orderByAsc(BmMenu::getOrderNum).orderByDesc(BmMenu::getUpdateDate);
+                List<BmMenu> bmMenus = list(wrapper);
+//                List<BmMenu> bmMenus = listByIds(menuIds);
                 bmMenus.stream().filter(bmMenu -> bmMenu.getMenuType() != "B").collect(Collectors.toList());
                 if (CollUtil.isNotEmpty(bmMenus)){
                     return buildMenus(buildMenuTree(bmMenus));
@@ -275,6 +280,7 @@ public class BmMenuServiceImpl extends ServiceImpl<BmMenuMapper, BmMenu> impleme
         wrapper.lambda().select(BmMenu::getMenuId);
         wrapper.lambda().eq(BmMenu::getDeleted,BaseConstant.FALSE);
         wrapper.lambda().in(BmMenu::getParentId,parentIds);
+        wrapper.lambda().orderByAsc(BmMenu::getOrderNum).orderByDesc(BmMenu::getUpdateDate);
         List<String> ids = list(wrapper).stream().map(BmMenu::getMenuId).collect(Collectors.toList());
         if (CollUtil.isNotEmpty(ids)){
             ids.addAll(getChildren(ids));

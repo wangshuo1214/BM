@@ -46,6 +46,9 @@ public class BmClientServiceImpl extends ServiceImpl<BmClientMapper, BmClient> i
 
     @Override
     public List<BmClient> queryBmClient(BmClient bmClient) {
+        if (ObjectUtil.isEmpty(bmClient)){
+            throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
+        }
         QueryWrapper<BmClient> wrapper = new QueryWrapper<>();
         if (StrUtil.isNotEmpty(bmClient.getClientName())){
             wrapper.lambda().like(BmClient::getClientName,bmClient.getClientName());
@@ -57,6 +60,7 @@ public class BmClientServiceImpl extends ServiceImpl<BmClientMapper, BmClient> i
             wrapper.lambda().like(BmClient::getAddress,bmClient.getAddress());
         }
         wrapper.lambda().eq(BmClient::getDeleted,BaseConstant.FALSE);
+        wrapper.lambda().orderByDesc(BmClient::getWeight).orderByDesc(BmClient::getUpdateDate);
         return list(wrapper);
     }
 
@@ -88,7 +92,7 @@ public class BmClientServiceImpl extends ServiceImpl<BmClientMapper, BmClient> i
         wrapper.lambda().eq(BmClient::getDeleted,BaseConstant.FALSE);
         wrapper.lambda().ne(BmClient::getClientId,bmClient.getClientId());
         if (CollUtil.isNotEmpty(list(wrapper))){
-            throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.paramsError"));
+            throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.client.nameRepeat"));
         }
 
         //旧对象
@@ -116,7 +120,7 @@ public class BmClientServiceImpl extends ServiceImpl<BmClientMapper, BmClient> i
     }
 
     private boolean checkFiled(BmClient bmClient){
-        if(StrUtil.isAllEmpty(bmClient.getClientName())){
+        if(ObjectUtil.isEmpty(bmClient) || StrUtil.isEmpty(bmClient.getClientName())){
             return true;
         }
         return false;

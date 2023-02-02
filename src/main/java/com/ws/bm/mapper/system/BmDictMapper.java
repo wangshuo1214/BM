@@ -22,6 +22,8 @@ public interface BmDictMapper {
 
     int deleteBmDictType(List<String> bmDictIds);
 
+    int deleteBmDictDataByType(String bmDictId);
+
     List<BmDictData> checkBmDictDataUnique(BmDictData bmDictData);
 
     int addBmDictData(BmDictData bmDictData);

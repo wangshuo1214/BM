@@ -10,9 +10,9 @@ import lombok.Data;
 public class BmSupplier extends BaseEntity{
 
     @TableId(type = IdType.ASSIGN_UUID)
-    private String employeeId;
+    private String supplierId;
 
-    private String employeeName;
+    private String supplierName;
 
     private String phone;
 

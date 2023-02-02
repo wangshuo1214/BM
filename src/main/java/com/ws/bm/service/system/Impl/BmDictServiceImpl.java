@@ -83,6 +83,9 @@ public class BmDictServiceImpl implements IBmDictService {
         if (CollUtil.isEmpty(bmDictIds)){
             throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
         }
+        bmDictIds.forEach(bmDictId -> {
+            bmDictMapper.deleteBmDictDataByType(bmDictId);
+        });
         return bmDictMapper.deleteBmDictType(bmDictIds);
     }
 

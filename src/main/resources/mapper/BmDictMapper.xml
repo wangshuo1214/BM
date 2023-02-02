@@ -168,6 +168,11 @@
         </foreach>
     </update>
 
+    <update id="deleteBmDictDataByType" parameterType="String">
+        update bm_dict_data set deleted = ${@com.ws.bm.common.constant.BaseConstant@TRUE} , update_date = sysdate()
+        where dict_type_id = #{bmDictId}
+    </update>
+
     <select id="getDictDataByType" parameterType="String" resultType="BmDictData">
         <include refid="selectDictDataHql"/>
         <where>
