@@ -63,7 +63,7 @@ CREATE TABLE `bm_order` (
                             `order_type` char(1) NOT NULL COMMENT '订单类型',
                             `dealer_id` varchar(36) NOT NULL COMMENT '交易人员id',
                             `order_date` datetime NOT NULL COMMENT '订单日期',
-                            `pay_flag` char(1) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '付款标志',
+                            `pay_flag` char(1) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '付款标志',
                             `remark` varchar(500) DEFAULT NULL COMMENT '备注',
                             `create_date` datetime NOT NULL COMMENT '创建日期',
                             `update_date` datetime NOT NULL COMMENT '修改日期',

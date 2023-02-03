@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ws.bm.mapper.BmBuyRecordMapper">
+
+    <sql id="deleteFlagHql">
+        and deleted = ${@com.ws.bm.common.constant.BaseConstant@FALSE}
+    </sql>
+
+    <select id="checkBmOrderNameRepeat" parameterType="String" resultType="int">
+        select count(order_id) from bm_order
+        <where>
+            order_name = #{orderName}
+        </where>
+        <include refid="deleteFlagHql"/>
+    </select>
+
+    <insert id="addBmOrder">
+        insert into bm_order (
+        <if test="order_id != null and order_id != ''">order_id,</if>
+        <if test="order_name != null and order_name != ''">order_name,</if>
+        <if test="order_type != null and order_type != ''">order_type,</if>
+        <if test="dealer_id != null and dealer_id != ''">dealer_id,</if>
+        <if test="order_date != null">order_date,</if>
+        <if test="pay_flag != null and pay_flag != ''">pay_flag,</if>
+        <if test="remark != null and remark != ''">remark,</if>
+        <if test="createDate != null">create_date,</if>
+        <if test="updateDate != null">update_date,</if>
+        <if test="deleted != null and deleted != ''">deleted</if>
+        ) values (
+        <if test="order_id != null and order_id != ''">#{orderId}</if>
+        <if test="order_name != null and order_name != ''">#{orderName}</if>
+        <if test="order_type != null and order_type != ''">#{orderType}</if>
+        <if test="dealer_id != null and dealer_id != ''">#{dealerId}</if>
+        <if test="order_date != null">#{orderDate}</if>
+        <if test="pay_flag != null and pay_flag != ''">#{payFlag}</if>
+        <if test="remark != null and remark != ''">#{remark}</if>
+        <if test="createDate != null">#{createDate}</if>
+        <if test="updateDate != null">#{updateDate}</if>
+        <if test="deleted != null and deleted != ''">#{deleted}</if>
+        )
+    </insert>
+
+    <insert id="batchAddBmOrderDetail">
+        insert into bm_order_detail(id, material_id, num, money, order_id, remark, create_date, update_date,deleted) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{item.id},#{item.materialId},#{item.num},#{item.money},#{item.orderId},#{item.remark},#{item.createDate},#{item.updateDate},${@com.ws.bm.common.constant.BaseConstant@FALSE})
+        </foreach>
+    </insert>
+
+</mapper>
