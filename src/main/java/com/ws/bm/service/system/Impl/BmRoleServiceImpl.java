@@ -19,6 +19,7 @@ import com.ws.bm.mapper.system.BmUserRoleMapper;
 import com.ws.bm.service.system.IBmRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,6 +37,7 @@ public class BmRoleServiceImpl extends ServiceImpl<BmRoleMapper, BmRole> impleme
     BmUserRoleMapper bmUserRoleMapper;
 
     @Override
+    @Transactional
     public boolean addBmRole(BmRole role) {
         if (checkField(role)){
             throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
@@ -94,6 +96,7 @@ public class BmRoleServiceImpl extends ServiceImpl<BmRoleMapper, BmRole> impleme
     }
 
     @Override
+    @Transactional
     public boolean updateBmRole(BmRole newBmRole) {
         if (checkField(newBmRole)){
             throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.paramsError"));
@@ -134,6 +137,7 @@ public class BmRoleServiceImpl extends ServiceImpl<BmRoleMapper, BmRole> impleme
     }
 
     @Override
+    @Transactional
     public boolean deleteBmRole(List<String> bmRoleIds) {
         if (CollUtil.isEmpty(bmRoleIds)){
             throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.paramsError"));

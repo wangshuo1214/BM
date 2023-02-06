@@ -23,6 +23,7 @@ import com.ws.bm.mapper.system.BmUserRoleMapper;
 import com.ws.bm.service.system.IBmMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -139,6 +140,7 @@ public class BmMenuServiceImpl extends ServiceImpl<BmMenuMapper, BmMenu> impleme
     }
 
     @Override
+    @Transactional
     public boolean deleteBmMenu(String bmMenuId) {
 
         if (StrUtil.isEmpty(bmMenuId)){

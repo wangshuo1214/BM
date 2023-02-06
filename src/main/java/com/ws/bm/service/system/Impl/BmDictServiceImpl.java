@@ -13,6 +13,7 @@ import com.ws.bm.mapper.system.BmDictMapper;
 import com.ws.bm.service.system.IBmDictService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -79,6 +80,7 @@ public class BmDictServiceImpl implements IBmDictService {
     }
 
     @Override
+    @Transactional
     public int deleteBmDictType(List<String> bmDictIds) {
         if (CollUtil.isEmpty(bmDictIds)){
             throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
