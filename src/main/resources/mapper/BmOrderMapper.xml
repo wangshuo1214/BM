@@ -5,7 +5,7 @@
 <mapper namespace="com.ws.bm.mapper.BmOrderMapper">
 
     <sql id="selectOrderHql">
-        select order_id,order_name,order_type,dealer_id,order_date,pay_flag,remark,create_date, update_date, deleted
+        select order_id,order_type,dealer_id,order_date,pay_flag,remark,create_date, update_date, deleted
         from bm_order
     </sql>
 
@@ -18,18 +18,9 @@
         and deleted = ${@com.ws.bm.common.constant.BaseConstant@FALSE}
     </sql>
 
-    <select id="checkBmOrderNameRepeat" parameterType="String" resultType="int">
-        select count(order_id) from bm_order
-        <where>
-            order_name = #{orderName}
-        </where>
-        <include refid="deleteFlagHql"/>
-    </select>
-
     <insert id="addBmOrder">
         insert into bm_order (
         <if test="orderId != null and orderId != ''">order_id,</if>
-        <if test="orderName != null and orderName != ''">order_name,</if>
         <if test="orderType != null and orderType != ''">order_type,</if>
         <if test="dealerId != null and dealerId != ''">dealer_id,</if>
         <if test="orderDate != null">order_date,</if>
@@ -40,7 +31,6 @@
         <if test="deleted != null and deleted != ''">deleted</if>
         ) values (
         <if test="orderId != null and orderId != ''">#{orderId},</if>
-        <if test="orderName != null and orderName != ''">#{orderName},</if>
         <if test="orderType != null and orderType != ''">#{orderType},</if>
         <if test="dealerId != null and dealerId != ''">#{dealerId},</if>
         <if test="orderDate != null">#{orderDate},</if>
@@ -71,7 +61,6 @@
     <update id="updateBmOrder" parameterType="BmOrder">
         update bm_order
         <set>
-            <if test="orderName != null and orderName != ''">order_name = #{orderName},</if>
             <if test="dealerId != null and dealerId != ''">dealer_id = #{dealerId},</if>
             <if test="remark != null and remark != ''">remark = #{remark},</if>
             <if test="orderDate != null">order_date = #{orderDate},</if>
@@ -98,9 +87,6 @@
     <select id="queryBmOrder" parameterType="BmOrder" resultType="BmOrder">
         <include refid="selectOrderHql"/>
         <where>
-            <if test="orderName != null and orderName != ''">
-                and order_name like concat('%', #{orderName}, '%')
-            </if>
             <if test="params != null and params != '' ">
                 <if test="params.dealerName != null and params.dealerName != ''"><!-- 交易人员 -->
                     and dealer_id in (select supplier_id from bm_supplier where supplier_name like concat('%', #{dealerName}, '%') <include refid="deleteFlagHql"/> )

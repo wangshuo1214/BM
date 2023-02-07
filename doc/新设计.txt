@@ -18,7 +18,7 @@
 
 5.采购记录
 	针对商品、数量、金额、采购日期、备注、订单id进行维护，并且会增加供应商权重、商品采购权重
-	订单表(bm_order): orderId orderName(自动生成) orderType dealerId dealDate payFlag remark
+	订单表(bm_order): orderId orderType dealerId dealDate payFlag remark
 	订单记录表(bm_order_detail): id materialId  num  money remark orderId
 
 6.生产记录
@@ -27,7 +27,7 @@
 
 7.销售记录
 	针对商品、数量、金额、销售日期、支付标志、备注，并且会增加客户权重、商品销售权重
-	订单表(bm_order): orderId orderName(自动生成) orderType dealerId dealDate payFlag remark
+	订单表(bm_order): orderId orderType dealerId dealDate payFlag remark
 	订单记录表(bm_order_detail)
 	转账记录表(bm_transfer_record): id clientId transferMoney transferWay transferDate remark
 

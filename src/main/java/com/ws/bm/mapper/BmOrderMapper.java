@@ -10,8 +10,6 @@ import java.util.List;
 @Mapper
 public interface BmOrderMapper {
 
-    int checkBmOrderNameRepeat(String orderName);
-
     int addBmOrder(BmOrder bmOrder);
 
     int batchAddBmOrderDetail(List<BmOrderDetail> bmOrderDetails);

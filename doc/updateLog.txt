@@ -38,3 +38,6 @@
 2023.1.30
     客户类型字段client_flag修改为client_type,增加字段remark
     产品管理修改为商品管理(bm_product修改为bm_commodity),去除售价、成本、工费
+
+2023.2.7
+    删除bm_order的order_name字段

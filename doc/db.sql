@@ -59,7 +59,6 @@ CREATE TABLE `bm_material` (
 
 CREATE TABLE `bm_order` (
                             `order_id` varchar(36) NOT NULL COMMENT '订单id',
-                            `order_name` varchar(200) NOT NULL COMMENT '订单名称',
                             `order_type` char(1) NOT NULL COMMENT '订单类型',
                             `dealer_id` varchar(36) NOT NULL COMMENT '交易人员id',
                             `order_date` datetime NOT NULL COMMENT '订单日期',

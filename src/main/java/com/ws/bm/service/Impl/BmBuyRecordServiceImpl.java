@@ -50,8 +50,6 @@ public class BmBuyRecordServiceImpl implements IBmBuyRecordService {
         }
         bmOrder.setOrderId(UUID.randomUUID().toString());
         bmOrder.setOrderDate(bmOrder.getOrderDate());
-        // 生成订单名称
-        bmOrder.setOrderName(generateOrderName(bmOrder));
         // 订单细节
         List<BmOrderDetail> bmOrderDetails = JSONObject.parseArray(JSONArray.toJSONString(bmOrder.getParams().get("orderDetails")),BmOrderDetail.class);
         bmOrderDetails.forEach(bmOrderDetail -> {
@@ -104,7 +102,6 @@ public class BmBuyRecordServiceImpl implements IBmBuyRecordService {
             bmOrderMapper.batchAddBmOrderDetail(bmOrderDetails);
         }
         if (!orderUpdateFlag(bmOrder,oldBmOrder)){
-            oldBmOrder.setOrderName(bmOrder.getOrderName());
             oldBmOrder.setDealerId(bmOrder.getDealerId());
             oldBmOrder.setOrderDate(new Date());
             oldBmOrder.setRemark(bmOrder.getRemark());
@@ -126,7 +123,7 @@ public class BmBuyRecordServiceImpl implements IBmBuyRecordService {
                 if (CollUtil.isNotEmpty(bmOrderDetails)){
                     for (int i = 0; i < bmOrderDetails.size(); i++) {
                         BmOrderDetail bmOrderDetail = bmOrderDetails.get(i);
-                        dealMoney.add(bmOrderDetail.getMoney());
+                        dealMoney = dealMoney.add(bmOrderDetail.getMoney());
                         BmMaterial bmMaterial = bmMaterialMapper.selectById(bmOrderDetail.getMaterialId());
                         if (i != bmOrderDetails.size()-1){
                             oderDetailName.append(bmMaterial.getMaterialName() + " × " +bmOrderDetail.getNum()+" 、 ");
@@ -168,8 +165,6 @@ public class BmBuyRecordServiceImpl implements IBmBuyRecordService {
     private boolean orderUpdateFlag(BmOrder newObj, BmOrder oldObj){
         StringBuffer sb1 = new StringBuffer("");
         StringBuffer sb2 = new StringBuffer("");
-        sb1.append(newObj.getOrderName());
-        sb2.append(oldObj.getOrderName());
         sb1.append(newObj.getDealerId());
         sb2.append(oldObj.getDealerId());
         sb1.append(newObj.getOrderDate());
@@ -193,14 +188,4 @@ public class BmBuyRecordServiceImpl implements IBmBuyRecordService {
         return false;
     }
 
-    //生成订单名称
-    private String generateOrderName(BmOrder bmOrder){
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String formatOrderDate = sdf.format(bmOrder.getOrderDate());
-        BmSupplier supplier = bmSupplierMapper.selectById(bmOrder.getDealerId());
-        String initOrderName = formatOrderDate + " : " +supplier.getSupplierName();
-        int repeatNum = bmOrderMapper.checkBmOrderNameRepeat(initOrderName);
-        String orderName = repeatNum > 0 ? initOrderName += "(" +repeatNum + ")" : initOrderName;
-        return orderName;
-    }
 }
