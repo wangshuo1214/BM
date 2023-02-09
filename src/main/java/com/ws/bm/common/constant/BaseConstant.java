@@ -60,4 +60,8 @@ public class BaseConstant {
     public final static String MaterialOrderByBuy = "1"; //Buy
     public final static String MaterialOrderByMake = "2"; //Make
 
+    //订单类型
+    public final static String BuyOrder = "0";
+    public final static String SellOrder = "1";
+
 }

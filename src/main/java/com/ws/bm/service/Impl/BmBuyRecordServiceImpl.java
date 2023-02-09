@@ -5,6 +5,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.ws.bm.common.constant.BaseConstant;
 import com.ws.bm.common.constant.HttpStatus;
 import com.ws.bm.common.utils.InitFieldUtil;
 import com.ws.bm.common.utils.MessageUtil;
@@ -50,6 +51,7 @@ public class BmBuyRecordServiceImpl implements IBmBuyRecordService {
         }
         bmOrder.setOrderId(UUID.randomUUID().toString());
         bmOrder.setOrderDate(bmOrder.getOrderDate());
+        bmOrder.setOrderType(BaseConstant.BuyOrder);
         // 订单细节
         List<BmOrderDetail> bmOrderDetails = JSONObject.parseArray(JSONArray.toJSONString(bmOrder.getParams().get("orderDetails")),BmOrderDetail.class);
         bmOrderDetails.forEach(bmOrderDetail -> {
@@ -176,7 +178,7 @@ public class BmBuyRecordServiceImpl implements IBmBuyRecordService {
     }
 
     private boolean checkFiled(BmOrder bmOrder){
-        if(ObjectUtil.isEmpty(bmOrder) || StrUtil.isEmpty(bmOrder.getOrderType()) || StrUtil.isEmpty(bmOrder.getDealerId()) ||
+        if(ObjectUtil.isEmpty(bmOrder)  || StrUtil.isEmpty(bmOrder.getDealerId()) ||
                  ObjectUtil.isEmpty(bmOrder.getOrderDate()) || ObjectUtil.isEmpty(bmOrder.getParams()) ){
             return true;
         }
