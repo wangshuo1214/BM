@@ -47,4 +47,9 @@ public class BmMaterialController extends BaseController{
     public Result getBmMaterialOrderBySell(String orderTag){
         return success(iBmMaterialService.queryBmMaterialOrder(orderTag));
     }
+
+    @GetMapping("/getByType")
+    public Result getBmMaterialByType(String type){
+        return success(iBmMaterialService.getBmMaterialByType(type));
+    }
 }

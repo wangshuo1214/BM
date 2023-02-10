@@ -24,9 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class BmBuyRecordServiceImpl implements IBmBuyRecordService {
@@ -50,12 +48,11 @@ public class BmBuyRecordServiceImpl implements IBmBuyRecordService {
             throw new BaseException(HttpStatus.ERROR,MessageUtil.getMessage("bm.initFieldError"));
         }
         bmOrder.setOrderId(UUID.randomUUID().toString());
-        bmOrder.setOrderDate(bmOrder.getOrderDate());
         bmOrder.setOrderType(BaseConstant.BuyOrder);
         // 订单细节
         List<BmOrderDetail> bmOrderDetails = JSONObject.parseArray(JSONArray.toJSONString(bmOrder.getParams().get("orderDetails")),BmOrderDetail.class);
         bmOrderDetails.forEach(bmOrderDetail -> {
-            if (StrUtil.isEmpty(bmOrderDetail.getMaterialId()) ||
+            if (StrUtil.isEmpty(bmOrderDetail.getMaterialId()) || ObjectUtil.isEmpty(bmOrderDetail.getSort()) ||
                     ObjectUtil.isEmpty(bmOrderDetail.getNum()) || ObjectUtil.isEmpty(bmOrderDetail.getMoney())){
                 throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
             }
@@ -85,21 +82,20 @@ public class BmBuyRecordServiceImpl implements IBmBuyRecordService {
         List<BmOrderDetail> oldOrderDetails = bmOrderMapper.getBmOrderDetailByOrderId(bmOrder.getOrderId());
         // 新订单细节
         List<BmOrderDetail> bmOrderDetails = JSONObject.parseArray(JSONArray.toJSONString(bmOrder.getParams().get("orderDetails")),BmOrderDetail.class);
-        if (StrUtil.equals(bmOrderDetails.toString(),oldOrderDetails.toString())){
+        if (!StrUtil.equals(bmOrderDetails.toString(),oldOrderDetails.toString())){
             //删除之前的订单细节
             bmOrderMapper.batchDeletedBmOrderDetail(bmOrder.getOrderId());
 
             bmOrderDetails.forEach(bmOrderDetail -> {
-                if (StrUtil.isEmpty(bmOrderDetail.getMaterialId()) ||
+                if (StrUtil.isEmpty(bmOrderDetail.getMaterialId()) || ObjectUtil.isEmpty(bmOrderDetail.getNum()) ||
                         ObjectUtil.isEmpty(bmOrderDetail.getNum()) || ObjectUtil.isEmpty(bmOrderDetail.getMoney())){
                     throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
                 }
-                if (!InitFieldUtil.initField(bmOrder)){
+                if (!InitFieldUtil.initField(bmOrderDetail)){
                     throw new BaseException(HttpStatus.ERROR,MessageUtil.getMessage("bm.initFieldError"));
                 }
                 bmOrderDetail.setOrderId(bmOrder.getOrderId());
             });
-
             // 增加订单细节
             bmOrderMapper.batchAddBmOrderDetail(bmOrderDetails);
         }
@@ -150,7 +146,9 @@ public class BmBuyRecordServiceImpl implements IBmBuyRecordService {
         if (ObjectUtil.isEmpty(bmOrder)){
             throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
         }
-        bmOrder.setOrderDetails(bmOrderMapper.getBmOrderDetailByOrderId(bmOrderId));
+        Map<String,Object> orderDetails = new HashMap();
+        orderDetails.put("orderDetails",bmOrderMapper.getBmOrderDetailByOrderId(bmOrderId));
+        bmOrder.setParams(orderDetails);
         return bmOrder;
     }
 

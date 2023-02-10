@@ -22,7 +22,7 @@ public class BmOrder extends BaseEntity{
 
     private String dealerId;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date orderDate;
 
     private String payFlag;
@@ -37,8 +37,5 @@ public class BmOrder extends BaseEntity{
 
     @TableField(exist = false)
     private String orderDeatil;
-
-    @TableField(exist = false)
-    private List<BmOrderDetail> orderDetails;
 
 }

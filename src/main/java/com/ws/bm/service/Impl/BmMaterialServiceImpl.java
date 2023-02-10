@@ -138,6 +138,18 @@ public class BmMaterialServiceImpl extends ServiceImpl<BmMaterialMapper, BmMater
         return list(wrapper);
     }
 
+    @Override
+    public List<BmMaterial> getBmMaterialByType(String type) {
+        if (StrUtil.isEmpty(type)){
+            throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.paramsError"));
+        }
+        QueryWrapper<BmMaterial> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(BmMaterial::getDeleted,BaseConstant.FALSE);
+        wrapper.lambda().eq(BmMaterial::getMaterialType,type);
+        wrapper.lambda().orderByDesc(BmMaterial::getBuyWeight).orderByDesc(BmMaterial::getUpdateDate);
+        return list(wrapper);
+    }
+
 
     private boolean checkFiled(BmMaterial bmMaterial){
         if(ObjectUtil.isEmpty(bmMaterial) ||

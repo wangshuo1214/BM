@@ -120,6 +120,14 @@ public class BmSupplierServiceImpl extends ServiceImpl<BmSupplierMapper, BmSuppl
         return bmSupplier;
     }
 
+    @Override
+    public List<BmSupplier> getBmSuppliers() {
+        QueryWrapper<BmSupplier> wrapper = new QueryWrapper();
+        wrapper.lambda().eq(BmSupplier::getDeleted,BaseConstant.FALSE);
+        wrapper.lambda().orderByDesc(BmSupplier::getWeight).orderByDesc(BmSupplier::getUpdateDate);
+        return list(wrapper);
+    }
+
     private boolean checkFiled(BmSupplier bmSupplier){
         if(ObjectUtil.isEmpty(bmSupplier) || StrUtil.isEmpty(bmSupplier.getSupplierName())){
             return true;

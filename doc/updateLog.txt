@@ -41,3 +41,6 @@
 
 2023.2.7
     删除bm_order的order_name字段
+
+2023.2.10
+    删除bm_order的remark字段，在bm_order_detail中增加sort字段

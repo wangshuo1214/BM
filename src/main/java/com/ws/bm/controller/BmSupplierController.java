@@ -42,4 +42,9 @@ public class BmSupplierController extends BaseController{
     public Result getBmSupplier(String bmSupplierId){
         return success(iBmSupplierService.getBmSupplier(bmSupplierId));
     }
+
+    @GetMapping("/getAll")
+    public Result getBmSuppliers(){
+        return success(iBmSupplierService.getBmSuppliers());
+    }
 }

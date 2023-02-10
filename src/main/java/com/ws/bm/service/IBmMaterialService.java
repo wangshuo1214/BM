@@ -17,4 +17,6 @@ public interface IBmMaterialService extends IService<BmMaterial> {
     BmMaterial getBmMaterial(String bmMaterialId);
 
     List<BmMaterial> queryBmMaterialOrder(String orderTag);
+
+    List<BmMaterial> getBmMaterialByType(String type);
 }

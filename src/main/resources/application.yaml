@@ -1,6 +1,6 @@
 #端口号
 server:
-  port: 8066
+  port: 8067
   servlet:
     context-path: /api/bm
 

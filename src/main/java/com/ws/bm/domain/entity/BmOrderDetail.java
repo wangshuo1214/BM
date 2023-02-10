@@ -21,6 +21,8 @@ public class BmOrderDetail extends BaseEntity {
 
     private BigDecimal money;
 
+    private Integer sort;
+
     private String orderId;
 
     private String remark;

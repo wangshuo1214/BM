@@ -5,7 +5,7 @@
 <mapper namespace="com.ws.bm.mapper.BmOrderMapper">
 
     <sql id="selectOrderHql">
-        select order_id,order_type,dealer_id,order_date,pay_flag,remark,create_date, update_date, deleted
+        select order_id,order_type,dealer_id,order_date,pay_flag,create_date, update_date, deleted
         from bm_order
     </sql>
 
@@ -43,9 +43,9 @@
     </insert>
 
     <insert id="batchAddBmOrderDetail">
-        insert into bm_order_detail(id, material_id, num, money, order_id, remark, create_date, update_date,deleted) values
+        insert into bm_order_detail(id, material_id, num, money, sort, order_id, remark, create_date, update_date,deleted) values
         <foreach item="item" index="index" collection="list" separator=",">
-            (#{item.id},#{item.materialId},#{item.num},#{item.money},#{item.orderId},#{item.remark},#{item.createDate},#{item.updateDate},${@com.ws.bm.common.constant.BaseConstant@FALSE})
+            (#{item.id},#{item.materialId},#{item.num},#{item.money},#{item.sort},#{item.orderId},#{item.remark},#{item.createDate},#{item.updateDate},${@com.ws.bm.common.constant.BaseConstant@FALSE})
         </foreach>
     </insert>
 
@@ -67,7 +67,7 @@
             <if test="remark != null and remark != ''">remark = #{remark},</if>
             <if test="updateDate != null">update_date = #{updateDate},</if>
         </set>
-        where id = #{id}
+        where order_id = #{orderId}
     </update>
 
     <select id="getBmOrderDetailByOrderId" parameterType="String" resultType="BmOrderDetail">
@@ -76,11 +76,11 @@
             order_id = #{orderId}
         </where>
         <include refid="deleteFlagHql"/>
-        order by update_date desc
+        order by sort asc
     </select>
 
     <update id="batchDeletedBmOrderDetail" parameterType="String">
-        update bm_order set deleted = ${@com.ws.bm.common.constant.BaseConstant@TRUE} , update_date = sysdate()
+        update bm_order_detail set deleted = ${@com.ws.bm.common.constant.BaseConstant@TRUE} , update_date = sysdate()
         where order_id = #{bmOrderId}
     </update>
 
@@ -99,8 +99,8 @@
                 </if>
             </if>
             <include refid="deleteFlagHql"/>
-            order by order_date desc
         </where>
+        order by order_date desc,update_date desc
     </select>
 
     <update id="deleteBmOrder" parameterType="String">

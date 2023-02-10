@@ -15,4 +15,6 @@ public interface IBmSupplierService extends IService<BmSupplier> {
     boolean updateBmSupplier(BmSupplier bmSupplier);
 
     BmSupplier getBmSupplier(String bmSupplierId);
+
+    List<BmSupplier> getBmSuppliers();
 }
