@@ -42,4 +42,9 @@ public class BmBuyRecordController extends BaseController{
     public Result getBmBuyRecord(String bmOrderId){
         return success(iBmBuyRecordService.getBmBuyRecord(bmOrderId));
     }
+
+    @GetMapping("/costInfo")
+    public Result getCostInfo(){
+        return success(iBmBuyRecordService.getCostInfo());
+    }
 }

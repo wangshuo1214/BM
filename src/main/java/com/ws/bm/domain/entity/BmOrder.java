@@ -20,17 +20,10 @@ public class BmOrder extends BaseEntity{
 
     private String orderType;
 
-    private String dealerId;
-
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date orderDate;
 
     private String payFlag;
-
-    private String remark;
-
-    @TableField(exist = false)
-    private String dealerName;
 
     @TableField(exist = false)
     private BigDecimal dealerMoney;

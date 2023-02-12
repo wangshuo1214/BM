@@ -44,3 +44,6 @@
 
 2023.2.10
     删除bm_order的remark字段，在bm_order_detail中增加sort字段
+
+2023。2。12
+    删除order_detail表的dealer_id字段，在bm_order_detail表中新增order_detail字段，num字段设为非必填

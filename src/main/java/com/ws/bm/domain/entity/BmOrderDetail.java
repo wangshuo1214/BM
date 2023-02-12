@@ -17,6 +17,8 @@ public class BmOrderDetail extends BaseEntity {
 
     private String materialId;
 
+    private String dealerId;
+
     private Integer num;
 
     private BigDecimal money;

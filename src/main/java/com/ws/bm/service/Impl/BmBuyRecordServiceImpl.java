@@ -53,7 +53,7 @@ public class BmBuyRecordServiceImpl implements IBmBuyRecordService {
         List<BmOrderDetail> bmOrderDetails = JSONObject.parseArray(JSONArray.toJSONString(bmOrder.getParams().get("orderDetails")),BmOrderDetail.class);
         bmOrderDetails.forEach(bmOrderDetail -> {
             if (StrUtil.isEmpty(bmOrderDetail.getMaterialId()) || ObjectUtil.isEmpty(bmOrderDetail.getSort()) ||
-                    ObjectUtil.isEmpty(bmOrderDetail.getNum()) || ObjectUtil.isEmpty(bmOrderDetail.getMoney())){
+                    StrUtil.isEmpty(bmOrderDetail.getDealerId()) || ObjectUtil.isEmpty(bmOrderDetail.getMoney())){
                 throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
             }
             if (!InitFieldUtil.initField(bmOrderDetail)){
@@ -87,8 +87,8 @@ public class BmBuyRecordServiceImpl implements IBmBuyRecordService {
             bmOrderMapper.batchDeletedBmOrderDetail(bmOrder.getOrderId());
 
             bmOrderDetails.forEach(bmOrderDetail -> {
-                if (StrUtil.isEmpty(bmOrderDetail.getMaterialId()) || ObjectUtil.isEmpty(bmOrderDetail.getNum()) ||
-                        ObjectUtil.isEmpty(bmOrderDetail.getNum()) || ObjectUtil.isEmpty(bmOrderDetail.getMoney())){
+                if (StrUtil.isEmpty(bmOrderDetail.getMaterialId()) ||
+                        StrUtil.isEmpty(bmOrderDetail.getDealerId()) || ObjectUtil.isEmpty(bmOrderDetail.getMoney())){
                     throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
                 }
                 if (!InitFieldUtil.initField(bmOrderDetail)){
@@ -100,9 +100,7 @@ public class BmBuyRecordServiceImpl implements IBmBuyRecordService {
             bmOrderMapper.batchAddBmOrderDetail(bmOrderDetails);
         }
         if (!orderUpdateFlag(bmOrder,oldBmOrder)){
-            oldBmOrder.setDealerId(bmOrder.getDealerId());
-            oldBmOrder.setOrderDate(new Date());
-            oldBmOrder.setRemark(bmOrder.getRemark());
+            oldBmOrder.setOrderDate(bmOrder.getOrderDate());
             oldBmOrder.setUpdateDate(new Date());
         }
         return bmOrderMapper.updateBmOrder(oldBmOrder);
@@ -113,8 +111,6 @@ public class BmBuyRecordServiceImpl implements IBmBuyRecordService {
         List<BmOrder> results = bmOrderMapper.queryBmOrder(bmOrder);
         if (CollUtil.isNotEmpty(results)){
             results.forEach(result -> {
-                BmSupplier bmSupplier = bmSupplierMapper.selectById(result.getDealerId());
-                result.setDealerName(bmSupplier.getSupplierName());
                 StringBuffer oderDetailName = new StringBuffer("");
                 BigDecimal dealMoney = new BigDecimal(0);
                 List<BmOrderDetail> bmOrderDetails = bmOrderMapper.getBmOrderDetailByOrderId(result.getOrderId());
@@ -124,9 +120,9 @@ public class BmBuyRecordServiceImpl implements IBmBuyRecordService {
                         dealMoney = dealMoney.add(bmOrderDetail.getMoney());
                         BmMaterial bmMaterial = bmMaterialMapper.selectById(bmOrderDetail.getMaterialId());
                         if (i != bmOrderDetails.size()-1){
-                            oderDetailName.append(bmMaterial.getMaterialName() + " × " +bmOrderDetail.getNum()+" 、 ");
+                            oderDetailName.append(bmMaterial.getMaterialName() + "(" +bmOrderDetail.getMoney().stripTrailingZeros().toPlainString()+"元) 、 ");
                         }else {
-                            oderDetailName.append(bmMaterial.getMaterialName() + " × " +bmOrderDetail.getNum());
+                            oderDetailName.append(bmMaterial.getMaterialName() + "(" +bmOrderDetail.getMoney().stripTrailingZeros().toPlainString()+"元)");
                         }
                     }
                     result.setOrderDeatil(oderDetailName.toString());
@@ -162,21 +158,32 @@ public class BmBuyRecordServiceImpl implements IBmBuyRecordService {
         return bmOrderMapper.deleteBmOrder(bmOrderIds);
     }
 
+    @Override
+    public JSONObject getCostInfo() {
+        //获取所有的采购订单中采购的开支
+        String totalCostInfo = bmOrderMapper.getCostInfo("");
+        //获取所有的采购订单中采购商品的开支
+        String buyCostInfo = bmOrderMapper.getCostInfo(BaseConstant.MaterialBuy);
+        //获取所有的采购订单中其他商品的开支
+        String otherCostInfo = bmOrderMapper.getCostInfo(BaseConstant.MaterialOther);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("totalCostInfo",StrUtil.isEmpty(totalCostInfo) ? "0" : new BigDecimal(totalCostInfo).stripTrailingZeros().toPlainString());
+        jsonObject.put("buyCostInfo",StrUtil.isEmpty(buyCostInfo) ? "0" : new BigDecimal(buyCostInfo).stripTrailingZeros().toPlainString());
+        jsonObject.put("otherCostInfo",StrUtil.isEmpty(otherCostInfo) ? "0" : new BigDecimal(otherCostInfo).stripTrailingZeros().toPlainString());
+        return jsonObject;
+    }
+
     private boolean orderUpdateFlag(BmOrder newObj, BmOrder oldObj){
         StringBuffer sb1 = new StringBuffer("");
         StringBuffer sb2 = new StringBuffer("");
-        sb1.append(newObj.getDealerId());
-        sb2.append(oldObj.getDealerId());
         sb1.append(newObj.getOrderDate());
         sb2.append(oldObj.getOrderDate());
-        sb1.append(newObj.getRemark());
-        sb2.append(oldObj.getRemark());
 
         return sb1.toString().equals(sb2.toString());
     }
 
     private boolean checkFiled(BmOrder bmOrder){
-        if(ObjectUtil.isEmpty(bmOrder)  || StrUtil.isEmpty(bmOrder.getDealerId()) ||
+        if(ObjectUtil.isEmpty(bmOrder)  ||
                  ObjectUtil.isEmpty(bmOrder.getOrderDate()) || ObjectUtil.isEmpty(bmOrder.getParams()) ){
             return true;
         }

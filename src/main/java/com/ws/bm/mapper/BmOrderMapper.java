@@ -27,4 +27,6 @@ public interface BmOrderMapper {
     int deleteBmOrder(List<String> bmOrderIds);
 
     int deleteBmOrderDetails(List<String> bmOrderIds);
+
+    String getCostInfo(String materialType);
 }
