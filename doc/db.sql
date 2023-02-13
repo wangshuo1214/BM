@@ -139,3 +139,18 @@ CREATE TABLE `bm_transfer_record` (
                                       PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+CREATE TABLE `bm_make_record_detail` (
+                                         `id` varchar(36) NOT NULL COMMENT '主键',
+                                         `make_record_id` varchar(36) NOT NULL COMMENT '生产记录id',
+                                         `material_id` varchar(36) NOT NULL COMMENT '生产商品id',
+                                         `num` int NOT NULL COMMENT '数量',
+                                         `wage` decimal(6,2) NOT NULL COMMENT '工费',
+                                         `sort` int NOT NULL COMMENT '排序',
+                                         `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+                                         `create_date` datetime NOT NULL COMMENT '创建时间',
+                                         `update_date` datetime NOT NULL COMMENT '修改时间',
+                                         `deleted` char(1) NOT NULL COMMENT '删除标志',
+                                         PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+

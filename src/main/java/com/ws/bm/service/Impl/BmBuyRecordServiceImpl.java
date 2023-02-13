@@ -120,9 +120,13 @@ public class BmBuyRecordServiceImpl implements IBmBuyRecordService {
                         dealMoney = dealMoney.add(bmOrderDetail.getMoney());
                         BmMaterial bmMaterial = bmMaterialMapper.selectById(bmOrderDetail.getMaterialId());
                         if (i != bmOrderDetails.size()-1){
-                            oderDetailName.append(bmMaterial.getMaterialName() + "(" +bmOrderDetail.getMoney().stripTrailingZeros().toPlainString()+"元) 、 ");
+                            oderDetailName.append(bmMaterial.getMaterialName() + "(" +
+                                    bmSupplierMapper.selectById(bmOrderDetail.getDealerId()).getSupplierName() + ":" +
+                                    bmOrderDetail.getMoney().stripTrailingZeros().toPlainString()+"元) 、 ");
                         }else {
-                            oderDetailName.append(bmMaterial.getMaterialName() + "(" +bmOrderDetail.getMoney().stripTrailingZeros().toPlainString()+"元)");
+                            oderDetailName.append(bmMaterial.getMaterialName() + "(" +
+                                    bmSupplierMapper.selectById(bmOrderDetail.getDealerId()).getSupplierName() + ":" +
+                                    bmOrderDetail.getMoney().stripTrailingZeros().toPlainString()+"元)");
                         }
                     }
                     result.setOrderDeatil(oderDetailName.toString());
@@ -161,15 +165,15 @@ public class BmBuyRecordServiceImpl implements IBmBuyRecordService {
     @Override
     public JSONObject getCostInfo() {
         //获取所有的采购订单中采购的开支
-        String totalCostInfo = bmOrderMapper.getCostInfo("");
-        //获取所有的采购订单中采购商品的开支
-        String buyCostInfo = bmOrderMapper.getCostInfo(BaseConstant.MaterialBuy);
-        //获取所有的采购订单中其他商品的开支
-        String otherCostInfo = bmOrderMapper.getCostInfo(BaseConstant.MaterialOther);
+        String totalCostInfo = bmOrderMapper.getCostInfo("total");
+        //获取本月采购订单的开支
+        String monthCostInfo = bmOrderMapper.getCostInfo("month");
+        //获取今日采购订单的开支
+        String dayCostInfo = bmOrderMapper.getCostInfo("day");
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("totalCostInfo",StrUtil.isEmpty(totalCostInfo) ? "0" : new BigDecimal(totalCostInfo).stripTrailingZeros().toPlainString());
-        jsonObject.put("buyCostInfo",StrUtil.isEmpty(buyCostInfo) ? "0" : new BigDecimal(buyCostInfo).stripTrailingZeros().toPlainString());
-        jsonObject.put("otherCostInfo",StrUtil.isEmpty(otherCostInfo) ? "0" : new BigDecimal(otherCostInfo).stripTrailingZeros().toPlainString());
+        jsonObject.put("monthCostInfo",StrUtil.isEmpty(monthCostInfo) ? "0" : new BigDecimal(monthCostInfo).stripTrailingZeros().toPlainString());
+        jsonObject.put("dayCostInfo",StrUtil.isEmpty(dayCostInfo) ? "0" : new BigDecimal(dayCostInfo).stripTrailingZeros().toPlainString());
         return jsonObject;
     }
 
@@ -187,7 +191,7 @@ public class BmBuyRecordServiceImpl implements IBmBuyRecordService {
                  ObjectUtil.isEmpty(bmOrder.getOrderDate()) || ObjectUtil.isEmpty(bmOrder.getParams()) ){
             return true;
         }
-        List<BmOrderDetail> bmOrderDetails = (List<BmOrderDetail>) bmOrder.getParams().get("orderDetails");
+        List<BmOrderDetail> bmOrderDetails = JSONObject.parseArray(JSONArray.toJSONString(bmOrder.getParams().get("orderDetails")),BmOrderDetail.class);
         if ( CollUtil.isEmpty(bmOrderDetails)){
             throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.buyRecord.deatilNotNull"));
         }

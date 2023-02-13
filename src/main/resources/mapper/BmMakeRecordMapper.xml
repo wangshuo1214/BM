@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ws.bm.mapper.BmMakeRecordMapper">
+
+    <sql id="selectBmMakeRecordHql">
+        select id,employee_id, complete_date, wage_flag,salary_id,create_date,update_date,deleted
+        from bm_make_record
+    </sql>
+
+    <sql id="selectBmMakeRecordDetailHql">
+        select id,make_record_id, material_id, num, wage, sort, remark, create_date, update_date, deleted
+        from bm_make_record_detail
+    </sql>
+
+    <sql id="deleteFlagHql">
+        and deleted = ${@com.ws.bm.common.constant.BaseConstant@FALSE}
+    </sql>
+
+    <insert id="addBmMakeRecord">
+        insert into bm_make_record (
+        <if test="id != null and id != ''">id,</if>
+        <if test="employeeId != null and employeeId != ''">employee_id,</if>
+        <if test="completeDate != null">complete_date,</if>
+        <if test="wageFlag != null and wageFlag != ''">wage_flag</if>
+        <if test="salaryId != null and salaryId != ''">salary_id,</if>
+        <if test="createDate != null">create_date,</if>
+        <if test="updateDate != null ">update_date,</if>
+        <if test="deleted != null  and deleted != ''">deleted</if>
+        ) values (
+        <if test="id != null and id != ''">#{id},</if>
+        <if test="employeeId != null and employeeId != ''">#{employeeId},</if>
+        <if test="completeDate != null">#{completeDate},</if>
+        <if test="wageFlag != null and wageFlag != ''">#{wageFlag},</if>
+        <if test="salaryId != null and salaryId != ''">#{salaryId},</if>
+        <if test="createDate != null">#{createDate},</if>
+        <if test="updateDate != null ">#{updateDate},</if>
+        <if test="deleted != null  and deleted != ''">#{deleted}</if>
+        )
+    </insert>
+
+    <insert id="batchAddBmMakeRecordDetail">
+        insert into bm_make_record_detail(id, make_record_id,material_id, num, wage, sort, remark, create_date, update_date,deleted) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{item.id},#{item.makeRecordId},#{item.materialId},#{item.num},#{item.wage},#{item.sort},#{item.remark},#{item.createDate},#{item.updateDate},${@com.ws.bm.common.constant.BaseConstant@FALSE})
+        </foreach>
+    </insert>
+
+
+    <select id="getBmMakeRecord" parameterType="String" resultType="BmMakeRecord">
+        <include refid="selectBmMakeRecordHql"/>
+        <where>
+            id = #{id}
+        </where>
+        <include refid="deleteFlagHql"/>
+        order by update_date desc
+    </select>
+
+    <select id="getBmMakeRecordDetailByMakeRecordId" parameterType="String" resultType="BmMakeRecordDetail">
+        <include refid="selectBmMakeRecordDetailHql"/>
+        <where>
+            make_record_id = #{makeRecordId}
+        </where>
+        <include refid="deleteFlagHql"/>
+        order by sort asc
+    </select>
+
+    <update id="batchDeleteBmMakeRecordDetail" parameterType="String">
+        update bm_make_record_detail set deleted = ${@com.ws.bm.common.constant.BaseConstant@TRUE} , update_date = sysdate()
+        where make_record_id = #{makeRecordId}
+        <include refid="deleteFlagHql"/>
+    </update>
+
+    <update id="updateBmMakeRecord" parameterType="BmMakeRecord">
+        update bm_make_record
+        <set>
+            <if test="completeDate != null">complete_date = #{completeDate},</if>
+            <if test="updateDate != null">update_date = #{updateDate},</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="queryBmMakeRecord" parameterType="BmMakeRecord" resultType="BmMakeRecord">
+        <include refid="selectBmMakeRecordHql"/>
+        <where>
+            and employee_id = #{employeeId}
+            <if test="wageFlag != null and wageFlag != '' ">
+                and wage_flag = #{wageFlag}
+            </if>
+            <if test="params != null and params != '' ">
+                <if test="params.completeDate != null and params.completeDate != ''"><!-- 开始时间检索 -->
+                    and date_format(complete_date,'%y%m%d') &gt;= date_format(#{params.completeDate[0]},'%y%m%d')
+                    and date_format(complete_date,'%y%m%d') &lt;= date_format(#{params.completeDate[0]},'%y%m%d')
+                </if>
+            </if>
+            <include refid="deleteFlagHql"/>
+        </where>
+        order by order_date desc,update_date desc
+    </select>
+
+    <update id="deleteBmMakeRecord" parameterType="String">
+        update bm_make_record set deleted = ${@com.ws.bm.common.constant.BaseConstant@TRUE} , update_date = sysdate()
+        where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <update id="deleteBmMakeRecordDetail" parameterType="String">
+        update bm_make_record_detail set deleted = ${@com.ws.bm.common.constant.BaseConstant@TRUE} , update_date = sysdate()
+        where make_record_id in
+        <foreach collection="bmMakeRecordIds" item="bmMakeRecordId" open="(" separator="," close=")">
+            #{bmMakeRecordId}
+        </foreach>
+    </update>
+
+    <select id="getNoPayMakeRecord" resultType="BmMakeRecord">
+        <include refid="selectBmMakeRecordHql"/>
+        <where>
+            wage_flag = ${@com.ws.bm.common.constant.BaseConstant@FALSE}
+        </where>
+        <include refid="deleteFlagHql"/>
+    </select>
+
+    <select id="getMakeRecordByIds" resultType="BmMakeRecord">
+        <include refid="selectBmMakeRecordHql"/>
+        where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        <include refid="deleteFlagHql"/>
+    </select>
+
+</mapper>
