@@ -81,6 +81,23 @@
         where id = #{id}
     </update>
 
+    <select id="getNoPayMakeRecord" resultType="BmMakeRecord">
+        <include refid="selectBmMakeRecordHql"/>
+        <where>
+            wage_flag = ${@com.ws.bm.common.constant.BaseConstant@FALSE}
+        </where>
+        <include refid="deleteFlagHql"/>
+    </select>
+
+    <select id="getMakeRecordByIds" resultType="BmMakeRecord">
+        <include refid="selectBmMakeRecordHql"/>
+        where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        <include refid="deleteFlagHql"/>
+    </select>
+
     <select id="queryBmMakeRecord" parameterType="BmMakeRecord" resultType="BmMakeRecord">
         <include refid="selectBmMakeRecordHql"/>
         <where>
@@ -115,21 +132,92 @@
         </foreach>
     </update>
 
-    <select id="getNoPayMakeRecord" resultType="BmMakeRecord">
-        <include refid="selectBmMakeRecordHql"/>
+    <update id="payWage" parameterType="String">
+        update bm_make_record set wage_flag = ${@com.ws.bm.common.constant.BaseConstant@TRUE} , update_date = sysdate()
         <where>
-            wage_flag = ${@com.ws.bm.common.constant.BaseConstant@FALSE}
+            <if test="ids != null and ids.size > 0">
+                id in (
+                select id from bm_make_record
+                <where>
+                    wage_flag = ${@com.ws.bm.common.constant.BaseConstant@FALSE}
+                </where>
+                <include refid="deleteFlagHql"/>
+                )
+            </if>
+            <if test="ids == null or ids.size = 0">
+                id in (
+                <foreach collection="ids" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+                )
+            </if>
         </where>
-        <include refid="deleteFlagHql"/>
+    </update>
+
+    <select id="getTotalPayWage" parameterType="String" resultType="String">
+        select sum(wage) from bm_make_record_detail
+        <where>
+            <if test="ids != null and ids.size > 0">
+                make_record_id in (
+                select id from bm_make_record
+                <where>
+                    wage_flag = ${@com.ws.bm.common.constant.BaseConstant@FALSE}
+                </where>
+                <include refid="deleteFlagHql"/>
+                )
+            </if>
+            <if test="ids == null or ids.size = 0">
+                make_record_id in (
+                select id from bm_make_record where
+                id in (
+                <foreach collection="ids" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+                )
+                )
+            </if>
+        </where>
+        order by order_date desc,update_date desc
     </select>
 
-    <select id="getMakeRecordByIds" resultType="BmMakeRecord">
-        <include refid="selectBmMakeRecordHql"/>
-        where id in
-        <foreach collection="ids" item="id" open="(" separator="," close=")">
-            #{id}
-        </foreach>
-        <include refid="deleteFlagHql"/>
-    </select>
+    <insert id="addBmSalaryRecord">
+        insert into bm_salary_record (
+        <if test="id != null and id != ''">id,</if>
+        <if test="salary != null ">salary,</if>
+        <if test="salaryDate != null">salary_date,</if>
+        <if test="createDate != null">create_date,</if>
+        <if test="updateDate != null ">update_date,</if>
+        <if test="deleted != null  and deleted != ''">deleted</if>
+        ) values (
+        <if test="id != null and id != ''">#{id},</if>
+        <if test="salary != null ">#{salary},</if>
+        <if test="salaryDate != null">#{salaryDate},</if>
+        <if test="createDate != null">#{createDate},</if>
+        <if test="updateDate != null ">#{updateDate},</if>
+        <if test="deleted != null  and deleted != ''">#{id}</if>
+        )
+    </insert>
+
+    <update id="setSalaryIdForMakeRecord" parameterType="String">
+        update bm_make_record set salary_id = #{salaryId} , update_date = sysdate()
+        <where>
+            <if test="ids != null and ids.size > 0">
+                id in (
+                select id from bm_make_record
+                <where>
+                    wage_flag = ${@com.ws.bm.common.constant.BaseConstant@FALSE}
+                </where>
+                <include refid="deleteFlagHql"/>
+                )
+            </if>
+            <if test="ids == null or ids.size = 0">
+                id in (
+                <foreach collection="ids" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+                )
+            </if>
+        </where>
+    </update>
 
 </mapper>

@@ -2,8 +2,10 @@ package com.ws.bm.mapper;
 
 import com.ws.bm.domain.entity.BmMakeRecord;
 import com.ws.bm.domain.entity.BmMakeRecordDetail;
+import com.ws.bm.domain.entity.BmSalaryRecord;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Mapper
@@ -25,6 +27,14 @@ public interface BmMakeRecordMapper {
     int deleteBmMakeRecord(List<String> ids);
 
     int deleteBmMakeRecordDetail(List<String> bmMakeRecordIds);
+
+    int payWage(List<String> ids);
+
+    String getTotalPayWage(List<String> ids);
+
+    int addBmSalaryRecord(BmSalaryRecord bmSalaryRecord);
+
+    int setSalaryIdForMakeRecord(String salaryId);
 
     List<BmMakeRecord> getNoPayMakeRecord();
 

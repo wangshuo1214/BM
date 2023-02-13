@@ -18,6 +18,4 @@ public class BmSalaryRecord extends BaseEntity{
     private BigDecimal salary;
 
     private Date salaryDate;
-
-    private String remark;
 }

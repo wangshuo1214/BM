@@ -43,4 +43,10 @@ public class BmMakeRecordController extends BaseController {
     public Result getBmMakeRecord(String id){
         return success(iBmMakeRecordService.getBmMakeRecord(id));
     }
+
+
+    @PostMapping("/payWage")
+    public Result payWage(@RequestBody List<String> ids){
+        return success(iBmMakeRecordService.payWage(ids));
+    }
 }

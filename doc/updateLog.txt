@@ -50,3 +50,4 @@
 
 2023.2.13
     删除bm_make_record表的materialId、num、wage、remark字段,新增bm_make_record_detail表
+    删除bm_salary_record的remark字段

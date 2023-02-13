@@ -9,10 +9,7 @@ import com.ws.bm.common.constant.BaseConstant;
 import com.ws.bm.common.constant.HttpStatus;
 import com.ws.bm.common.utils.InitFieldUtil;
 import com.ws.bm.common.utils.MessageUtil;
-import com.ws.bm.domain.entity.BmMakeRecord;
-import com.ws.bm.domain.entity.BmMakeRecordDetail;
-import com.ws.bm.domain.entity.BmMaterial;
-import com.ws.bm.domain.entity.BmOrderDetail;
+import com.ws.bm.domain.entity.*;
 import com.ws.bm.exception.BaseException;
 import com.ws.bm.mapper.BmMakeRecordMapper;
 import com.ws.bm.mapper.BmMaterialMapper;
@@ -22,9 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class BmMakeRecordServiceImpl implements IBmMakeRecordService {
@@ -151,6 +146,7 @@ public class BmMakeRecordServiceImpl implements IBmMakeRecordService {
     }
 
     @Override
+    @Transactional
     public int deleteBmMakeRecord(List<String> ids) {
         if (CollUtil.isEmpty(ids)){
             throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
@@ -160,14 +156,31 @@ public class BmMakeRecordServiceImpl implements IBmMakeRecordService {
     }
 
     @Override
-    public int payWage(List<String> ids) {
-        List<BmMakeRecord> bmMakeRecords;
+    @Transactional
+    public JSONObject payWage(List<String> ids) {
+        List<BmMakeRecord> bmMakeRecords = new ArrayList<>();
         if (CollUtil.isEmpty(ids)){
             bmMakeRecords = bmMakeRecordMapper.getNoPayMakeRecord();
         }else {
             bmMakeRecords = bmMakeRecordMapper.getMakeRecordByIds(ids);
         }
-        return 0;
+        // 获取总共支付的工资总数
+        BigDecimal totalPayWage = new BigDecimal(bmMakeRecordMapper.getTotalPayWage(ids));
+        // 新增工资发放记录
+        BmSalaryRecord bmSalaryRecord = new BmSalaryRecord();
+        if (!InitFieldUtil.initField(bmSalaryRecord)){
+            throw new BaseException(HttpStatus.ERROR,MessageUtil.getMessage("bm.initFieldError"));
+        }
+        bmSalaryRecord.setSalary(totalPayWage);
+        bmSalaryRecord.setSalaryDate(new Date());
+        bmMakeRecordMapper.addBmSalaryRecord(bmSalaryRecord);
+        // 支付工资，修改生产记录的支付标志
+        bmMakeRecordMapper.payWage(ids);
+        // 支付生产记录绑定工资发放记录
+
+        JSONObject result = new JSONObject();
+        result.put("totalPayWage",totalPayWage);
+        return result;
     }
 
     private boolean checkFiled(BmMakeRecord bmMakeRecord){

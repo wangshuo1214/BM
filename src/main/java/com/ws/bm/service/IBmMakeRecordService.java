@@ -1,5 +1,6 @@
 package com.ws.bm.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.ws.bm.domain.entity.BmMakeRecord;
 
 import java.util.List;
@@ -16,5 +17,5 @@ public interface IBmMakeRecordService {
 
     int deleteBmMakeRecord(List<String> ids);
 
-    int payWage(List<String> ids);
+    JSONObject payWage(List<String> ids);
 }
