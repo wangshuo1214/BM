@@ -44,7 +44,7 @@ public class BmMakeRecordServiceImpl implements IBmMakeRecordService {
         //生产记录细节
         List<BmMakeRecordDetail> bmMakeRecordDetails = JSONObject.parseArray(JSONArray.toJSONString(bmMakeRecord.getParams().get("bmMakeRecordDetails")), BmMakeRecordDetail.class);
         bmMakeRecordDetails.forEach(bmMakeRecordDetail -> {
-            if (StrUtil.isEmpty(bmMakeRecordDetail.getMakeRecordId()) || ObjectUtil.isEmpty(bmMakeRecordDetail.getNum()) ||
+            if ( ObjectUtil.isEmpty(bmMakeRecordDetail.getNum()) ||
                     ObjectUtil.isEmpty(bmMakeRecordDetail.getWage()) || ObjectUtil.isEmpty(bmMakeRecordDetail.getSort())
             ){
                 throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
@@ -78,7 +78,7 @@ public class BmMakeRecordServiceImpl implements IBmMakeRecordService {
             //删除之前的生产记录细节
             bmMakeRecordMapper.batchDeleteBmMakeRecordDetail(bmMakeRecord.getId());
             bmMakeRecordDetails.forEach(bmMakeRecordDetail -> {
-                if (StrUtil.isEmpty(bmMakeRecordDetail.getMakeRecordId()) || ObjectUtil.isEmpty(bmMakeRecordDetail.getNum()) ||
+                if ( ObjectUtil.isEmpty(bmMakeRecordDetail.getNum()) ||
                         ObjectUtil.isEmpty(bmMakeRecordDetail.getWage()) || ObjectUtil.isEmpty(bmMakeRecordDetail.getSort())
                 ){
                     throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));

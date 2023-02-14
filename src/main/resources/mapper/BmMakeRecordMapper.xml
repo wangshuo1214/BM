@@ -23,7 +23,7 @@
         <if test="id != null and id != ''">id,</if>
         <if test="employeeId != null and employeeId != ''">employee_id,</if>
         <if test="completeDate != null">complete_date,</if>
-        <if test="wageFlag != null and wageFlag != ''">wage_flag</if>
+        <if test="wageFlag != null and wageFlag != ''">wage_flag,</if>
         <if test="salaryId != null and salaryId != ''">salary_id,</if>
         <if test="createDate != null">create_date,</if>
         <if test="updateDate != null ">update_date,</if>
@@ -108,12 +108,12 @@
             <if test="params != null and params != '' ">
                 <if test="params.completeDate != null and params.completeDate != ''"><!-- 开始时间检索 -->
                     and date_format(complete_date,'%y%m%d') &gt;= date_format(#{params.completeDate[0]},'%y%m%d')
-                    and date_format(complete_date,'%y%m%d') &lt;= date_format(#{params.completeDate[0]},'%y%m%d')
+                    and date_format(complete_date,'%y%m%d') &lt;= date_format(#{params.completeDate[1]},'%y%m%d')
                 </if>
             </if>
             <include refid="deleteFlagHql"/>
         </where>
-        order by order_date desc,update_date desc
+        order by wage_flag desc,update_date desc
     </select>
 
     <update id="deleteBmMakeRecord" parameterType="String">

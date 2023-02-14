@@ -89,7 +89,7 @@
                 </if>
                 <if test="params.orderDate != null and params.orderDate != ''"><!-- 开始时间检索 -->
                     and date_format(order_date,'%y%m%d') &gt;= date_format(#{params.orderDate[0]},'%y%m%d')
-                    and date_format(order_date,'%y%m%d') &lt;= date_format(#{params.orderDate[0]},'%y%m%d')
+                    and date_format(order_date,'%y%m%d') &lt;= date_format(#{params.orderDate[1]},'%y%m%d')
                 </if>
             </if>
             <include refid="deleteFlagHql"/>
