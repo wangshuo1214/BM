@@ -164,23 +164,29 @@ public class BmMakeRecordServiceImpl implements IBmMakeRecordService {
         }else {
             bmMakeRecords = bmMakeRecordMapper.getMakeRecordByIds(ids);
         }
-        // 获取总共支付的工资总数
-        BigDecimal totalPayWage = new BigDecimal(bmMakeRecordMapper.getTotalPayWage(ids));
-        // 新增工资发放记录
-        BmSalaryRecord bmSalaryRecord = new BmSalaryRecord();
-        if (!InitFieldUtil.initField(bmSalaryRecord)){
-            throw new BaseException(HttpStatus.ERROR,MessageUtil.getMessage("bm.initFieldError"));
-        }
-        bmSalaryRecord.setSalary(totalPayWage);
-        bmSalaryRecord.setSalaryDate(new Date());
-        bmMakeRecordMapper.addBmSalaryRecord(bmSalaryRecord);
-        // 支付工资，修改生产记录的支付标志
-        bmMakeRecordMapper.payWage(ids);
-        // 支付生产记录绑定工资发放记录
+        if (CollUtil.isNotEmpty(bmMakeRecords)){
+            // 获取总共支付的工资总数
+            BigDecimal totalPayWage = new BigDecimal(bmMakeRecordMapper.getTotalPayWage(ids));
+            // 新增工资发放记录
+            BmSalaryRecord bmSalaryRecord = new BmSalaryRecord();
+            if (!InitFieldUtil.initField(bmSalaryRecord)){
+                throw new BaseException(HttpStatus.ERROR,MessageUtil.getMessage("bm.initFieldError"));
+            }
+            bmSalaryRecord.setSalary(totalPayWage);
+            bmSalaryRecord.setSalaryDate(new Date());
+            bmMakeRecordMapper.addBmSalaryRecord(bmSalaryRecord);
+            // 支付工资，修改生产记录的支付标志
+            bmMakeRecordMapper.payWage(ids);
+            // 生产记录绑定工资发放标识
+            bmMakeRecordMapper.setSalaryIdForMakeRecord(bmSalaryRecord.getId());
+            JSONObject result = new JSONObject();
+            result.put("totalPayWage",totalPayWage);
+            return result;
 
-        JSONObject result = new JSONObject();
-        result.put("totalPayWage",totalPayWage);
-        return result;
+        }else {
+            throw new BaseException(HttpStatus.ERROR,MessageUtil.getMessage("bm.makeRecord.noPayWage"));
+        }
+
     }
 
     private boolean checkFiled(BmMakeRecord bmMakeRecord){

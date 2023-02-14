@@ -39,4 +39,5 @@ public interface BmMakeRecordMapper {
     List<BmMakeRecord> getNoPayMakeRecord();
 
     List<BmMakeRecord> getMakeRecordByIds(List<String> ids);
+
 }

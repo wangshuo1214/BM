@@ -42,4 +42,14 @@ public class BmEmployeeController extends BaseController{
     public Result getBmEmployee(String bmEmployeeId){
         return success(iBmEmployeeService.getBmEmployee(bmEmployeeId));
     }
+
+    @GetMapping("/employeeTree")
+    public Result getBmEmployeeTree(){
+        return success(iBmEmployeeService.getEmployeeTree());
+    }
+
+    @GetMapping("/allEmployee")
+    public Result getAllEmployees(){
+        return success(iBmEmployeeService.getAllEmployees());
+    }
 }

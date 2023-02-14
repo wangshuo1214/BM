@@ -10,11 +10,13 @@ import com.ws.bm.common.constant.HttpStatus;
 import com.ws.bm.common.utils.InitFieldUtil;
 import com.ws.bm.common.utils.MessageUtil;
 import com.ws.bm.domain.entity.BmEmployee;
+import com.ws.bm.domain.model.TreeSelect;
 import com.ws.bm.exception.BaseException;
 import com.ws.bm.mapper.BmEmployeeMapper;
 import com.ws.bm.service.IBmEmployeeService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -106,6 +108,35 @@ public class BmEmployeeServiceImpl extends ServiceImpl<BmEmployeeMapper, BmEmplo
             throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.employee.notexist"));
         }
         return bmEmployee;
+    }
+
+    @Override
+    public List<TreeSelect> getEmployeeTree() {
+        QueryWrapper<BmEmployee> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(BmEmployee::getDeleted,BaseConstant.FALSE);
+        wrapper.lambda().orderByAsc(BmEmployee::getCreateDate);
+        List<BmEmployee> employees = list(wrapper);
+        if (CollUtil.isNotEmpty(employees)){
+            List<TreeSelect> employeeTreeSelects = new ArrayList<>();
+            employees.forEach(employee -> {
+                TreeSelect employeeTreeSelect = new TreeSelect();
+                employeeTreeSelect.setId(employee.getEmployeeId());
+                employeeTreeSelect.setLabel(employee.getEmployeeName());
+                employeeTreeSelects.add(employeeTreeSelect);
+            });
+            return employeeTreeSelects;
+        }else {
+            return new ArrayList<>();
+        }
+
+    }
+
+    @Override
+    public List<BmEmployee> getAllEmployees() {
+        QueryWrapper<BmEmployee> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(BmEmployee::getDeleted,BaseConstant.FALSE);
+        wrapper.lambda().orderByAsc(BmEmployee::getCreateDate);
+        return list(wrapper);
     }
 
     private boolean checkFiled(BmEmployee bmEmployee){

@@ -32,4 +32,8 @@ public class TreeSelect {
         this.label = dept.getDeptName();
         this.children = dept.getChildren().stream().map(TreeSelect::new).collect(Collectors.toList());
     }
+
+    public TreeSelect(){
+
+    }
 }
