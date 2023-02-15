@@ -91,8 +91,9 @@ public class BmMakeRecordServiceImpl implements IBmMakeRecordService {
             //批量增加生产记录详情
             bmMakeRecordMapper.batchAddBmMakeRecordDetail(bmMakeRecordDetails);
         }
-        if (updateFlag(bmMakeRecord,oldBmMakeRecord)){
+        if (!updateFlag(bmMakeRecord,oldBmMakeRecord)){
             oldBmMakeRecord.setCompleteDate(bmMakeRecord.getCompleteDate());
+            oldBmMakeRecord.setUpdateDate(new Date());
         }
 
         return bmMakeRecordMapper.updateBmMakeRecord(bmMakeRecord);
