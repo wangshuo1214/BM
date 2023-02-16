@@ -24,9 +24,9 @@ public interface BmMakeRecordMapper {
 
     List<BmMakeRecord> queryBmMakeRecord(BmMakeRecord bmMakeRecord);
 
-    int deleteBmMakeRecord(List<String> ids);
+    int deleteBmMakeRecord(String id);
 
-    int deleteBmMakeRecordDetail(List<String> bmMakeRecordIds);
+    int deleteBmMakeRecordDetail(String bmMakeRecordId);
 
     int payWage(List<String> ids);
 

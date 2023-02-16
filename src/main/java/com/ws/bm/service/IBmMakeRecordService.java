@@ -15,7 +15,7 @@ public interface IBmMakeRecordService {
 
     BmMakeRecord getBmMakeRecord(String id);
 
-    int deleteBmMakeRecord(List<String> ids);
+    int deleteBmMakeRecord(String id);
 
     JSONObject payWage(List<String> ids);
 }

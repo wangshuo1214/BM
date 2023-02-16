@@ -30,8 +30,8 @@ public class BmMakeRecordController extends BaseController {
     }
 
     @PostMapping("/delete")
-    public Result deleteBmMakeRecord(@RequestBody List<String> ids){
-        return computeResult(iBmMakeRecordService.deleteBmMakeRecord(ids));
+    public Result deleteBmMakeRecord(@RequestBody String id){
+        return computeResult(iBmMakeRecordService.deleteBmMakeRecord(id));
     }
 
     @PostMapping("/update")

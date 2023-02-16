@@ -147,13 +147,12 @@ public class BmMakeRecordServiceImpl implements IBmMakeRecordService {
     }
 
     @Override
-    @Transactional
-    public int deleteBmMakeRecord(List<String> ids) {
-        if (CollUtil.isEmpty(ids)){
+    public int deleteBmMakeRecord(String id) {
+        if (StrUtil.isEmpty(id)){
             throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
         }
-        bmMakeRecordMapper.deleteBmMakeRecordDetail(ids);
-        return bmMakeRecordMapper.deleteBmMakeRecord(ids);
+        bmMakeRecordMapper.deleteBmMakeRecordDetail(id);
+        return bmMakeRecordMapper.deleteBmMakeRecord(id);
     }
 
     @Override
