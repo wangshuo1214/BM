@@ -11,6 +11,7 @@ import org.bouncycastle.jcajce.provider.symmetric.ARC4;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @TableName("bm_make_record")

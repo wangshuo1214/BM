@@ -3,6 +3,7 @@ package com.ws.bm.service;
 import com.alibaba.fastjson.JSONObject;
 import com.ws.bm.domain.entity.BmMakeRecord;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface IBmMakeRecordService {
@@ -17,5 +18,7 @@ public interface IBmMakeRecordService {
 
     int deleteBmMakeRecord(String id);
 
-    JSONObject payWage(List<String> ids);
+    int payWage(String employeeId);
+
+    BigDecimal getNeedPayWage(String employeeId);
 }

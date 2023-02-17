@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class BmMakeRecordServiceImpl implements IBmMakeRecordService {
@@ -147,6 +148,7 @@ public class BmMakeRecordServiceImpl implements IBmMakeRecordService {
     }
 
     @Override
+    @Transactional
     public int deleteBmMakeRecord(String id) {
         if (StrUtil.isEmpty(id)){
             throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
@@ -157,16 +159,15 @@ public class BmMakeRecordServiceImpl implements IBmMakeRecordService {
 
     @Override
     @Transactional
-    public JSONObject payWage(List<String> ids) {
-        List<BmMakeRecord> bmMakeRecords = new ArrayList<>();
-        if (CollUtil.isEmpty(ids)){
-            bmMakeRecords = bmMakeRecordMapper.getNoPayMakeRecord();
-        }else {
-            bmMakeRecords = bmMakeRecordMapper.getMakeRecordByIds(ids);
+    public int payWage(String employeeId) {
+        if (StrUtil.isEmpty(employeeId)){
+            throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
         }
+        // 该员工没有发放工资的生产记录
+        List<BmMakeRecord> bmMakeRecords = bmMakeRecordMapper.getEmployeeNoPayMakeRecord(employeeId);
         if (CollUtil.isNotEmpty(bmMakeRecords)){
             // 获取总共支付的工资总数
-            BigDecimal totalPayWage = new BigDecimal(bmMakeRecordMapper.getTotalPayWage(ids));
+            BigDecimal totalPayWage = new BigDecimal(bmMakeRecordMapper.getTotalPayWage(employeeId));
             // 新增工资发放记录
             BmSalaryRecord bmSalaryRecord = new BmSalaryRecord();
             if (!InitFieldUtil.initField(bmSalaryRecord)){
@@ -174,19 +175,22 @@ public class BmMakeRecordServiceImpl implements IBmMakeRecordService {
             }
             bmSalaryRecord.setSalary(totalPayWage);
             bmSalaryRecord.setSalaryDate(new Date());
+            bmSalaryRecord.setEmployeeId(employeeId);
             bmMakeRecordMapper.addBmSalaryRecord(bmSalaryRecord);
-            // 支付工资，修改生产记录的支付标志
-            bmMakeRecordMapper.payWage(ids);
-            // 生产记录绑定工资发放标识
-            bmMakeRecordMapper.setSalaryIdForMakeRecord(bmSalaryRecord.getId());
-            JSONObject result = new JSONObject();
-            result.put("totalPayWage",totalPayWage);
-            return result;
-
+            // 修改支付标志，并绑定发放工资记录
+            return bmMakeRecordMapper.payWage(employeeId,bmSalaryRecord.getId());
         }else {
             throw new BaseException(HttpStatus.ERROR,MessageUtil.getMessage("bm.makeRecord.noPayWage"));
         }
 
+    }
+
+    @Override
+    public BigDecimal getNeedPayWage(String employeeId) {
+        // 获取总共支付的工资总数
+        String totalPayWage = bmMakeRecordMapper.getTotalPayWage(employeeId);
+        BigDecimal result = new BigDecimal(StrUtil.isNotEmpty(totalPayWage) ? totalPayWage : "0");
+        return result;
     }
 
     private boolean checkFiled(BmMakeRecord bmMakeRecord){
