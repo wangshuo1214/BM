@@ -26,5 +26,8 @@ public class BmSalaryRecord extends BaseEntity{
     private String employeeId;
 
     @TableField(exist = false)
+    private String employeeName;
+
+    @TableField(exist = false)
     private List<BmMakeRecord> makeRecords;
 }

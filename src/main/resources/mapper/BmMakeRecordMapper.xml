@@ -149,6 +149,7 @@
         <if test="id != null and id != ''">id,</if>
         <if test="salary != null ">salary,</if>
         <if test="salaryDate != null">salary_date,</if>
+        <if test="employeeId != null and employeeId != ''">employee_id,</if>
         <if test="createDate != null">create_date,</if>
         <if test="updateDate != null ">update_date,</if>
         <if test="deleted != null  and deleted != ''">deleted</if>
@@ -156,6 +157,7 @@
         <if test="id != null and id != ''">#{id},</if>
         <if test="salary != null ">#{salary},</if>
         <if test="salaryDate != null">#{salaryDate},</if>
+        <if test="employeeId != null and employeeId != ''">#{employeeId},</if>
         <if test="createDate != null">#{createDate},</if>
         <if test="updateDate != null ">#{updateDate},</if>
         <if test="deleted != null  and deleted != ''">#{deleted}</if>
