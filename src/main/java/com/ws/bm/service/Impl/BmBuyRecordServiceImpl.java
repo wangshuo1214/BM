@@ -108,6 +108,7 @@ public class BmBuyRecordServiceImpl implements IBmBuyRecordService {
 
     @Override
     public List<BmOrder> queryBmBuyRecord(BmOrder bmOrder) {
+        bmOrder.setOrderType(BaseConstant.BuyOrder);
         List<BmOrder> results = bmOrderMapper.queryBmOrder(bmOrder);
         if (CollUtil.isNotEmpty(results)){
             results.forEach(result -> {
@@ -165,11 +166,11 @@ public class BmBuyRecordServiceImpl implements IBmBuyRecordService {
     @Override
     public JSONObject getCostInfo() {
         //获取所有的采购订单中采购的开支
-        String totalCostInfo = bmOrderMapper.getCostInfo("total");
+        String totalCostInfo = bmOrderMapper.getMoneyInfo("total");
         //获取本月采购订单的开支
-        String monthCostInfo = bmOrderMapper.getCostInfo("month");
+        String monthCostInfo = bmOrderMapper.getMoneyInfo("month");
         //获取今日采购订单的开支
-        String dayCostInfo = bmOrderMapper.getCostInfo("day");
+        String dayCostInfo = bmOrderMapper.getMoneyInfo("day");
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("totalCostInfo",StrUtil.isEmpty(totalCostInfo) ? "0" : new BigDecimal(totalCostInfo).stripTrailingZeros().toPlainString());
         jsonObject.put("monthCostInfo",StrUtil.isEmpty(monthCostInfo) ? "0" : new BigDecimal(monthCostInfo).stripTrailingZeros().toPlainString());

@@ -1,5 +1,6 @@
 package com.ws.bm.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.ws.bm.domain.entity.BmOrder;
 
 import java.util.List;
@@ -14,5 +15,7 @@ public interface IBmSellRecordService {
     BmOrder getBmSellRecord(String bmOrderId);
 
     int deleteBmSellRecord(List<String> bmOrderIds);
+
+    JSONObject getSellInfo();
 
 }

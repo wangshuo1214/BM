@@ -28,5 +28,5 @@ public interface BmOrderMapper {
 
     int deleteBmOrderDetails(List<String> bmOrderIds);
 
-    String getCostInfo(String costType);
+    String getMoneyInfo(String type);
 }

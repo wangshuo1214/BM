@@ -80,6 +80,7 @@
     <select id="queryBmOrder" parameterType="BmOrder" resultType="BmOrder">
         <include refid="selectOrderHql"/>
         <where>
+            order_type = #{orderType}
             <if test="params != null and params != '' ">
                 <if test="params.dealerName != null and params.dealerName != ''"><!-- 交易人员 -->
                     and order_id in (select order_id from bm_order_detail where dealer_id in
@@ -114,14 +115,14 @@
         <include refid="deleteFlagHql"/>
     </update>
 
-    <select id="getCostInfo" resultType="String">
+    <select id="getMoneyInfo" resultType="String">
         select sum(money) from bm_order_detail where order_id in (
         select order_id from bm_order
         <where>
-            <if test="params != null and params != '' and costType == 'month' ">
+            <if test="params != null and params != '' and type == 'month' ">
                 DATE_FORMAT(order_date,"%Y-%m") = DATE_FORMAT(now(),"%Y-%m")
             </if>
-            <if test="params != null and params != '' and costType == 'day' ">
+            <if test="params != null and params != '' and type == 'day' ">
                 DATE_FORMAT(order_date,"%Y-%m-%d") = DATE_FORMAT(now(),"%Y-%m-%d")
             </if>
             and order_type = ${@com.ws.bm.common.constant.BaseConstant@BuyOrder}
