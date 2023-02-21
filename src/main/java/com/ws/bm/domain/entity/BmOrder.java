@@ -23,8 +23,6 @@ public class BmOrder extends BaseEntity{
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date orderDate;
 
-    private String payFlag;
-
     @TableField(exist = false)
     private BigDecimal dealerMoney;
 
