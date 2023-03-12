@@ -5,7 +5,7 @@
 <mapper namespace="com.ws.bm.mapper.BmOrderMapper">
 
     <sql id="selectOrderHql">
-        select order_id,order_type,order_date,pay_flag,create_date, update_date, deleted
+        select order_id,order_type,order_date,create_date, update_date, deleted
         from bm_order
     </sql>
 

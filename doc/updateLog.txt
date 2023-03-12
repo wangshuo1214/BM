@@ -55,5 +55,5 @@
 2023.2.17
     在bm_salary_record的表中增加employee_id字段（必填）
 
-2023。2.21
+2023.2.21
     删除bm_order的pay_flag字段
