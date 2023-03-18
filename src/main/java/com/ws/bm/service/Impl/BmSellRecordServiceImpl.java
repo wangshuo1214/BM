@@ -12,6 +12,7 @@ import com.ws.bm.common.utils.MessageUtil;
 import com.ws.bm.domain.entity.BmMaterial;
 import com.ws.bm.domain.entity.BmOrder;
 import com.ws.bm.domain.entity.BmOrderDetail;
+import com.ws.bm.domain.entity.BmTransferRecord;
 import com.ws.bm.exception.BaseException;
 import com.ws.bm.mapper.BmMaterialMapper;
 import com.ws.bm.mapper.BmOrderMapper;
@@ -61,6 +62,8 @@ public class BmSellRecordServiceImpl implements IBmSellRecordService {
         });
         // 增加订单细节
         bmOrderMapper.batchAddBmOrderDetail(bmOrderDetails);
+
+        // 增加客户欠款信息
 
         return bmOrderMapper.addBmOrder(bmOrder);
     }
@@ -163,17 +166,28 @@ public class BmSellRecordServiceImpl implements IBmSellRecordService {
 
     @Override
     public JSONObject getSellInfo() {
-        //获取所有的采购订单中采购的开支
+        //获取所有的销售订单中销售的开支
         String totalCostInfo = bmOrderMapper.getMoneyInfo("total");
-        //获取本月采购订单的开支
+        //获取本月销售订单的开支
         String monthCostInfo = bmOrderMapper.getMoneyInfo("month");
-        //获取今日采购订单的开支
+        //获取今日销售订单的开支
         String dayCostInfo = bmOrderMapper.getMoneyInfo("day");
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("totalSellInfo",StrUtil.isEmpty(totalCostInfo) ? "0" : new BigDecimal(totalCostInfo).stripTrailingZeros().toPlainString());
         jsonObject.put("monthSellInfo",StrUtil.isEmpty(monthCostInfo) ? "0" : new BigDecimal(monthCostInfo).stripTrailingZeros().toPlainString());
         jsonObject.put("daySellInfo",StrUtil.isEmpty(dayCostInfo) ? "0" : new BigDecimal(dayCostInfo).stripTrailingZeros().toPlainString());
         return jsonObject;
+    }
+
+    @Override
+    public int payMoney(BmTransferRecord bmTransferRecord) {
+        if (ObjectUtil.isEmpty(bmTransferRecord) || StrUtil.isEmpty(bmTransferRecord.getClientId()) ||
+                ObjectUtil.hasEmpty(bmTransferRecord.getTransferMoney(),bmTransferRecord.getTransferWay(),bmTransferRecord.getTransferDate())
+        ){
+            throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
+        }
+
+        return 0;
     }
 
     private boolean orderUpdateFlag(BmOrder newObj, BmOrder oldObj){
