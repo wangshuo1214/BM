@@ -9,11 +9,9 @@ import com.ws.bm.common.constant.BaseConstant;
 import com.ws.bm.common.constant.HttpStatus;
 import com.ws.bm.common.utils.InitFieldUtil;
 import com.ws.bm.common.utils.MessageUtil;
-import com.ws.bm.domain.entity.BmMaterial;
-import com.ws.bm.domain.entity.BmOrder;
-import com.ws.bm.domain.entity.BmOrderDetail;
-import com.ws.bm.domain.entity.BmTransferRecord;
+import com.ws.bm.domain.entity.*;
 import com.ws.bm.exception.BaseException;
+import com.ws.bm.mapper.BmClientMapper;
 import com.ws.bm.mapper.BmMaterialMapper;
 import com.ws.bm.mapper.BmOrderMapper;
 import com.ws.bm.mapper.BmSupplierMapper;
@@ -24,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class BmSellRecordServiceImpl implements IBmSellRecordService {
@@ -37,6 +36,9 @@ public class BmSellRecordServiceImpl implements IBmSellRecordService {
     @Autowired
     BmSupplierMapper bmSupplierMapper;
 
+    @Autowired
+    BmClientMapper bmClientMapper;
+
     @Override
     @Transactional
     public int addBmSellRecord(BmOrder bmOrder) {
@@ -48,22 +50,35 @@ public class BmSellRecordServiceImpl implements IBmSellRecordService {
         }
         bmOrder.setOrderId(UUID.randomUUID().toString());
         bmOrder.setOrderType(BaseConstant.SellOrder);
+
+        // 交易对象的id
+        String dealerId = StrUtil.toString(bmOrder.getParams().get("clientId"));
+        // 统计销售订单涉及的金额
+        BigDecimal debt = new BigDecimal(0);
         // 订单细节
         List<BmOrderDetail> bmOrderDetails = JSONObject.parseArray(JSONArray.toJSONString(bmOrder.getParams().get("orderDetails")),BmOrderDetail.class);
         bmOrderDetails.forEach(bmOrderDetail -> {
-            if (StrUtil.isEmpty(bmOrderDetail.getMaterialId()) || ObjectUtil.isEmpty(bmOrderDetail.getSort()) || ObjectUtil.isEmpty(bmOrderDetail.getNum()) ||
-                    StrUtil.isEmpty(bmOrderDetail.getDealerId()) || ObjectUtil.isEmpty(bmOrderDetail.getMoney())){
+            if (StrUtil.isEmpty(bmOrderDetail.getMaterialId()) || ObjectUtil.isEmpty(bmOrderDetail.getSort()) ||
+                    ObjectUtil.isEmpty(bmOrderDetail.getNum())  || ObjectUtil.isEmpty(bmOrderDetail.getMoney())){
                 throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
             }
             if (!InitFieldUtil.initField(bmOrderDetail)){
                 throw new BaseException(HttpStatus.ERROR,MessageUtil.getMessage("bm.initFieldError"));
             }
             bmOrderDetail.setOrderId(bmOrder.getOrderId());
+            bmOrderDetail.setDealerId(dealerId);
+            debt.add(bmOrderDetail.getMoney());
         });
         // 增加订单细节
         bmOrderMapper.batchAddBmOrderDetail(bmOrderDetails);
 
-        // 增加客户欠款信息
+        // 修改客户欠款信息
+        BmClient bmClient = bmClientMapper.selectById(dealerId);
+        if (ObjectUtil.isEmpty(bmClient)){
+            throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
+        }
+        bmClient.setDebt(bmClient.getDebt().add(debt));
+        bmClientMapper.updateById(bmClient);
 
         return bmOrderMapper.addBmOrder(bmOrder);
     }
@@ -74,6 +89,8 @@ public class BmSellRecordServiceImpl implements IBmSellRecordService {
         if(checkFiled(bmOrder)){
             throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
         }
+        // 交易对象的id
+        String dealerId = StrUtil.toString(bmOrder.getParams().get("clientId"));
         //旧对象
         BmOrder oldBmOrder = bmOrderMapper.getBmOrder(bmOrder.getOrderId());
         if (ObjectUtil.isEmpty(oldBmOrder)){
@@ -99,6 +116,21 @@ public class BmSellRecordServiceImpl implements IBmSellRecordService {
             });
             // 增加订单细节
             bmOrderMapper.batchAddBmOrderDetail(bmOrderDetails);
+
+            // 统计新旧订单细节之间的金额差，修改客户的欠款信息
+            BmClient bmClient = bmClientMapper.selectById(dealerId);
+            if (ObjectUtil.isEmpty(bmClient)){
+                throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
+            }
+            if (!bmClient.getDebt().equals(0)){
+                BigDecimal newMoney = bmOrderDetails.stream().map(a -> a.getMoney()).reduce(BigDecimal.ZERO, BigDecimal::add);
+                BigDecimal oldMoney = oldOrderDetails.stream().map(a -> a.getMoney()).reduce(BigDecimal.ZERO, BigDecimal::add);
+                BigDecimal debtDiff = newMoney.subtract(oldMoney);
+                bmClient.setDebt(bmClient.getDebt().add(debtDiff));
+                bmClientMapper.updateById(bmClient);
+            }
+
+
         }
         if (!orderUpdateFlag(bmOrder,oldBmOrder)){
             oldBmOrder.setOrderDate(bmOrder.getOrderDate());
@@ -161,6 +193,8 @@ public class BmSellRecordServiceImpl implements IBmSellRecordService {
             throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
         }
         bmOrderMapper.deleteBmOrderDetails(bmOrderIds);
+        // todo  删除订单相应的欠款信息
+
         return bmOrderMapper.deleteBmOrder(bmOrderIds);
     }
 
@@ -200,8 +234,8 @@ public class BmSellRecordServiceImpl implements IBmSellRecordService {
     }
 
     private boolean checkFiled(BmOrder bmOrder){
-        if(ObjectUtil.isEmpty(bmOrder)  ||
-                ObjectUtil.isEmpty(bmOrder.getOrderDate()) || ObjectUtil.isEmpty(bmOrder.getParams()) ){
+        if(ObjectUtil.isEmpty(bmOrder)  || ObjectUtil.isEmpty(bmOrder.getOrderDate()) ||
+                ObjectUtil.isEmpty(bmOrder.getParams()) || ObjectUtil.isEmpty(bmOrder.getParams().get("clientId"))){
             return true;
         }
         List<BmOrderDetail> bmOrderDetails = JSONObject.parseArray(JSONArray.toJSONString(bmOrder.getParams().get("orderDetails")),BmOrderDetail.class);

@@ -57,3 +57,6 @@
 
 2023.2.21
     删除bm_order的pay_flag字段
+
+2023.3.20
+    删除bm_client_debt表
