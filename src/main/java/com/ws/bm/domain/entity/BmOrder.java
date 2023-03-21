@@ -20,6 +20,8 @@ public class BmOrder extends BaseEntity{
 
     private String orderType;
 
+    private String clearFlag;
+
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date orderDate;
 

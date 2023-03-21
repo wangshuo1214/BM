@@ -17,8 +17,10 @@ public interface IBmSellRecordService {
 
     int deleteBmSellRecord(List<String> bmOrderIds);
 
-    JSONObject getSellInfo();
+    JSONObject getClientMoenyInfo(String bmClientId);
 
     int payMoney(BmTransferRecord bmTransferRecord);
+
+    int clearMoney(String bmClientId);
 
 }

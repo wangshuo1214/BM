@@ -22,6 +22,8 @@ public interface BmOrderMapper {
 
     List<BmOrderDetail> getBmOrderDetailByOrderId(String bmOrderId);
 
+    List<BmOrderDetail> getBmOrderDetailByOrderIds(List<String> bmOrderIds);
+
     List<BmOrder> queryBmOrder(BmOrder bmOrder);
 
     int deleteBmOrder(List<String> bmOrderIds);

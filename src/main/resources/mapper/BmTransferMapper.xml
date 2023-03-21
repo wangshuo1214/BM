@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ws.bm.mapper.BmTransferMapper">
+    <sql id="selectTransferRecordHql">
+        select id,client_id,transfer_money,transfer_way,transfer_date,remark,create_date, update_date, deleted
+        from bm_order
+    </sql>
+
+    <sql id="deleteFlagHql">
+        and deleted = ${@com.ws.bm.common.constant.BaseConstant@FALSE}
+    </sql>
+
+    <select id="getTransferRecordsByClientId" parameterType="String" resultType="BmTransferRecord">
+        <include refid="selectTransferRecordHql"/>
+        <where>
+            client_id = #{clientId}
+        </where>
+        <include refid="deleteFlagHql"/>
+        order by update_date desc
+    </select>
+</mapper>

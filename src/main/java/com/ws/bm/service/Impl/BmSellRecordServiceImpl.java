@@ -5,16 +5,14 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ws.bm.common.constant.BaseConstant;
 import com.ws.bm.common.constant.HttpStatus;
 import com.ws.bm.common.utils.InitFieldUtil;
 import com.ws.bm.common.utils.MessageUtil;
 import com.ws.bm.domain.entity.*;
 import com.ws.bm.exception.BaseException;
-import com.ws.bm.mapper.BmClientMapper;
-import com.ws.bm.mapper.BmMaterialMapper;
-import com.ws.bm.mapper.BmOrderMapper;
-import com.ws.bm.mapper.BmSupplierMapper;
+import com.ws.bm.mapper.*;
 import com.ws.bm.service.IBmSellRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,6 +37,9 @@ public class BmSellRecordServiceImpl implements IBmSellRecordService {
     @Autowired
     BmClientMapper bmClientMapper;
 
+    @Autowired
+    BmTransferMapper bmTransferMapper;
+
     @Override
     @Transactional
     public int addBmSellRecord(BmOrder bmOrder) {
@@ -50,6 +51,7 @@ public class BmSellRecordServiceImpl implements IBmSellRecordService {
         }
         bmOrder.setOrderId(UUID.randomUUID().toString());
         bmOrder.setOrderType(BaseConstant.SellOrder);
+        bmOrder.setClearFlag(BaseConstant.FALSE);
 
         // 交易对象的id
         String dealerId = StrUtil.toString(bmOrder.getParams().get("clientId"));
@@ -127,9 +129,12 @@ public class BmSellRecordServiceImpl implements IBmSellRecordService {
                 BigDecimal oldMoney = oldOrderDetails.stream().map(a -> a.getMoney()).reduce(BigDecimal.ZERO, BigDecimal::add);
                 BigDecimal debtDiff = newMoney.subtract(oldMoney);
                 bmClient.setDebt(bmClient.getDebt().add(debtDiff));
+                // 如果修改的客户欠款信息小于0就存在问题
+                if (bmClient.getDebt().compareTo(BigDecimal.ZERO) < 0){
+                    throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
+                }
                 bmClientMapper.updateById(bmClient);
             }
-
 
         }
         if (!orderUpdateFlag(bmOrder,oldBmOrder)){
@@ -193,26 +198,46 @@ public class BmSellRecordServiceImpl implements IBmSellRecordService {
             throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
         }
         bmOrderMapper.deleteBmOrderDetails(bmOrderIds);
-        // todo  删除订单相应的欠款信息
+        // 删除订单相应的欠款信息
+        List<BmOrderDetail> bmOrderDetailByOrderIds = bmOrderMapper.getBmOrderDetailByOrderIds(bmOrderIds);
+        if (CollUtil.isNotEmpty(bmOrderDetailByOrderIds)){
+            BigDecimal delMoney = bmOrderDetailByOrderIds.stream().map(a -> a.getMoney()).reduce(BigDecimal.ZERO, BigDecimal::add);
+            // 因为删除的话，只会在一个客户处批量删除
+            String clientId = bmOrderDetailByOrderIds.get(0).getDealerId();
+            BmClient bmClient = bmClientMapper.selectById(clientId);
+            bmClient.setDebt(bmClient.getDebt().subtract(delMoney));
+            // 如果修改的客户欠款信息小于0就存在问题
+            if (bmClient.getDebt().compareTo(BigDecimal.ZERO) < 0){
+                throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.sellRecord.clientDebtError"));
+            }
+            bmClientMapper.updateById(bmClient);
+        }
+
 
         return bmOrderMapper.deleteBmOrder(bmOrderIds);
     }
 
     @Override
-    public JSONObject getSellInfo() {
-        //获取所有的销售订单中销售的开支
-        String totalCostInfo = bmOrderMapper.getMoneyInfo("total");
-        //获取本月销售订单的开支
-        String monthCostInfo = bmOrderMapper.getMoneyInfo("month");
-        //获取今日销售订单的开支
-        String dayCostInfo = bmOrderMapper.getMoneyInfo("day");
+    public JSONObject getClientMoenyInfo(String bmClientId) {
+        // 获取当前客户的累计欠款
+        BmClient bmClient = bmClientMapper.selectById(bmClientId);
+        BigDecimal currentDebt = bmClient.getDebt();
+
+        // 获取当前客户累计销售额
+        List<BmTransferRecord> transferRecords = bmTransferMapper.getTransferRecordsByClientId(bmClientId);
+        BigDecimal totalMoney = transferRecords.stream().map(a -> a.getTransferMoney()).reduce(BigDecimal.ZERO, BigDecimal::add);
+
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("totalSellInfo",StrUtil.isEmpty(totalCostInfo) ? "0" : new BigDecimal(totalCostInfo).stripTrailingZeros().toPlainString());
-        jsonObject.put("monthSellInfo",StrUtil.isEmpty(monthCostInfo) ? "0" : new BigDecimal(monthCostInfo).stripTrailingZeros().toPlainString());
-        jsonObject.put("daySellInfo",StrUtil.isEmpty(dayCostInfo) ? "0" : new BigDecimal(dayCostInfo).stripTrailingZeros().toPlainString());
+        jsonObject.put("currentDebt",currentDebt);
+        jsonObject.put("totalMoney",totalMoney);
         return jsonObject;
     }
 
+    /**
+     * 付款
+     * @param bmTransferRecord
+     * @return
+     */
     @Override
     public int payMoney(BmTransferRecord bmTransferRecord) {
         if (ObjectUtil.isEmpty(bmTransferRecord) || StrUtil.isEmpty(bmTransferRecord.getClientId()) ||
@@ -220,8 +245,28 @@ public class BmSellRecordServiceImpl implements IBmSellRecordService {
         ){
             throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
         }
+        if (!InitFieldUtil.initField(bmTransferRecord)){
+            throw new BaseException(HttpStatus.ERROR,MessageUtil.getMessage("bm.initFieldError"));
+        }
 
-        return 0;
+        return bmTransferMapper.insert(bmTransferRecord);
+    }
+
+    /**
+     * 清账
+     * @param bmClientId
+     * @return
+     */
+    @Override
+    public int clearMoney(String bmClientId) {
+
+        BmClient bmClient = bmClientMapper.selectById(bmClientId);
+        if (ObjectUtil.isEmpty(bmClient) || StrUtil.equals(bmClient.getDeleted(),BaseConstant.TRUE)){
+            throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.client.notexist"));
+        }
+        bmClient.setDebt(new BigDecimal(0));
+
+        return bmClientMapper.updateById(bmClient);
     }
 
     private boolean orderUpdateFlag(BmOrder newObj, BmOrder oldObj){

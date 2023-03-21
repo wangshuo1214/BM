@@ -72,6 +72,18 @@
         order by sort asc
     </select>
 
+    <select id="getBmOrderDetailByOrderIds" parameterType="String" resultType="BmOrderDetail">
+        <include refid="selectOrderDetailHql"/>
+        <where>
+            order_id in
+            <foreach collection="bmOrderIds" item="bmOrderId" open="(" separator="," close=")">
+                #{bmOrderId}
+            </foreach>
+        </where>
+        <include refid="deleteFlagHql"/>
+        order by sort asc
+    </select>
+
     <update id="batchDeletedBmOrderDetail" parameterType="String">
         update bm_order_detail set deleted = ${@com.ws.bm.common.constant.BaseConstant@TRUE} , update_date = sysdate()
         where order_id = #{bmOrderId}

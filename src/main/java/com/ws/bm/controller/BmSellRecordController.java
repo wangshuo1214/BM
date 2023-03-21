@@ -2,6 +2,7 @@ package com.ws.bm.controller;
 
 import com.ws.bm.common.page.PageQuery;
 import com.ws.bm.domain.entity.BmOrder;
+import com.ws.bm.domain.entity.BmTransferRecord;
 import com.ws.bm.domain.model.Result;
 import com.ws.bm.service.IBmSellRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,12 @@ public class BmSellRecordController extends BaseController{
     }
 
     @GetMapping("/sellInfo")
-    public Result getCostInfo(){
-        return success(iBmSellRecordService.getSellInfo());
+    public Result getCostInfo(String bmClientId){
+        return success(iBmSellRecordService.getClientMoenyInfo(bmClientId));
+    }
+
+    @PostMapping("/payMoney")
+    public Result payMoney(@RequestBody BmTransferRecord bmTransferRecord){
+        return computeResult(iBmSellRecordService.payMoney(bmTransferRecord));
     }
 }

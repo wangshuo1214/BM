@@ -60,3 +60,6 @@
 
 2023.3.20
     删除bm_client_debt表
+
+2023.3.21
+    在bm_order中增加clearFlag字段
