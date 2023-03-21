@@ -53,4 +53,9 @@ public class BmSellRecordController extends BaseController{
     public Result payMoney(@RequestBody BmTransferRecord bmTransferRecord){
         return computeResult(iBmSellRecordService.payMoney(bmTransferRecord));
     }
+
+    @PostMapping("/clearMoney")
+    public Result clearMoney(@RequestBody String bmClientId){
+        return computeResult(iBmSellRecordService.clearMoney(bmClientId));
+    }
 }
