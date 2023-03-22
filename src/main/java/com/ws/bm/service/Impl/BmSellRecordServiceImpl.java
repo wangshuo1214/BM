@@ -260,11 +260,15 @@ public class BmSellRecordServiceImpl implements IBmSellRecordService {
     @Override
     public int clearMoney(String bmClientId) {
 
+        // 客户的欠款全部置0
         BmClient bmClient = bmClientMapper.selectById(bmClientId);
         if (ObjectUtil.isEmpty(bmClient) || StrUtil.equals(bmClient.getDeleted(),BaseConstant.TRUE)){
             throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.client.notexist"));
         }
         bmClient.setDebt(new BigDecimal(0));
+
+        // 修改客户的相关订单清账标志
+        bmOrderMapper.updBmOrderClearFlagByClientId(bmClientId);
 
         return bmClientMapper.updateById(bmClient);
     }

@@ -31,4 +31,6 @@ public interface BmOrderMapper {
     int deleteBmOrderDetails(List<String> bmOrderIds);
 
     String getMoneyInfo(String type);
+
+    int updBmOrderClearFlagByClientId(String bmCLientId);
 }

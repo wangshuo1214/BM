@@ -5,7 +5,7 @@
 <mapper namespace="com.ws.bm.mapper.BmOrderMapper">
 
     <sql id="selectOrderHql">
-        select order_id,order_type,order_date,create_date, update_date, deleted
+        select order_id,order_type,clear_flag,order_date,create_date, update_date, deleted
         from bm_order
     </sql>
 
@@ -143,6 +143,19 @@
         )
         <include refid="deleteFlagHql"/>
     </select>
+
+    <update id="updBmOrderClearFlagByClientId" parameterType="String">
+        update bm_order
+        <set>
+            clear_flag = ${@com.ws.bm.common.constant.BaseConstant@TRUE}
+        </set>
+        where order_id in (
+            select order_id from bm_order_detail where dealer_id = #{bmCLientId}
+            <include refid="deleteFlagHql"/>
+        )
+        and order_type = ${@com.ws.bm.common.constant.BaseConstant@SellOrder}
+        <include refid="deleteFlagHql"/>
+    </update>
 
 
 </mapper>
