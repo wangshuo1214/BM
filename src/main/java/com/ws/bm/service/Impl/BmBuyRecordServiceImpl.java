@@ -109,7 +109,7 @@ public class BmBuyRecordServiceImpl implements IBmBuyRecordService {
     @Override
     public List<BmOrder> queryBmBuyRecord(BmOrder bmOrder) {
         bmOrder.setOrderType(BaseConstant.BuyOrder);
-        List<BmOrder> results = bmOrderMapper.queryBmOrder(bmOrder);
+        List<BmOrder> results = bmOrderMapper.queryBuyBmOrder(bmOrder);
         if (CollUtil.isNotEmpty(results)){
             results.forEach(result -> {
                 StringBuffer oderDetailName = new StringBuffer("");

@@ -55,6 +55,11 @@ public class BmSellRecordServiceImpl implements IBmSellRecordService {
 
         // 交易对象的id
         String dealerId = StrUtil.toString(bmOrder.getParams().get("clientId"));
+        BmClient bmClient = bmClientMapper.selectById(dealerId);
+        if (ObjectUtil.isEmpty(bmClient) || StrUtil.equals(bmClient.getDeleted(),BaseConstant.TRUE)){
+            throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
+        }
+
         // 统计销售订单涉及的金额
         BigDecimal debt = new BigDecimal(0);
         // 订单细节
@@ -75,7 +80,6 @@ public class BmSellRecordServiceImpl implements IBmSellRecordService {
         bmOrderMapper.batchAddBmOrderDetail(bmOrderDetails);
 
         // 修改客户欠款信息
-        BmClient bmClient = bmClientMapper.selectById(dealerId);
         if (ObjectUtil.isEmpty(bmClient)){
             throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
         }
@@ -147,10 +151,12 @@ public class BmSellRecordServiceImpl implements IBmSellRecordService {
     @Override
     public List<BmOrder> queryBmSellRecord(BmOrder bmOrder) {
         bmOrder.setOrderType(BaseConstant.SellOrder);
-        List<BmOrder> results = bmOrderMapper.queryBmOrder(bmOrder);
+        List<BmOrder> results = bmOrderMapper.querySellBmOrder(bmOrder);
         if (CollUtil.isNotEmpty(results)){
             results.forEach(result -> {
+                // 订单细节
                 StringBuffer oderDetailName = new StringBuffer("");
+                // 订单总销售额
                 BigDecimal dealMoney = new BigDecimal(0);
                 List<BmOrderDetail> bmOrderDetails = bmOrderMapper.getBmOrderDetailByOrderId(result.getOrderId());
                 if (CollUtil.isNotEmpty(bmOrderDetails)){
@@ -159,13 +165,13 @@ public class BmSellRecordServiceImpl implements IBmSellRecordService {
                         dealMoney = dealMoney.add(bmOrderDetail.getMoney());
                         BmMaterial bmMaterial = bmMaterialMapper.selectById(bmOrderDetail.getMaterialId());
                         if (i != bmOrderDetails.size()-1){
-                            oderDetailName.append(bmSupplierMapper.selectById(bmOrderDetail.getDealerId()).getSupplierName() + "(" +
-                                    bmMaterial.getMaterialName()+ "✖" + bmOrderDetail.getNum() + ":" +
-                                    bmOrderDetail.getMoney().stripTrailingZeros().toPlainString()+"元) 、 ");
+                            oderDetailName.append(bmClientMapper.selectById(
+                                    bmMaterial.getMaterialName()+ " × " + bmOrderDetail.getNum() + ":" +
+                                    bmOrderDetail.getMoney().stripTrailingZeros().toPlainString()+"元 、 "));
                         }else {
-                            oderDetailName.append(bmSupplierMapper.selectById(bmOrderDetail.getDealerId()).getSupplierName() + "(" +
-                                    bmMaterial.getMaterialName()+ "✖" + bmOrderDetail.getNum() + ":" +
-                                    bmOrderDetail.getMoney().stripTrailingZeros().toPlainString()+"元)");
+                            oderDetailName.append(
+                                    bmMaterial.getMaterialName()+ " × " + bmOrderDetail.getNum() + ":" +
+                                    bmOrderDetail.getMoney().stripTrailingZeros().toPlainString()+"元");
                         }
                     }
                     result.setOrderDeatil(oderDetailName.toString());

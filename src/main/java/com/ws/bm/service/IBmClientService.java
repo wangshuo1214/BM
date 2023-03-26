@@ -1,7 +1,9 @@
 package com.ws.bm.service;
 
+import apple.laf.JRSUIUtils;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ws.bm.domain.entity.BmClient;
+import com.ws.bm.domain.model.TreeSelect;
 
 import java.util.List;
 
@@ -15,4 +17,6 @@ public interface IBmClientService extends IService<BmClient> {
     boolean updateBmClient(BmClient bmClient);
 
     BmClient getBmClient(String bmClientId);
+
+    List<TreeSelect> getClientTree();
 }

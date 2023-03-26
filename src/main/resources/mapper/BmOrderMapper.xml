@@ -23,7 +23,6 @@
         <if test="orderId != null and orderId != ''">order_id,</if>
         <if test="orderType != null and orderType != ''">order_type,</if>
         <if test="orderDate != null">order_date,</if>
-        <if test="payFlag != null and payFlag != ''">pay_flag,</if>
         <if test="createDate != null">create_date,</if>
         <if test="updateDate != null">update_date,</if>
         <if test="deleted != null and deleted != ''">deleted</if>
@@ -31,7 +30,6 @@
         <if test="orderId != null and orderId != ''">#{orderId},</if>
         <if test="orderType != null and orderType != ''">#{orderType},</if>
         <if test="orderDate != null">#{orderDate},</if>
-        <if test="payFlag != null and payFlag != ''">#{payFlag},</if>
         <if test="createDate != null">#{createDate},</if>
         <if test="updateDate != null">#{updateDate},</if>
         <if test="deleted != null and deleted != ''">#{deleted}</if>
@@ -89,7 +87,7 @@
         where order_id = #{bmOrderId}
     </update>
 
-    <select id="queryBmOrder" parameterType="BmOrder" resultType="BmOrder">
+    <select id="queryBuyBmOrder" parameterType="BmOrder" resultType="BmOrder">
         <include refid="selectOrderHql"/>
         <where>
             order_type = #{orderType}
@@ -103,6 +101,31 @@
                 <if test="params.orderDate != null and params.orderDate != ''"><!-- 开始时间检索 -->
                     and date_format(order_date,'%y%m%d') &gt;= date_format(#{params.orderDate[0]},'%y%m%d')
                     and date_format(order_date,'%y%m%d') &lt;= date_format(#{params.orderDate[1]},'%y%m%d')
+                </if>
+            </if>
+            <include refid="deleteFlagHql"/>
+        </where>
+        order by order_date desc,update_date desc
+    </select>
+
+    <select id="querySellBmOrder" parameterType="BmOrder" resultType="BmOrder">
+        <include refid="selectOrderHql"/>
+        <where>
+            order_type = #{orderType}
+            <if test="params != null and params != '' ">
+                <if test="params.dealerName != null and params.dealerName != ''"><!-- 交易人员姓名 -->
+                    and order_id in (select order_id from bm_order_detail where dealer_id in
+                    ( select client_id from bm_client where client_name like concat('%', #{params.dealerName}, '%') <include refid="deleteFlagHql"/> )
+                    <include refid="deleteFlagHql"/>
+                    )
+                </if>
+                <if test="params.orderDate != null and params.orderDate != ''"><!-- 开始时间检索 -->
+                    and date_format(order_date,'%y%m%d') &gt;= date_format(#{params.orderDate[0]},'%y%m%d')
+                    and date_format(order_date,'%y%m%d') &lt;= date_format(#{params.orderDate[1]},'%y%m%d')
+                </if>
+                <if test="params.clientId != null and params.clientId != ''"><!-- 交易人员左侧树 -->
+                    and order_id in (select order_id from bm_order_detail where dealer_id = #{params.clientId}
+                     <include refid="deleteFlagHql"/> )
                 </if>
             </if>
             <include refid="deleteFlagHql"/>

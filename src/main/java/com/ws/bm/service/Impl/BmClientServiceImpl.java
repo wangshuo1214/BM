@@ -10,12 +10,16 @@ import com.ws.bm.common.constant.HttpStatus;
 import com.ws.bm.common.utils.InitFieldUtil;
 import com.ws.bm.common.utils.MessageUtil;
 import com.ws.bm.domain.entity.BmClient;
+import com.ws.bm.domain.entity.BmEmployee;
+import com.ws.bm.domain.entity.system.BmDept;
+import com.ws.bm.domain.model.TreeSelect;
 import com.ws.bm.exception.BaseException;
 import com.ws.bm.mapper.BmClientMapper;
 import com.ws.bm.service.IBmClientService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -117,6 +121,26 @@ public class BmClientServiceImpl extends ServiceImpl<BmClientMapper, BmClient> i
             throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.client.notexist"));
         }
         return bmClient;
+    }
+
+    @Override
+    public List<TreeSelect> getClientTree(){
+        QueryWrapper<BmClient> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(BmClient::getDeleted,BaseConstant.FALSE);
+        wrapper.lambda().orderByAsc(BmClient::getCreateDate);
+        List<BmClient> clients = list(wrapper);
+        if (CollUtil.isNotEmpty(clients)){
+            List<TreeSelect> clientTreeSelects = new ArrayList<>();
+            clients.forEach(client -> {
+                TreeSelect employeeTreeSelect = new TreeSelect();
+                employeeTreeSelect.setId(client.getClientId());
+                employeeTreeSelect.setLabel(client.getClientName());
+                clientTreeSelects.add(employeeTreeSelect);
+            });
+            return clientTreeSelects;
+        }else {
+            return new ArrayList<>();
+        }
     }
 
     private boolean checkFiled(BmClient bmClient){

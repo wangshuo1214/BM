@@ -42,4 +42,9 @@ public class BmClientController extends BaseController{
     public Result getBmClient(String bmClientId){
         return success(iBmClientService.getBmClient(bmClientId));
     }
+
+    @GetMapping("/clientTree")
+    public Result getClientTree(){
+        return success(iBmClientService.getClientTree());
+    }
 }
