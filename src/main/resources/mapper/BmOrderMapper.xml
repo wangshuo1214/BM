@@ -23,6 +23,7 @@
         <if test="orderId != null and orderId != ''">order_id,</if>
         <if test="orderType != null and orderType != ''">order_type,</if>
         <if test="orderDate != null">order_date,</if>
+        <if test="clearFlag != null and clearFlag != ''">clear_flag,</if>
         <if test="createDate != null">create_date,</if>
         <if test="updateDate != null">update_date,</if>
         <if test="deleted != null and deleted != ''">deleted</if>
@@ -30,6 +31,7 @@
         <if test="orderId != null and orderId != ''">#{orderId},</if>
         <if test="orderType != null and orderType != ''">#{orderType},</if>
         <if test="orderDate != null">#{orderDate},</if>
+        <if test="clearFlag != null and clearFlag != ''">#{clearFlag},</if>
         <if test="createDate != null">#{createDate},</if>
         <if test="updateDate != null">#{updateDate},</if>
         <if test="deleted != null and deleted != ''">#{deleted}</if>

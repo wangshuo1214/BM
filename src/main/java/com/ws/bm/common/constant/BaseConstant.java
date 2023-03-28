@@ -66,7 +66,8 @@ public class BaseConstant {
     public final static String MaterialMake = "2"; //生产商品
 
     //订单类型
-    public final static String BuyOrder = "0";
-    public final static String SellOrder = "1";
+    public final static String SellOrder = "0";
+    public final static String BuyOrder = "1";
+
 
 }

@@ -63,3 +63,6 @@
 
 2023.3.21
     在bm_order中增加clearFlag字段
+
+2023.3.28
+    在bm_order中把order_type为1的的clear_flag 设为0, 然后order_type的0和1互换
