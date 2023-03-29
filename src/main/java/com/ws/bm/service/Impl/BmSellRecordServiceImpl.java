@@ -5,7 +5,6 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ws.bm.common.constant.BaseConstant;
 import com.ws.bm.common.constant.HttpStatus;
 import com.ws.bm.common.utils.InitFieldUtil;
@@ -20,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class BmSellRecordServiceImpl implements IBmSellRecordService {
@@ -38,7 +36,7 @@ public class BmSellRecordServiceImpl implements IBmSellRecordService {
     BmClientMapper bmClientMapper;
 
     @Autowired
-    BmTransferMapper bmTransferMapper;
+    BmTransferRecordMapper bmTransferRecordMapper;
 
     @Override
     @Transactional
@@ -233,7 +231,7 @@ public class BmSellRecordServiceImpl implements IBmSellRecordService {
         BigDecimal currentDebt = bmClient.getDebt();
 
         // 获取当前客户累计销售额
-        List<BmTransferRecord> transferRecords = bmTransferMapper.getTransferRecordsByClientId(bmClientId);
+        List<BmTransferRecord> transferRecords = bmTransferRecordMapper.getTransferRecordsByClientId(bmClientId);
         BigDecimal totalSellMoney = transferRecords.stream().map(a -> a.getTransferMoney()).reduce(BigDecimal.ZERO, BigDecimal::add);
 
         JSONObject jsonObject = new JSONObject();
@@ -265,7 +263,7 @@ public class BmSellRecordServiceImpl implements IBmSellRecordService {
         bmClient.setDebt(bmClient.getDebt().subtract(bmTransferRecord.getTransferMoney()));
         bmClientMapper.updateById(bmClient);
 
-        return bmTransferMapper.insert(bmTransferRecord);
+        return bmTransferRecordMapper.insert(bmTransferRecord);
     }
 
     /**
