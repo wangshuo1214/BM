@@ -55,7 +55,7 @@ public class BmSellRecordController extends BaseController{
     }
 
     @PostMapping("/clearMoney")
-    public Result clearMoney(@RequestBody String bmClientId){
+    public Result clearMoney(String bmClientId){
         return computeResult(iBmSellRecordService.clearMoney(bmClientId));
     }
 }

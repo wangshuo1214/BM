@@ -234,11 +234,11 @@ public class BmSellRecordServiceImpl implements IBmSellRecordService {
 
         // 获取当前客户累计销售额
         List<BmTransferRecord> transferRecords = bmTransferMapper.getTransferRecordsByClientId(bmClientId);
-        BigDecimal totalMoney = transferRecords.stream().map(a -> a.getTransferMoney()).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal totalSellMoney = transferRecords.stream().map(a -> a.getTransferMoney()).reduce(BigDecimal.ZERO, BigDecimal::add);
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("currentDebt",currentDebt);
-        jsonObject.put("totalMoney",totalMoney);
+        jsonObject.put("totalSellMoney",totalSellMoney);
         return jsonObject;
     }
 
@@ -257,6 +257,13 @@ public class BmSellRecordServiceImpl implements IBmSellRecordService {
         if (!InitFieldUtil.initField(bmTransferRecord)){
             throw new BaseException(HttpStatus.ERROR,MessageUtil.getMessage("bm.initFieldError"));
         }
+
+        BmClient bmClient = bmClientMapper.selectById(bmTransferRecord.getClientId());
+        if (bmTransferRecord.getTransferMoney().compareTo(bmClient.getDebt()) > 0){
+            throw new BaseException(HttpStatus.ERROR,MessageUtil.getMessage("bm.sellRecord.transferOverDebt"));
+        }
+        bmClient.setDebt(bmClient.getDebt().subtract(bmTransferRecord.getTransferMoney()));
+        bmClientMapper.updateById(bmClient);
 
         return bmTransferMapper.insert(bmTransferRecord);
     }

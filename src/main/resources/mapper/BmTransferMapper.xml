@@ -5,7 +5,7 @@
 <mapper namespace="com.ws.bm.mapper.BmTransferMapper">
     <sql id="selectTransferRecordHql">
         select id,client_id,transfer_money,transfer_way,transfer_date,remark,create_date, update_date, deleted
-        from bm_order
+        from bm_transfer_record
     </sql>
 
     <sql id="deleteFlagHql">

@@ -3,6 +3,7 @@ package com.ws.bm.domain.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -21,6 +22,7 @@ public class BmTransferRecord extends BaseEntity{
 
     private String transferWay;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date transferDate;
 
     private String remark;
