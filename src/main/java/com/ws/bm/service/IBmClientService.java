@@ -18,4 +18,6 @@ public interface IBmClientService extends IService<BmClient> {
     BmClient getBmClient(String bmClientId);
 
     List<TreeSelect> getClientTree();
+
+    List<BmClient> getAllClient();
 }

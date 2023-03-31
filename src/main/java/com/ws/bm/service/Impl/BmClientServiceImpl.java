@@ -143,6 +143,14 @@ public class BmClientServiceImpl extends ServiceImpl<BmClientMapper, BmClient> i
         }
     }
 
+    @Override
+    public List<BmClient> getAllClient() {
+        QueryWrapper<BmClient> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(BmClient::getDeleted,BaseConstant.FALSE);
+        wrapper.lambda().orderByDesc(BmClient::getWeight).orderByAsc(BmClient::getCreateDate);
+        return list(wrapper);
+    }
+
     private boolean checkFiled(BmClient bmClient){
         if(ObjectUtil.isEmpty(bmClient) || StrUtil.isEmpty(bmClient.getClientName())){
             return true;

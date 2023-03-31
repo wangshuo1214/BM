@@ -10,9 +10,11 @@ import com.ws.bm.domain.entity.BmTransferRecord;
 import com.ws.bm.exception.BaseException;
 import com.ws.bm.mapper.BmTransferRecordMapper;
 import com.ws.bm.service.IBmTransferRecordService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class BmTransferRecordImpl extends ServiceImpl<BmTransferRecordMapper,BmTransferRecord> implements IBmTransferRecordService {
     @Override
     public List<BmTransferRecord> queryBmtransferRecord(BmTransferRecord bmTransferRecord) {
@@ -29,6 +31,7 @@ public class BmTransferRecordImpl extends ServiceImpl<BmTransferRecordMapper,BmT
                 wrapper.lambda().le(BmTransferRecord::getTransferDate,((List) bmTransferRecord.getParams().get("transferDate")).get(1));
             }
         }
+        wrapper.lambda().orderByDesc(BmTransferRecord::getTransferDate);
 
         return list(wrapper);
     }
