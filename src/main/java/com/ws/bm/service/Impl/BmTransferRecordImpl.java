@@ -8,14 +8,20 @@ import com.ws.bm.common.constant.HttpStatus;
 import com.ws.bm.common.utils.MessageUtil;
 import com.ws.bm.domain.entity.BmTransferRecord;
 import com.ws.bm.exception.BaseException;
+import com.ws.bm.mapper.BmClientMapper;
 import com.ws.bm.mapper.BmTransferRecordMapper;
 import com.ws.bm.service.IBmTransferRecordService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class BmTransferRecordImpl extends ServiceImpl<BmTransferRecordMapper,BmTransferRecord> implements IBmTransferRecordService {
+
+    @Autowired
+    private BmClientMapper bmClientMapper;
+
     @Override
     public List<BmTransferRecord> queryBmtransferRecord(BmTransferRecord bmTransferRecord) {
         QueryWrapper<BmTransferRecord> wrapper = new QueryWrapper<>();
@@ -41,6 +47,9 @@ public class BmTransferRecordImpl extends ServiceImpl<BmTransferRecordMapper,BmT
         if (StrUtil.isEmpty(id)){
             throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
         }
-        return getById(id);
+        BmTransferRecord transferRecord = getById(id);
+        transferRecord.setClientName(bmClientMapper.selectById(transferRecord.getClientId()).getClientName());
+
+        return transferRecord;
     }
 }

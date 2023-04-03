@@ -1,6 +1,7 @@
 package com.ws.bm.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -26,4 +27,7 @@ public class BmTransferRecord extends BaseEntity{
     private Date transferDate;
 
     private String remark;
+
+    @TableField(exist = false)
+    private String clientName;
 }
