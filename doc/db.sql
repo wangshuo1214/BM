@@ -154,3 +154,15 @@ CREATE TABLE `bm_make_record_detail` (
                                          PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+CREATE TABLE `bm_other_money` (
+                                  `id` varchar(36) NOT NULL COMMENT '主键',
+                                  `item` char(1) NOT NULL COMMENT '消费(支出)项',
+                                  `money` decimal(6,2) NOT NULL COMMENT '金额',
+                                  `type` char(1) NOT NULL COMMENT '类型（0消费项1支出项）',
+                                  `date` datetime DEFAULT NULL,
+                                  `create_date` datetime NOT NULL COMMENT '创建时间',
+                                  `update_date` datetime NOT NULL COMMENT '修改时间',
+                                  `deleted` char(1) NOT NULL COMMENT '删除标志（0未删除1已删除）',
+                                  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
