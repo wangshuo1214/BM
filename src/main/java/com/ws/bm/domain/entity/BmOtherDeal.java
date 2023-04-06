@@ -9,19 +9,19 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
-@TableName("bm_other_money")
-public class BmOtherMoeny extends BaseEntity{
+@TableName("bm_other_deal")
+public class BmOtherDeal extends BaseEntity{
 
     @TableId(type = IdType.ASSIGN_UUID)
     private String id;
 
-    private String otherItem;
+    private String dealItem;
 
-    private BigDecimal meony;
+    private BigDecimal money;
 
     private String type;
 
-    private Date otherDate;
+    private Date dealDate;
 
     private String remark;
 }

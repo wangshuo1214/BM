@@ -154,15 +154,15 @@ CREATE TABLE `bm_make_record_detail` (
                                          PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `bm_other_money` (
-                                  `id` varchar(36) NOT NULL COMMENT '主键',
-                                  `other_item` char(1) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '消费(支出)项',
-                                  `money` decimal(6,2) NOT NULL COMMENT '金额',
-                                  `type` char(1) NOT NULL COMMENT '类型（0消费项1支出项）',
-                                  `other_date` datetime DEFAULT NULL,
-                                  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
-                                  `create_date` datetime NOT NULL COMMENT '创建时间',
-                                  `update_date` datetime NOT NULL COMMENT '修改时间',
-                                  `deleted` char(1) NOT NULL COMMENT '删除标志（0未删除1已删除）',
-                                  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `bm_other_deal` (
+                                 `id` varchar(36) NOT NULL COMMENT '主键',
+                                 `deal_item` char(1) CHARACTER SET utf8mb3 COLLATE utf8_general_ci NOT NULL COMMENT '消费(支出)项',
+                                 `money` decimal(6,2) NOT NULL COMMENT '金额',
+                                 `type` char(1) NOT NULL COMMENT '类型（0消费项1支出项）',
+                                 `deal_date` datetime DEFAULT NULL,
+                                 `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+                                 `create_date` datetime NOT NULL COMMENT '创建时间',
+                                 `update_date` datetime NOT NULL COMMENT '修改时间',
+                                 `deleted` char(1) NOT NULL COMMENT '删除标志（0未删除1已删除）',
+                                 PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
