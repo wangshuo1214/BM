@@ -38,14 +38,14 @@ public class BmOtherMoneyImpl extends ServiceImpl<BmOtherMoneyMapper, BmOtherMoe
         if (StrUtil.isNotEmpty(bmOtherMoeny.getType())){
             wrapper.lambda().eq(BmOtherMoeny::getType,bmOtherMoeny.getType());
         }
-        if (StrUtil.isNotEmpty(bmOtherMoeny.getItem())){
-            wrapper.lambda().eq(BmOtherMoeny::getItem,bmOtherMoeny.getItem());
+        if (StrUtil.isNotEmpty(bmOtherMoeny.getOtherItem())){
+            wrapper.lambda().eq(BmOtherMoeny::getOtherItem,bmOtherMoeny.getOtherItem());
         }
         if (ObjectUtil.isNotEmpty(bmOtherMoeny.getParams()) &&
-                ObjectUtil.isNotEmpty(bmOtherMoeny.getParams().get("date"))){
-            Object[] date = (Object[]) bmOtherMoeny.getParams().get("date");
-            wrapper.lambda().ge(BmOtherMoeny::getDate,date[0]);
-            wrapper.lambda().le(BmOtherMoeny::getDate,date[1]);
+                ObjectUtil.isNotEmpty(bmOtherMoeny.getParams().get("otherDate"))){
+            Object[] date = (Object[]) bmOtherMoeny.getParams().get("otherDate");
+            wrapper.lambda().ge(BmOtherMoeny::getOtherDate,date[0]);
+            wrapper.lambda().le(BmOtherMoeny::getOtherDate,date[1]);
         }
         wrapper.lambda().orderByDesc(BmOtherMoeny::getUpdateDate);
 
@@ -61,9 +61,9 @@ public class BmOtherMoneyImpl extends ServiceImpl<BmOtherMoneyMapper, BmOtherMoe
         BmOtherMoeny oldObj = getById(bmOtherMoeny.getId());
 
         if (updateFlag(bmOtherMoeny,oldObj)){
-            oldObj.setItem(bmOtherMoeny.getItem());
+            oldObj.setOtherItem(bmOtherMoeny.getOtherItem());
             oldObj.setMeony(bmOtherMoeny.getMeony());
-            oldObj.setDate(bmOtherMoeny.getDate());
+            oldObj.setOtherDate(bmOtherMoeny.getOtherDate());
         }
 
         return updateById(oldObj);
@@ -98,7 +98,7 @@ public class BmOtherMoneyImpl extends ServiceImpl<BmOtherMoneyMapper, BmOtherMoe
     }
 
     private boolean checkFiled(BmOtherMoeny bmOtherMoeny){
-        if(ObjectUtil.isEmpty(bmOtherMoeny) || StrUtil.isEmpty(bmOtherMoeny.getItem()) ||
+        if(ObjectUtil.isEmpty(bmOtherMoeny) || StrUtil.isEmpty(bmOtherMoeny.getOtherItem()) ||
                 ObjectUtil.isEmpty(bmOtherMoeny.getMeony()) || StrUtil.isEmpty(bmOtherMoeny.getType())
         ){
             return true;
@@ -109,12 +109,12 @@ public class BmOtherMoneyImpl extends ServiceImpl<BmOtherMoneyMapper, BmOtherMoe
     private boolean updateFlag(BmOtherMoeny newObj, BmOtherMoeny oldObj){
         StringBuffer sb1 = new StringBuffer("");
         StringBuffer sb2 = new StringBuffer("");
-        sb1.append(newObj.getItem());
-        sb2.append(oldObj.getItem());
+        sb1.append(newObj.getOtherItem());
+        sb2.append(oldObj.getOtherItem());
         sb1.append(newObj.getMeony());
         sb2.append(oldObj.getMeony());
-        sb1.append(newObj.getDate());
-        sb2.append(oldObj.getDate());
+        sb1.append(newObj.getOtherDate());
+        sb2.append(oldObj.getOtherDate());
         return sb1.toString().equals(sb2.toString());
     }
 }

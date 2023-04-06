@@ -15,11 +15,13 @@ public class BmOtherMoeny extends BaseEntity{
     @TableId(type = IdType.ASSIGN_UUID)
     private String id;
 
-    private String item;
+    private String otherItem;
 
     private BigDecimal meony;
 
     private String type;
 
-    private Date date;
+    private Date otherDate;
+
+    private String remark;
 }
