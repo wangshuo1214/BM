@@ -42,12 +42,13 @@ public class BmOtherDealImpl extends ServiceImpl<BmOtherDealMapper, BmOtherDeal>
             wrapper.lambda().eq(BmOtherDeal::getDealItem, bmOtherDeal.getDealItem());
         }
         if (ObjectUtil.isNotEmpty(bmOtherDeal.getParams()) &&
-                ObjectUtil.isNotEmpty(bmOtherDeal.getParams().get("otherDate"))){
-            Object[] date = (Object[]) bmOtherDeal.getParams().get("otherDate");
-            wrapper.lambda().ge(BmOtherDeal::getDealDate,date[0]);
-            wrapper.lambda().le(BmOtherDeal::getDealDate,date[1]);
+                ObjectUtil.isNotEmpty(bmOtherDeal.getParams().get("dealDate"))){
+            List<Object> date = (List<Object>) bmOtherDeal.getParams().get("dealDate");
+            wrapper.lambda().ge(BmOtherDeal::getDealDate,date.get(0));
+            wrapper.lambda().le(BmOtherDeal::getDealDate,date.get(1));
         }
-        wrapper.lambda().orderByDesc(BmOtherDeal::getUpdateDate);
+        wrapper.lambda().eq(BmOtherDeal::getDeleted,BaseConstant.FALSE);
+        wrapper.lambda().orderByDesc(BmOtherDeal::getDealDate);
 
         return list(wrapper);
     }
@@ -60,10 +61,11 @@ public class BmOtherDealImpl extends ServiceImpl<BmOtherDealMapper, BmOtherDeal>
 
         BmOtherDeal oldObj = getById(bmOtherDeal.getId());
 
-        if (updateFlag(bmOtherDeal,oldObj)){
+        if (!updateFlag(bmOtherDeal,oldObj)){
             oldObj.setDealItem(bmOtherDeal.getDealItem());
             oldObj.setMoney(bmOtherDeal.getMoney());
             oldObj.setDealDate(bmOtherDeal.getDealDate());
+            oldObj.setRemark(bmOtherDeal.getRemark());
         }
 
         return updateById(oldObj);
@@ -115,6 +117,8 @@ public class BmOtherDealImpl extends ServiceImpl<BmOtherDealMapper, BmOtherDeal>
         sb2.append(oldObj.getMoney());
         sb1.append(newObj.getDealDate());
         sb2.append(oldObj.getDealDate());
+        sb1.append(newObj.getRemark());
+        sb2.append(oldObj.getRemark());
         return sb1.toString().equals(sb2.toString());
     }
 }

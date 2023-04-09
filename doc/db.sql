@@ -1,7 +1,7 @@
 CREATE TABLE `bm_client` (
                              `client_id` varchar(36) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '客户ID',
                              `client_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '客户名',
-                             `debt` decimal(6,2) DEFAULT NULL COMMENT '欠款',
+                             `debt` decimal(8,2) DEFAULT NULL COMMENT '欠款',
                              `phone` varchar(11) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '电话',
                              `address` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '地址',
                              `weight` int NOT NULL COMMENT '权重',
@@ -74,7 +74,7 @@ CREATE TABLE `bm_order_detail` (
                                    `id` varchar(36) NOT NULL COMMENT '采购记录id',
                                    `material_id` varchar(36) NOT NULL COMMENT '商品id',
                                    `num` int NOT NULL COMMENT '数量',
-                                   `money` decimal(6,2) NOT NULL COMMENT '金额',
+                                   `money` decimal(8,2) NOT NULL COMMENT '金额',
                                    `remark` varchar(500) DEFAULT NULL COMMENT '备注',
                                    `order_id` varchar(36) NOT NULL COMMENT '订单id',
                                    `create_date` datetime NOT NULL COMMENT '创建日期',
@@ -87,22 +87,19 @@ CREATE TABLE `bm_order_detail` (
 CREATE TABLE `bm_return_record` (
                                     `id` varchar(36) NOT NULL COMMENT '主键',
                                     `client_id` varchar(36) NOT NULL COMMENT '客户id',
-                                    `material_id` varchar(36) NOT NULL COMMENT '商品id',
-                                    `order_id` varchar(36) NOT NULL COMMENT '订单id',
-                                    `num` int NOT NULL COMMENT '数量',
-                                    `moeny` decimal(6,2) DEFAULT NULL COMMENT '金额',
+                                    `moeny` decimal(8,2) DEFAULT NULL COMMENT '金额',
                                     `return_date` datetime NOT NULL COMMENT '退货日期',
                                     `remark` varchar(500) DEFAULT NULL COMMENT '备注',
                                     `create_date` datetime NOT NULL COMMENT '创建日期',
                                     `update_date` datetime NOT NULL COMMENT '修改日期',
                                     `deleted` char(1) NOT NULL COMMENT '删除标志',
                                     PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 
 CREATE TABLE `bm_salary_record` (
                                     `id` varchar(36) NOT NULL COMMENT '主键',
-                                    `salary` decimal(6,2) NOT NULL COMMENT '工资',
+                                    `salary` decimal(8,2) NOT NULL COMMENT '工资',
                                     `salary_date` datetime NOT NULL COMMENT '日期',
                                     `remark` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '备注',
                                     `create_date` datetime NOT NULL COMMENT '创建日期',
@@ -145,7 +142,7 @@ CREATE TABLE `bm_make_record_detail` (
                                          `make_record_id` varchar(36) NOT NULL COMMENT '生产记录id',
                                          `material_id` varchar(36) NOT NULL COMMENT '生产商品id',
                                          `num` int NOT NULL COMMENT '数量',
-                                         `wage` decimal(6,2) NOT NULL COMMENT '工费',
+                                         `wage` decimal(8,2) NOT NULL COMMENT '工费',
                                          `sort` int NOT NULL COMMENT '排序',
                                          `remark` varchar(500) DEFAULT NULL COMMENT '备注',
                                          `create_date` datetime NOT NULL COMMENT '创建时间',
@@ -157,7 +154,7 @@ CREATE TABLE `bm_make_record_detail` (
 CREATE TABLE `bm_other_deal` (
                                  `id` varchar(36) NOT NULL COMMENT '主键',
                                  `deal_item` char(1) CHARACTER SET utf8mb3 COLLATE utf8_general_ci NOT NULL COMMENT '消费(支出)项',
-                                 `money` decimal(6,2) NOT NULL COMMENT '金额',
+                                 `money` decimal(8,2) NOT NULL COMMENT '金额',
                                  `type` char(1) NOT NULL COMMENT '类型（0消费项1支出项）',
                                  `deal_date` datetime DEFAULT NULL,
                                  `remark` varchar(500) DEFAULT NULL COMMENT '备注',

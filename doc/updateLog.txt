@@ -66,3 +66,9 @@
 
 2023.3.28
     在bm_order中把order_type为1的的clear_flag 设为0, 然后order_type的0和1互换
+
+2023.4.8
+    金额相关的扩大到8，2 因为前面代表的是总长度
+
+2023.4.9
+    删除bm_return_record表
