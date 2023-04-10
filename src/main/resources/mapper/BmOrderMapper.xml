@@ -182,5 +182,17 @@
         <include refid="deleteFlagHql"/>
     </update>
 
+    <select id="getMoneyStatistic" resultType="String">
+        select sum(money) from bm_order_detail where order_id in (
+        select order_id from bm_order
+        <where>
+            DATE_FORMAT(order_date,#{time}) = DATE_FORMAT(now(),#{time})
+            and order_type = #{type}
+            <include refid="deleteFlagHql"/>
+        </where>
+        )
+        <include refid="deleteFlagHql"/>
+    </select>
+
 
 </mapper>

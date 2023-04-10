@@ -16,17 +16,15 @@ import com.ws.bm.exception.BaseException;
 import com.ws.bm.mapper.BmEmployeeMapper;
 import com.ws.bm.mapper.BmMakeRecordMapper;
 import com.ws.bm.mapper.BmMaterialMapper;
-import com.ws.bm.mapper.BmSalaryMapper;
+import com.ws.bm.mapper.BmSalaryRecordMapper;
 import com.ws.bm.service.IBmSalaryRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
-public class BmSalaryRecordServiceImpl extends ServiceImpl<BmSalaryMapper, BmSalaryRecord> implements IBmSalaryRecordService {
+public class BmSalaryRecordServiceImpl extends ServiceImpl<BmSalaryRecordMapper, BmSalaryRecord> implements IBmSalaryRecordService {
 
     @Autowired
     BmMakeRecordMapper bmMakeRecordMapper;

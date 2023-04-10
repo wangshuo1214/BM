@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ws.bm.mapper.BmOtherDealMapper">
+
+    <sql id="deleteFlagHql">
+        and deleted = ${@com.ws.bm.common.constant.BaseConstant@FALSE}
+    </sql>
+
+    <select id="getMoneyStatistic" resultType="String">
+        select sum(money) from bm_other_deal where DATE_FORMAT(deal_date,#{time}) = DATE_FORMAT(now(),#{time})
+        and type = #{type}
+        <include refid="deleteFlagHql"/>
+    </select>
+</mapper>

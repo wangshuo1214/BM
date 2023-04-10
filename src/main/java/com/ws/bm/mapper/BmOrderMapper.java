@@ -5,6 +5,7 @@ import com.ws.bm.domain.entity.BmOrderDetail;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Map;
 
 
 @Mapper
@@ -35,4 +36,6 @@ public interface BmOrderMapper {
     String getMoneyInfo(String type);
 
     int updBmOrderClearFlagByClientId(String bmCLientId);
+
+    String getMoneyStatistic(Map<String,String> map);
 }
