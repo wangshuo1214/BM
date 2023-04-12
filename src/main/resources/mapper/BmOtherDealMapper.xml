@@ -9,7 +9,7 @@
     </sql>
 
     <select id="getMoneyStatistic" resultType="String">
-        select sum(money) from bm_other_deal where DATE_FORMAT(deal_date,#{time}) = DATE_FORMAT(now(),#{time})
+        select sum(money) from bm_other_deal where DATE_FORMAT(deal_date,#{format}) = DATE_FORMAT(#{time},#{format})
         and type = #{type}
         <include refid="deleteFlagHql"/>
     </select>
