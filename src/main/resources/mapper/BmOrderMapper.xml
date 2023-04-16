@@ -194,5 +194,16 @@
         <include refid="deleteFlagHql"/>
     </select>
 
+    <select id="getTotalMoneyStatistic" resultType="String">
+        select sum(money) from bm_order_detail where order_id in (
+        select order_id from bm_order
+        <where>
+            order_type = #{type}
+            <include refid="deleteFlagHql"/>
+        </where>
+        )
+        <include refid="deleteFlagHql"/>
+    </select>
+
 
 </mapper>

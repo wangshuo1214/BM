@@ -13,4 +13,9 @@
         and type = #{type}
         <include refid="deleteFlagHql"/>
     </select>
+
+    <select id="getTotalMoneyStatistic" resultType="String">
+        select sum(money) from bm_other_deal where type = #{type}
+        <include refid="deleteFlagHql"/>
+    </select>
 </mapper>

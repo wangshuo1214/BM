@@ -11,4 +11,9 @@
         select sum(salary) from bm_salary_record where DATE_FORMAT(salary_date,#{format}) = DATE_FORMAT(#{time},#{format})
         <include refid="deleteFlagHql"/>
     </select>
+
+    <select id="getTotalSalaryStatistic" resultType="String">
+        select sum(salary) from bm_salary_record where 1=1
+        <include refid="deleteFlagHql"/>
+    </select>
 </mapper>

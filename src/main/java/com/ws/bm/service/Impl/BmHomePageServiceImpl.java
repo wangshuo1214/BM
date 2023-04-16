@@ -61,6 +61,11 @@ public class BmHomePageServiceImpl implements IBmHomePageService {
         //本年开支
         result.put("yearCost",getCostAdd(map));
 
+        // 累计销售
+        result.put("totalSell",getTotalSellAdd(map));
+        // 累计花销
+        result.put("totalCost",getTotalCostAdd(map));
+
         //近7天销售
         result.put("sevenDaySell",get7DaySell());
 
@@ -81,6 +86,16 @@ public class BmHomePageServiceImpl implements IBmHomePageService {
         map.put("type", BaseConstant.SellOrder);
         String sellMoneyStatistic = StrUtil.isEmpty(bmOrderMapper.getMoneyStatistic(map)) ? "0" : bmOrderMapper.getMoneyStatistic(map);
         String otherMoneyStatistic = StrUtil.isEmpty(bmOtherDealMapper.getMoneyStatistic(map)) ? "0" : bmOtherDealMapper.getMoneyStatistic(map);
+
+        BigDecimal result = new BigDecimal(sellMoneyStatistic).add(new BigDecimal(otherMoneyStatistic));
+        return result;
+    }
+
+    // 求累计销售综合
+    private BigDecimal getTotalSellAdd(Map<String,String> map){
+        map.put("type", BaseConstant.SellOrder);
+        String sellMoneyStatistic = StrUtil.isEmpty(bmOrderMapper.getTotalMoneyStatistic(map)) ? "0" : bmOrderMapper.getTotalMoneyStatistic(map);
+        String otherMoneyStatistic = StrUtil.isEmpty(bmOtherDealMapper.getTotalMoneyStatistic(map)) ? "0" : bmOtherDealMapper.getTotalMoneyStatistic(map);
 
         BigDecimal result = new BigDecimal(sellMoneyStatistic).add(new BigDecimal(otherMoneyStatistic));
         return result;
@@ -134,6 +149,17 @@ public class BmHomePageServiceImpl implements IBmHomePageService {
         String buyMoneyStatistic = StrUtil.isEmpty(bmOrderMapper.getMoneyStatistic(map)) ? "0" : bmOrderMapper.getMoneyStatistic(map);
         String otherMoneyStatistic = StrUtil.isEmpty(bmOtherDealMapper.getMoneyStatistic(map)) ? "0" : bmOtherDealMapper.getMoneyStatistic(map);
         String salaryStatistic = StrUtil.isEmpty(bmSalaryRecordMapper.getSalaryStatistic(map)) ? "0" : bmSalaryRecordMapper.getSalaryStatistic(map);
+
+        BigDecimal result = new BigDecimal(buyMoneyStatistic).add(new BigDecimal(otherMoneyStatistic)).add(new BigDecimal(salaryStatistic));
+        return result;
+    }
+
+    // 求累计花销总和
+    private BigDecimal getTotalCostAdd(Map<String,String> map){
+        map.put("type", BaseConstant.BuyOrder);
+        String buyMoneyStatistic = StrUtil.isEmpty(bmOrderMapper.getTotalMoneyStatistic(map)) ? "0" : bmOrderMapper.getTotalMoneyStatistic(map);
+        String otherMoneyStatistic = StrUtil.isEmpty(bmOtherDealMapper.getTotalMoneyStatistic(map)) ? "0" : bmOtherDealMapper.getTotalMoneyStatistic(map);
+        String salaryStatistic = StrUtil.isEmpty(bmSalaryRecordMapper.getTotalSalaryStatistic(map)) ? "0" : bmSalaryRecordMapper.getTotalSalaryStatistic(map);
 
         BigDecimal result = new BigDecimal(buyMoneyStatistic).add(new BigDecimal(otherMoneyStatistic)).add(new BigDecimal(salaryStatistic));
         return result;
