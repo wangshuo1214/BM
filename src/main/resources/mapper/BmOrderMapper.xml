@@ -182,28 +182,18 @@
         <include refid="deleteFlagHql"/>
     </update>
 
-    <select id="getMoneyStatistic" resultType="String">
+    <select id="getCostMoneyStatistic" resultType="String">
         select sum(money) from bm_order_detail where order_id in (
         select order_id from bm_order
         <where>
-            DATE_FORMAT(order_date,#{format}) = DATE_FORMAT(#{time},#{format})
-            and order_type = #{type}
+            <if test="format != null and time != null">
+                DATE_FORMAT(order_date,#{format}) = DATE_FORMAT(#{time},#{format})
+            </if>
+            and order_type = ${@com.ws.bm.common.constant.BaseConstant@BuyOrder}
             <include refid="deleteFlagHql"/>
         </where>
         )
         <include refid="deleteFlagHql"/>
     </select>
-
-    <select id="getTotalMoneyStatistic" resultType="String">
-        select sum(money) from bm_order_detail where order_id in (
-        select order_id from bm_order
-        <where>
-            order_type = #{type}
-            <include refid="deleteFlagHql"/>
-        </where>
-        )
-        <include refid="deleteFlagHql"/>
-    </select>
-
 
 </mapper>

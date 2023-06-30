@@ -9,13 +9,13 @@
     </sql>
 
     <select id="getMoneyStatistic" resultType="String">
-        select sum(money) from bm_other_deal where DATE_FORMAT(deal_date,#{format}) = DATE_FORMAT(#{time},#{format})
-        and type = #{type}
-        <include refid="deleteFlagHql"/>
-    </select>
-
-    <select id="getTotalMoneyStatistic" resultType="String">
-        select sum(money) from bm_other_deal where type = #{type}
+        select sum(money) from bm_other_deal
+        <where>
+            <if test="format != null and time != null">
+                DATE_FORMAT(deal_date,#{format}) = DATE_FORMAT(#{time},#{format})
+            </if>
+            and type = #{type}
+        </where>
         <include refid="deleteFlagHql"/>
     </select>
 </mapper>

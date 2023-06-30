@@ -37,7 +37,6 @@ public interface BmOrderMapper {
 
     int updBmOrderClearFlagByClientId(String bmCLientId);
 
-    String getMoneyStatistic(Map<String,String> map);
+    String getCostMoneyStatistic(Map<String,String> map);
 
-    String getTotalMoneyStatistic(Map<String,String> map);
 }

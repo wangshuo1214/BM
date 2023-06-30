@@ -20,4 +20,16 @@
         <include refid="deleteFlagHql"/>
         order by update_date desc
     </select>
+
+
+    <select id="getSellMoneyStatistic" resultType="String">
+        select sum(transfer_money) from bm_transfer_record
+        <where>
+            <if test="format != null and time != null ">
+                DATE_FORMAT(transfer_date,#{format}) = DATE_FORMAT(#{time},#{format})
+            </if>
+            <include refid="deleteFlagHql"/>
+        </where>
+    </select>
+
 </mapper>

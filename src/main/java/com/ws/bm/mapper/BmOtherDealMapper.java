@@ -10,6 +10,4 @@ import java.util.Map;
 public interface BmOtherDealMapper extends BaseMapper<BmOtherDeal> {
 
     String getMoneyStatistic(Map<String,String> map);
-
-    String getTotalMoneyStatistic(Map<String,String> map);
 }

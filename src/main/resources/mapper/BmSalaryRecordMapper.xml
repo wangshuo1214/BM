@@ -8,12 +8,12 @@
     </sql>
 
     <select id="getSalaryStatistic" resultType="String">
-        select sum(salary) from bm_salary_record where DATE_FORMAT(salary_date,#{format}) = DATE_FORMAT(#{time},#{format})
-        <include refid="deleteFlagHql"/>
-    </select>
-
-    <select id="getTotalSalaryStatistic" resultType="String">
-        select sum(salary) from bm_salary_record where 1=1
-        <include refid="deleteFlagHql"/>
+        select sum(salary) from bm_salary_record
+            <where>
+                <if test="format != null and time != null">
+                    DATE_FORMAT(salary_date,#{format}) = DATE_FORMAT(#{time},#{format})
+                </if>
+                <include refid="deleteFlagHql"/>
+            </where>
     </select>
 </mapper>

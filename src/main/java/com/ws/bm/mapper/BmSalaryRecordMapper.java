@@ -11,5 +11,4 @@ public interface BmSalaryRecordMapper extends BaseMapper<BmSalaryRecord> {
 
     String getSalaryStatistic(Map<String,String> map);
 
-    String getTotalSalaryStatistic(Map<String,String> map);
 }

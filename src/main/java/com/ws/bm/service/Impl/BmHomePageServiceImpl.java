@@ -6,6 +6,7 @@ import com.ws.bm.common.constant.BaseConstant;
 import com.ws.bm.mapper.BmOrderMapper;
 import com.ws.bm.mapper.BmOtherDealMapper;
 import com.ws.bm.mapper.BmSalaryRecordMapper;
+import com.ws.bm.mapper.BmTransferRecordMapper;
 import com.ws.bm.service.IBmHomePageService;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class BmHomePageServiceImpl implements IBmHomePageService {
     @Autowired
     BmSalaryRecordMapper bmSalaryRecordMapper;
 
+    @Autowired
+    BmTransferRecordMapper bmTransferRecordMapper;
+
     private String yearFormat = "'%Y'";
 
     private String monthFormat = "'%Y-%m'";
@@ -38,38 +42,41 @@ public class BmHomePageServiceImpl implements IBmHomePageService {
         Map<String,String> map = new HashMap<>();
         JSONObject result = new JSONObject();
 
-        String format = new SimpleDateFormat().format(new Date());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String format = sdf.format(new Date());
 
         map.put("format",dayFormat);
         map.put("time",format);
-        //今日销售
+        //今日收入
         result.put("daySell",getSellAdd(map));
-        //今日开支
+        //今日支出
         result.put("dayCost",getCostAdd(map));
 
         map.put("format",monthFormat);
         map.put("time",format);
-        //本月销售
+        //本月收入
         result.put("monthSell",getSellAdd(map));
-        //本月开支
+        //本月支出
         result.put("monthCost",getCostAdd(map));
 
         map.put("format",yearFormat);
         map.put("time",format);
-        //本年销售
+        //本年收入
         result.put("yearSell",getSellAdd(map));
-        //本年开支
+        //本年支出
         result.put("yearCost",getCostAdd(map));
 
-        // 累计销售
-        result.put("totalSell",getTotalSellAdd(map));
-        // 累计花销
-        result.put("totalCost",getTotalCostAdd(map));
+        map.put("format",null);
+        map.put("time",null);
+        // 累计收入
+        result.put("totalSell",getSellAdd(map));
+        // 累计支出
+        result.put("totalCost",getCostAdd(map));
 
-        //近7天销售
+        //近7天收入
         result.put("sevenDaySell",get7DaySell());
 
-        //近12个月销售
+        //近12个月收入
         result.put("twelveMonthSell",get12MonthSell());
 
         //近7天支出
@@ -81,22 +88,20 @@ public class BmHomePageServiceImpl implements IBmHomePageService {
         return result;
     }
 
-    // 求所有销售的和
+    // 求销售的和
     private BigDecimal getSellAdd(Map<String,String> map){
+        // 转账记录收到的钱
+        String sellMoneyStatistic = bmTransferRecordMapper.getSellMoneyStatistic(map);
+        if (StrUtil.isEmpty(sellMoneyStatistic)){
+            sellMoneyStatistic = "0";
+        }
+        // 其他销售收到的钱
         map.put("type", BaseConstant.SellOrder);
-        String sellMoneyStatistic = StrUtil.isEmpty(bmOrderMapper.getMoneyStatistic(map)) ? "0" : bmOrderMapper.getMoneyStatistic(map);
-        String otherMoneyStatistic = StrUtil.isEmpty(bmOtherDealMapper.getMoneyStatistic(map)) ? "0" : bmOtherDealMapper.getMoneyStatistic(map);
-
-        BigDecimal result = new BigDecimal(sellMoneyStatistic).add(new BigDecimal(otherMoneyStatistic));
-        return result;
-    }
-
-    // 求累计销售综合
-    private BigDecimal getTotalSellAdd(Map<String,String> map){
-        map.put("type", BaseConstant.SellOrder);
-        String sellMoneyStatistic = StrUtil.isEmpty(bmOrderMapper.getTotalMoneyStatistic(map)) ? "0" : bmOrderMapper.getTotalMoneyStatistic(map);
-        String otherMoneyStatistic = StrUtil.isEmpty(bmOtherDealMapper.getTotalMoneyStatistic(map)) ? "0" : bmOtherDealMapper.getTotalMoneyStatistic(map);
-
+        String otherMoneyStatistic = bmOtherDealMapper.getMoneyStatistic(map);
+        if (StrUtil.isEmpty(otherMoneyStatistic)){
+            otherMoneyStatistic = "0";
+        }
+        // 求和
         BigDecimal result = new BigDecimal(sellMoneyStatistic).add(new BigDecimal(otherMoneyStatistic));
         return result;
     }
@@ -113,8 +118,14 @@ public class BmHomePageServiceImpl implements IBmHomePageService {
             String time = sdf.format(DateUtils.addDays(new Date(), -i));
             map.put("time",time);
             map.put("format",dayFormat);
-            String sellMoneyStatistic = StrUtil.isEmpty(bmOrderMapper.getMoneyStatistic(map)) ? "0" : bmOrderMapper.getMoneyStatistic(map);
-            String otherMoneyStatistic = StrUtil.isEmpty(bmOtherDealMapper.getMoneyStatistic(map)) ? "0" : bmOtherDealMapper.getMoneyStatistic(map);
+            String sellMoneyStatistic = bmTransferRecordMapper.getSellMoneyStatistic(map);
+            if (StrUtil.isEmpty(sellMoneyStatistic)){
+                sellMoneyStatistic = "0";
+            }
+            String otherMoneyStatistic = bmOtherDealMapper.getMoneyStatistic(map);
+            if (StrUtil.isEmpty(otherMoneyStatistic)){
+                otherMoneyStatistic = "0";
+            }
             BigDecimal add = new BigDecimal(sellMoneyStatistic).add(new BigDecimal(otherMoneyStatistic));
             result.put(time,add);
 
@@ -134,8 +145,14 @@ public class BmHomePageServiceImpl implements IBmHomePageService {
             String time = sdf.format(DateUtils.addMonths(new Date(), -i));
             map.put("time",time+"-00");
             map.put("format",monthFormat);
-            String sellMoneyStatistic = StrUtil.isEmpty(bmOrderMapper.getMoneyStatistic(map)) ? "0" : bmOrderMapper.getMoneyStatistic(map);
-            String otherMoneyStatistic = StrUtil.isEmpty(bmOtherDealMapper.getMoneyStatistic(map)) ? "0" : bmOtherDealMapper.getMoneyStatistic(map);
+            String sellMoneyStatistic = bmTransferRecordMapper.getSellMoneyStatistic(map);
+            if (StrUtil.isEmpty(sellMoneyStatistic)){
+                sellMoneyStatistic = "0";
+            }
+            String otherMoneyStatistic = bmOtherDealMapper.getMoneyStatistic(map);
+            if (StrUtil.isEmpty(otherMoneyStatistic)){
+                otherMoneyStatistic = "0";
+            }
             BigDecimal add = new BigDecimal(sellMoneyStatistic).add(new BigDecimal(otherMoneyStatistic));
             result.put(time,add);
 
@@ -143,24 +160,23 @@ public class BmHomePageServiceImpl implements IBmHomePageService {
         return result;
     }
 
-    // 求所有支出的和
+    // 求支出的和
     private BigDecimal getCostAdd(Map<String,String> map){
-        map.put("type", BaseConstant.BuyOrder);
-        String buyMoneyStatistic = StrUtil.isEmpty(bmOrderMapper.getMoneyStatistic(map)) ? "0" : bmOrderMapper.getMoneyStatistic(map);
-        String otherMoneyStatistic = StrUtil.isEmpty(bmOtherDealMapper.getMoneyStatistic(map)) ? "0" : bmOtherDealMapper.getMoneyStatistic(map);
-        String salaryStatistic = StrUtil.isEmpty(bmSalaryRecordMapper.getSalaryStatistic(map)) ? "0" : bmSalaryRecordMapper.getSalaryStatistic(map);
-
-        BigDecimal result = new BigDecimal(buyMoneyStatistic).add(new BigDecimal(otherMoneyStatistic)).add(new BigDecimal(salaryStatistic));
-        return result;
-    }
-
-    // 求累计花销总和
-    private BigDecimal getTotalCostAdd(Map<String,String> map){
-        map.put("type", BaseConstant.BuyOrder);
-        String buyMoneyStatistic = StrUtil.isEmpty(bmOrderMapper.getTotalMoneyStatistic(map)) ? "0" : bmOrderMapper.getTotalMoneyStatistic(map);
-        String otherMoneyStatistic = StrUtil.isEmpty(bmOtherDealMapper.getTotalMoneyStatistic(map)) ? "0" : bmOtherDealMapper.getTotalMoneyStatistic(map);
-        String salaryStatistic = StrUtil.isEmpty(bmSalaryRecordMapper.getTotalSalaryStatistic(map)) ? "0" : bmSalaryRecordMapper.getTotalSalaryStatistic(map);
-
+        // 采购的支出
+        String buyMoneyStatistic = bmOrderMapper.getCostMoneyStatistic(map);
+        if (StrUtil.isEmpty(buyMoneyStatistic)){
+            buyMoneyStatistic = "0";
+        }
+        // 其他采购的支出
+        String otherMoneyStatistic = bmOtherDealMapper.getMoneyStatistic(map);
+        if (StrUtil.isEmpty(otherMoneyStatistic)){
+            otherMoneyStatistic = "0";
+        }
+        // 工资的支出
+        String salaryStatistic = bmSalaryRecordMapper.getSalaryStatistic(map);
+        if (StrUtil.isEmpty(salaryStatistic)){
+            salaryStatistic = "0";
+        }
         BigDecimal result = new BigDecimal(buyMoneyStatistic).add(new BigDecimal(otherMoneyStatistic)).add(new BigDecimal(salaryStatistic));
         return result;
     }
@@ -178,9 +194,18 @@ public class BmHomePageServiceImpl implements IBmHomePageService {
             String time = sdf.format(DateUtils.addDays(new Date(), -i));
             map.put("time",time);
             map.put("format",dayFormat);
-            String buyMoneyStatistic = StrUtil.isEmpty(bmOrderMapper.getMoneyStatistic(map)) ? "0" : bmOrderMapper.getMoneyStatistic(map);
-            String otherMoneyStatistic = StrUtil.isEmpty(bmOtherDealMapper.getMoneyStatistic(map)) ? "0" : bmOtherDealMapper.getMoneyStatistic(map);
-            String salaryStatistic = StrUtil.isEmpty(bmSalaryRecordMapper.getSalaryStatistic(map)) ? "0" : bmSalaryRecordMapper.getSalaryStatistic(map);
+            String buyMoneyStatistic = bmOrderMapper.getCostMoneyStatistic(map);
+            if (StrUtil.isEmpty(buyMoneyStatistic)){
+                buyMoneyStatistic = "0";
+            }
+            String otherMoneyStatistic = bmOtherDealMapper.getMoneyStatistic(map);
+            if (StrUtil.isEmpty(otherMoneyStatistic)){
+                otherMoneyStatistic = "0";
+            }
+            String salaryStatistic = bmSalaryRecordMapper.getSalaryStatistic(map);
+            if (StrUtil.isEmpty(salaryStatistic)){
+                salaryStatistic = "0";
+            }
             BigDecimal add = new BigDecimal(buyMoneyStatistic).add(new BigDecimal(otherMoneyStatistic)).add(new BigDecimal(salaryStatistic));
             result.put(time,add);
 
@@ -201,9 +226,18 @@ public class BmHomePageServiceImpl implements IBmHomePageService {
             String time = sdf.format(DateUtils.addMonths(new Date(), -i));
             map.put("time",time+"-00");
             map.put("format",monthFormat);
-            String buyMoneyStatistic = StrUtil.isEmpty(bmOrderMapper.getMoneyStatistic(map)) ? "0" : bmOrderMapper.getMoneyStatistic(map);
-            String otherMoneyStatistic = StrUtil.isEmpty(bmOtherDealMapper.getMoneyStatistic(map)) ? "0" : bmOtherDealMapper.getMoneyStatistic(map);
-            String salaryStatistic = StrUtil.isEmpty(bmSalaryRecordMapper.getSalaryStatistic(map)) ? "0" : bmSalaryRecordMapper.getSalaryStatistic(map);
+            String buyMoneyStatistic = bmOrderMapper.getCostMoneyStatistic(map);
+            if (StrUtil.isEmpty(buyMoneyStatistic)){
+                buyMoneyStatistic = "0";
+            }
+            String otherMoneyStatistic = bmOtherDealMapper.getMoneyStatistic(map);
+            if (StrUtil.isEmpty(otherMoneyStatistic)){
+                otherMoneyStatistic = "0";
+            }
+            String salaryStatistic = bmSalaryRecordMapper.getSalaryStatistic(map);
+            if (StrUtil.isEmpty(salaryStatistic)){
+                salaryStatistic = "0";
+            }
             BigDecimal add = new BigDecimal(buyMoneyStatistic).add(new BigDecimal(otherMoneyStatistic)).add(new BigDecimal(salaryStatistic));
             result.put(time,add);
 
