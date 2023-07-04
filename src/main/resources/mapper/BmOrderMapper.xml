@@ -196,4 +196,12 @@
         <include refid="deleteFlagHql"/>
     </select>
 
+    <select id="getBmOrderDetailByUserId" parameterType="String" resultType="BmOrderDetail">
+        <include refid="selectOrderDetailHql"/>
+        <where>
+            dealer_id = #{userId}
+        </where>
+        <include refid="deleteFlagHql"/>
+    </select>
+
 </mapper>

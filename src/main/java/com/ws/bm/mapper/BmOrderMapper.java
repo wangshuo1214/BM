@@ -39,4 +39,6 @@ public interface BmOrderMapper {
 
     String getCostMoneyStatistic(Map<String,String> map);
 
+    List<BmOrderDetail> getBmOrderDetailByUserId(String userId);
+
 }

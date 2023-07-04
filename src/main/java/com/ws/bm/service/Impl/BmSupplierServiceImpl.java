@@ -9,10 +9,13 @@ import com.ws.bm.common.constant.BaseConstant;
 import com.ws.bm.common.constant.HttpStatus;
 import com.ws.bm.common.utils.InitFieldUtil;
 import com.ws.bm.common.utils.MessageUtil;
+import com.ws.bm.domain.entity.BmOrderDetail;
 import com.ws.bm.domain.entity.BmSupplier;
 import com.ws.bm.exception.BaseException;
+import com.ws.bm.mapper.BmOrderMapper;
 import com.ws.bm.mapper.BmSupplierMapper;
 import com.ws.bm.service.IBmSupplierService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -21,6 +24,9 @@ import java.util.UUID;
 
 @Service
 public class BmSupplierServiceImpl extends ServiceImpl<BmSupplierMapper, BmSupplier> implements IBmSupplierService {
+
+    @Autowired
+    BmOrderMapper bmOrderMapper;
     @Override
     public boolean addBmSupplier(BmSupplier bmSupplier) {
         //校验必填字段
@@ -72,6 +78,13 @@ public class BmSupplierServiceImpl extends ServiceImpl<BmSupplierMapper, BmSuppl
         List<BmSupplier> bmSuppliers = listByIds(bmSupplierIds);
         if (CollUtil.isEmpty(bmSuppliers)){
             throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.paramsError"));
+        }
+        for (BmSupplier bmSupplier : bmSuppliers) {
+            List<BmOrderDetail> bmOrderDetailByUserId = bmOrderMapper.getBmOrderDetailByUserId(bmSupplier.getSupplierId());
+            if (CollUtil.isNotEmpty(bmOrderDetailByUserId)){
+                throw new BaseException(HttpStatus.BAD_REQUEST,"\""+bmSupplier.getSupplierName()+"\""+MessageUtil.getMessage("bm.client.cantDelete"));
+            }
+
         }
 
         bmSuppliers.forEach(bmSupplier -> {

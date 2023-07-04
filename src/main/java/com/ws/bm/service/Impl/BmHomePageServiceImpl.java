@@ -114,7 +114,7 @@ public class BmHomePageServiceImpl implements IBmHomePageService {
         Map<String,String> map = new HashMap<>();
         map.put("type",BaseConstant.SellOrder);
 
-        for (int i = 0; i <= 7; i++){
+        for (int i = 0; i < 7; i++){
             String time = sdf.format(DateUtils.addDays(new Date(), -i));
             map.put("time",time);
             map.put("format",dayFormat);
@@ -141,7 +141,7 @@ public class BmHomePageServiceImpl implements IBmHomePageService {
         Map<String,String> map = new HashMap<>();
         map.put("type",BaseConstant.SellOrder);
 
-        for (int i = 0; i <= 12; i++){
+        for (int i = 0; i < 12; i++){
             String time = sdf.format(DateUtils.addMonths(new Date(), -i));
             map.put("time",time+"-00");
             map.put("format",monthFormat);
@@ -190,7 +190,7 @@ public class BmHomePageServiceImpl implements IBmHomePageService {
         Map<String,String> map = new HashMap<>();
         map.put("type",BaseConstant.BuyOrder);
 
-        for (int i = 0; i <= 7; i++){
+        for (int i = 0; i < 7; i++){
             String time = sdf.format(DateUtils.addDays(new Date(), -i));
             map.put("time",time);
             map.put("format",dayFormat);
@@ -222,7 +222,7 @@ public class BmHomePageServiceImpl implements IBmHomePageService {
         Map<String,String> map = new HashMap<>();
         map.put("type",BaseConstant.BuyOrder);
 
-        for (int i = 0; i <= 12; i++){
+        for (int i = 0; i < 12; i++){
             String time = sdf.format(DateUtils.addMonths(new Date(), -i));
             map.put("time",time+"-00");
             map.put("format",monthFormat);

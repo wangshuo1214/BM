@@ -11,11 +11,14 @@ import com.ws.bm.common.utils.InitFieldUtil;
 import com.ws.bm.common.utils.MessageUtil;
 import com.ws.bm.domain.entity.BmClient;
 import com.ws.bm.domain.entity.BmEmployee;
+import com.ws.bm.domain.entity.BmOrderDetail;
 import com.ws.bm.domain.entity.system.BmDept;
 import com.ws.bm.domain.model.TreeSelect;
 import com.ws.bm.exception.BaseException;
 import com.ws.bm.mapper.BmClientMapper;
+import com.ws.bm.mapper.BmOrderMapper;
 import com.ws.bm.service.IBmClientService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -26,6 +29,10 @@ import java.util.UUID;
 
 @Service
 public class BmClientServiceImpl extends ServiceImpl<BmClientMapper, BmClient> implements IBmClientService {
+
+    @Autowired
+    BmOrderMapper bmOrderMapper;
+
     @Override
     public boolean addBmClient(BmClient bmClient) {
         //必填字段校验
@@ -77,6 +84,13 @@ public class BmClientServiceImpl extends ServiceImpl<BmClientMapper, BmClient> i
         List<BmClient> clientList = listByIds(bmClientIds);
         if (CollUtil.isEmpty(clientList)){
             throw new BaseException(HttpStatus.BAD_REQUEST,MessageUtil.getMessage("bm.paramsError"));
+        }
+        // 判断客户是否存在订单，如果存在订单便不可进行删除
+        for (BmClient bmClient : clientList) {
+            List<BmOrderDetail> bmOrderDetailByUserId = bmOrderMapper.getBmOrderDetailByUserId(bmClient.getClientId());
+            if (CollUtil.isNotEmpty(bmOrderDetailByUserId)){
+                throw new BaseException(HttpStatus.BAD_REQUEST,"\""+bmClient.getClientName()+"\""+MessageUtil.getMessage("bm.client.cantDelete"));
+            }
         }
         clientList.forEach(client -> {
             client.setDeleted(BaseConstant.TRUE);
