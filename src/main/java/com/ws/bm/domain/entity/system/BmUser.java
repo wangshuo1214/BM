@@ -36,6 +36,9 @@ public class BmUser extends BaseEntity {
     private String roleId;
 
     @TableField(exist = false)
+    private String roleName;
+
+    @TableField(exist = false)
     private List<String> permissions;
 
     @TableField(exist = false)

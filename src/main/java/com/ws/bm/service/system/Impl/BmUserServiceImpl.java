@@ -1,26 +1,35 @@
 package com.ws.bm.service.system.Impl;
 
+import cn.hutool.Hutool;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ws.bm.common.constant.BaseConstant;
 import com.ws.bm.common.constant.HttpStatus;
 import com.ws.bm.common.utils.InitFieldUtil;
+import com.ws.bm.common.utils.JwtTokenUtil;
 import com.ws.bm.common.utils.MessageUtil;
 import com.ws.bm.common.utils.PasswordUtil;
 import com.ws.bm.domain.entity.system.BmDept;
+import com.ws.bm.domain.entity.system.BmRole;
 import com.ws.bm.exception.BaseException;
 import com.ws.bm.mapper.system.BmDeptMapper;
+import com.ws.bm.mapper.system.BmRoleMapper;
 import com.ws.bm.mapper.system.BmUserMapper;
 import com.ws.bm.domain.entity.system.BmUser;
 import com.ws.bm.mapper.system.BmUserRoleMapper;
 import com.ws.bm.service.system.IBmUserService;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,6 +40,12 @@ public class BmUserServiceImpl extends ServiceImpl<BmUserMapper, BmUser> impleme
 
     @Autowired
     private BmDeptMapper bmDeptMapper;
+
+    @Autowired
+    private BmRoleMapper bmRoleMapper;
+
+    @Autowired
+    JwtTokenUtil jwtTokenUtil;
 
     @Override
     public boolean addBmUser(BmUser bmUser) {
@@ -213,6 +228,54 @@ public class BmUserServiceImpl extends ServiceImpl<BmUserMapper, BmUser> impleme
             });
         }
         return results;
+    }
+
+    @Override
+    public BmUser getUserProfile(HttpServletRequest request) {
+        try {
+            //在请求头中获取token
+            String token = request.getHeader("Authorization");
+            if (StrUtil.isEmpty(token)){
+                //请求中不携带token，需要登录
+                throw new BaseException(HttpStatus.UNAUTHORIZED, MessageUtil.getMessage("bm.loginTimeOut"));
+            }
+            Claims claims = jwtTokenUtil.getClaimsFromToken(token);
+            String userId =(String) claims.get("userId");
+            BmUser bmUser = getBmUser(userId);
+            BmDept bmDept = bmDeptMapper.selectById(bmUser.getDeptId());
+            if (ObjectUtil.isNotEmpty(bmDept)){
+                bmUser.setDeptName(bmDept.getDeptName());
+            }
+            List<String> roleIds = bmUserRoleMapper.queryRoleIdsByUserId(userId);
+            if (CollUtil.isNotEmpty(roleIds)){
+                StringBuffer sb = new StringBuffer("");
+                for (int i =0; i < roleIds.size(); i++){
+                    BmRole bmRole = bmRoleMapper.selectById(roleIds.get(i));
+                    sb.append(bmRole.getRoleName());
+                    if ((i + 1) != roleIds.size()){
+                        sb.append("、");
+                    }
+                }
+                bmUser.setRoleName(sb.toString());
+            }
+
+
+            return bmUser;
+        }catch (Exception e){
+            //toekn解析失败或过期
+            throw new BaseException(HttpStatus.UNAUTHORIZED, MessageUtil.getMessage("bm.loginTimeOut"));
+        }
+    }
+
+    @Override
+    public boolean updateUserProfile(BmUser bmUser) {
+        if(ObjectUtil.isEmpty(bmUser) || StrUtil.isEmpty(bmUser.getRealName())){
+            throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
+        }
+        BmUser old = getById(bmUser.getUserId());
+        old.setRoleName(bmUser.getRealName());
+        old.setUpdateDate(new Date());
+        return updateById(old);
     }
 
     //递归查询出该部门的所有子节点

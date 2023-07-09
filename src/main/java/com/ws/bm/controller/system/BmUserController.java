@@ -8,6 +8,7 @@ import com.ws.bm.service.system.IBmUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -66,5 +67,15 @@ public class BmUserController extends BaseController {
         startPage(pageQuery);
         BmUser bmUser = getPageItem(pageQuery,BmUser.class);
         return success(formatTableData(iBmUserService.queryUnAllocatedUserList(bmUser)));
+    }
+
+    @GetMapping("/getProfile")
+    public Result getUserProfile(HttpServletRequest request){
+        return success(iBmUserService.getUserProfile(request));
+    }
+
+    @PostMapping("/updateProfile")
+    public Result updateUserProfile(@RequestBody BmUser bmUser){
+        return computeResult(iBmUserService.updateUserProfile(bmUser));
     }
 }
