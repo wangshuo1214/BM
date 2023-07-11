@@ -26,7 +26,9 @@ public interface IBmUserService extends IService<BmUser> {
 
     List<BmUser> queryUnAllocatedUserList(BmUser bmUser);
 
-    BmUser getUserProfile(HttpServletRequest request);
+    BmUser getUserProfile(BmUser bmUser);
 
     boolean updateUserProfile(BmUser bmUser);
+
+    boolean updateUserPwd(BmUser bmUser);
 }

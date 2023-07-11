@@ -70,12 +70,17 @@ public class BmUserController extends BaseController {
     }
 
     @GetMapping("/getProfile")
-    public Result getUserProfile(HttpServletRequest request){
-        return success(iBmUserService.getUserProfile(request));
+    public Result getUserProfile(){
+        return success(iBmUserService.getUserProfile(getBmUser()));
     }
 
     @PostMapping("/updateProfile")
     public Result updateUserProfile(@RequestBody BmUser bmUser){
         return computeResult(iBmUserService.updateUserProfile(bmUser));
+    }
+
+    @PostMapping("/updatePwd")
+    public Result updateUserPwd(@RequestBody BmUser bmUser){
+        return computeResult(iBmUserService.updateUserPwd(bmUser));
     }
 }

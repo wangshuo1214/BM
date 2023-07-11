@@ -231,40 +231,24 @@ public class BmUserServiceImpl extends ServiceImpl<BmUserMapper, BmUser> impleme
     }
 
     @Override
-    public BmUser getUserProfile(HttpServletRequest request) {
-        try {
-            //在请求头中获取token
-            String token = request.getHeader("Authorization");
-            if (StrUtil.isEmpty(token)){
-                //请求中不携带token，需要登录
-                throw new BaseException(HttpStatus.UNAUTHORIZED, MessageUtil.getMessage("bm.loginTimeOut"));
-            }
-            Claims claims = jwtTokenUtil.getClaimsFromToken(token);
-            String userId =(String) claims.get("userId");
-            BmUser bmUser = getBmUser(userId);
-            BmDept bmDept = bmDeptMapper.selectById(bmUser.getDeptId());
-            if (ObjectUtil.isNotEmpty(bmDept)){
-                bmUser.setDeptName(bmDept.getDeptName());
-            }
-            List<String> roleIds = bmUserRoleMapper.queryRoleIdsByUserId(userId);
-            if (CollUtil.isNotEmpty(roleIds)){
-                StringBuffer sb = new StringBuffer("");
-                for (int i =0; i < roleIds.size(); i++){
-                    BmRole bmRole = bmRoleMapper.selectById(roleIds.get(i));
-                    sb.append(bmRole.getRoleName());
-                    if ((i + 1) != roleIds.size()){
-                        sb.append("、");
-                    }
-                }
-                bmUser.setRoleName(sb.toString());
-            }
-
-
-            return bmUser;
-        }catch (Exception e){
-            //toekn解析失败或过期
-            throw new BaseException(HttpStatus.UNAUTHORIZED, MessageUtil.getMessage("bm.loginTimeOut"));
+    public BmUser getUserProfile(BmUser bmUser) {
+        BmDept bmDept = bmDeptMapper.selectById(bmUser.getDeptId());
+        if (ObjectUtil.isNotEmpty(bmDept)){
+            bmUser.setDeptName(bmDept.getDeptName());
         }
+        List<String> roleIds = bmUserRoleMapper.queryRoleIdsByUserId(bmUser.getUserId());
+        if (CollUtil.isNotEmpty(roleIds)){
+            StringBuffer sb = new StringBuffer("");
+            for (int i =0; i < roleIds.size(); i++){
+                BmRole bmRole = bmRoleMapper.selectById(roleIds.get(i));
+                sb.append(bmRole.getRoleName());
+                if ((i + 1) != roleIds.size()){
+                    sb.append("、");
+                }
+            }
+            bmUser.setRoleName(sb.toString());
+        }
+        return bmUser;
     }
 
     @Override
@@ -276,6 +260,34 @@ public class BmUserServiceImpl extends ServiceImpl<BmUserMapper, BmUser> impleme
         old.setRoleName(bmUser.getRealName());
         old.setUpdateDate(new Date());
         return updateById(old);
+    }
+
+    @Override
+    public boolean updateUserPwd(BmUser bmUser) {
+        if (ObjectUtil.isEmpty(bmUser)){
+            throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
+        }
+        // 原密码
+        String oldPwd = String.valueOf(bmUser.getParams().get("oldPwd"));
+        // 新密码
+        String newPwd = String.valueOf(bmUser.getParams().get("newPwd"));
+        // 确认密码
+        String confirmPwd = String.valueOf(bmUser.getParams().get("confirmPwd"));
+        if (StrUtil.hasEmpty(oldPwd,newPwd,confirmPwd)){
+            throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
+        }
+        // 新密码 与 确认密码 比较
+        if (!StrUtil.equals(newPwd,confirmPwd)){
+            throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.pwdNotEqualsError"));
+        }
+        BmUser oldUser = getById(bmUser.getUserId());
+        if (StrUtil.equals(PasswordUtil.pwdEncrypt(oldPwd),oldUser.getPassword())){
+            throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.pwdOldNewNotEqualsError"));
+        }
+        oldUser.setPassword(PasswordUtil.pwdEncrypt(newPwd));
+        oldUser.setUpdateDate(new Date());
+
+        return updateById(oldUser);
     }
 
     //递归查询出该部门的所有子节点
