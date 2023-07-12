@@ -81,6 +81,7 @@ public class BmUserController extends BaseController {
 
     @PostMapping("/updatePwd")
     public Result updateUserPwd(@RequestBody BmUser bmUser){
+        bmUser.setUserId(getUserId());
         return computeResult(iBmUserService.updateUserPwd(bmUser));
     }
 }

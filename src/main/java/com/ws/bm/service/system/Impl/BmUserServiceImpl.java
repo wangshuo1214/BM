@@ -10,10 +10,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ws.bm.common.constant.BaseConstant;
 import com.ws.bm.common.constant.HttpStatus;
-import com.ws.bm.common.utils.InitFieldUtil;
-import com.ws.bm.common.utils.JwtTokenUtil;
-import com.ws.bm.common.utils.MessageUtil;
-import com.ws.bm.common.utils.PasswordUtil;
+import com.ws.bm.common.utils.*;
 import com.ws.bm.domain.entity.system.BmDept;
 import com.ws.bm.domain.entity.system.BmRole;
 import com.ws.bm.exception.BaseException;
@@ -46,6 +43,9 @@ public class BmUserServiceImpl extends ServiceImpl<BmUserMapper, BmUser> impleme
 
     @Autowired
     JwtTokenUtil jwtTokenUtil;
+
+    @Autowired
+    RedisUtil redisUtil;
 
     @Override
     public boolean addBmUser(BmUser bmUser) {
@@ -281,11 +281,13 @@ public class BmUserServiceImpl extends ServiceImpl<BmUserMapper, BmUser> impleme
             throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.pwdNotEqualsError"));
         }
         BmUser oldUser = getById(bmUser.getUserId());
-        if (StrUtil.equals(PasswordUtil.pwdEncrypt(oldPwd),oldUser.getPassword())){
+        if (!StrUtil.equals(PasswordUtil.pwdEncrypt(oldPwd),oldUser.getPassword())){
             throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.pwdOldNewNotEqualsError"));
         }
         oldUser.setPassword(PasswordUtil.pwdEncrypt(newPwd));
         oldUser.setUpdateDate(new Date());
+
+        redisUtil.deleteObject("bmUserToken:"+oldUser.getUserId());
 
         return updateById(oldUser);
     }
