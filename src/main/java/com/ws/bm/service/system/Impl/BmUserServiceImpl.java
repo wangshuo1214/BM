@@ -1,16 +1,14 @@
 package com.ws.bm.service.system.Impl;
 
-import cn.hutool.Hutool;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.http.HttpRequest;
-import cn.hutool.http.HttpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ws.bm.common.constant.BaseConstant;
 import com.ws.bm.common.constant.HttpStatus;
 import com.ws.bm.common.utils.*;
+import com.ws.bm.config.BmConfig;
 import com.ws.bm.domain.entity.system.BmDept;
 import com.ws.bm.domain.entity.system.BmRole;
 import com.ws.bm.exception.BaseException;
@@ -20,13 +18,11 @@ import com.ws.bm.mapper.system.BmUserMapper;
 import com.ws.bm.domain.entity.system.BmUser;
 import com.ws.bm.mapper.system.BmUserRoleMapper;
 import com.ws.bm.service.system.IBmUserService;
-import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -292,6 +288,21 @@ public class BmUserServiceImpl extends ServiceImpl<BmUserMapper, BmUser> impleme
         return updateById(oldUser);
     }
 
+    @Override
+    public String uploadAvatar(MultipartFile file,BmUser bmUser) {
+        if (file.isEmpty() || ObjectUtil.isEmpty(bmUser)){
+            throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
+        }
+        String avatarPath = FileUploadUtil.upload(BmConfig.getAvatarPath(),file, Arrays.asList(BaseConstant.IMAGE_EXTENSION));
+        if (StrUtil.isNotEmpty(avatarPath)){
+            bmUser.setAvatar(avatarPath);
+            updateById(bmUser);
+            return avatarPath;
+        }else {
+            throw new BaseException(HttpStatus.ERROR, MessageUtil.getMessage("bm.false"));
+        }
+    }
+
     //递归查询出该部门的所有子节点
     public List<String> getDeptAllChildren(List<String> parentIds){
         QueryWrapper<BmDept> wrapper = new QueryWrapper<>();
@@ -329,4 +340,5 @@ public class BmUserServiceImpl extends ServiceImpl<BmUserMapper, BmUser> impleme
         }
         return false;
     }
+
 }
