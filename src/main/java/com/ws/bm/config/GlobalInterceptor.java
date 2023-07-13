@@ -36,34 +36,34 @@ public class GlobalInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 
-//        try {
-//            //在请求头中获取token
-//            String token = request.getHeader("Authorization");
-//
-//            if (StrUtil.isEmpty(token)){
-//                //请求中不携带token，需要登录
-//                throw new BaseException(HttpStatus.UNAUTHORIZED, MessageUtil.getMessage("bm.loginTimeOut"));
-//            }
-//            Claims claims = jwtTokenUtil.getClaimsFromToken(token);
-//            String userId =(String) claims.get("userId");
-//
-//            String cacheToken = redisUtil.getCacheObject("bmUserToken:" + userId);
-//            if (ObjectUtil.isEmpty(cacheToken)){
-//                //token在redis中已经过期，需要重新登录
-//                throw new BaseException(HttpStatus.UNAUTHORIZED, MessageUtil.getMessage("bm.loginTimeOut"));
-//            }
-//            if (!StrUtil.equals(token,cacheToken)){
-//                //请求token与缓存的token不一致，需要重新登录
-//                throw new BaseException(HttpStatus.UNAUTHORIZED, MessageUtil.getMessage("bm.loginTimeOut"));
-//            }
-//            //重新刷新token在缓存中的时间，实现长时间未登录就会重新登录，一直点击就不会重新登录
-//            redisUtil.expire("bmUserToken:"+userId,5, TimeUnit.HOURS);
-//
-//
-//        }catch (Exception e){
-//            //toekn解析失败或过期
-//            throw new BaseException(HttpStatus.UNAUTHORIZED, MessageUtil.getMessage("bm.loginTimeOut"));
-//        }
+        try {
+            //在请求头中获取token
+            String token = request.getHeader("Authorization");
+
+            if (StrUtil.isEmpty(token)){
+                //请求中不携带token，需要登录
+                throw new BaseException(HttpStatus.UNAUTHORIZED, MessageUtil.getMessage("bm.loginTimeOut"));
+            }
+            Claims claims = jwtTokenUtil.getClaimsFromToken(token);
+            String userId =(String) claims.get("userId");
+
+            String cacheToken = redisUtil.getCacheObject("bmUserToken:" + userId);
+            if (ObjectUtil.isEmpty(cacheToken)){
+                //token在redis中已经过期，需要重新登录
+                throw new BaseException(HttpStatus.UNAUTHORIZED, MessageUtil.getMessage("bm.loginTimeOut"));
+            }
+            if (!StrUtil.equals(token,cacheToken)){
+                //请求token与缓存的token不一致，需要重新登录
+                throw new BaseException(HttpStatus.UNAUTHORIZED, MessageUtil.getMessage("bm.loginTimeOut"));
+            }
+            //重新刷新token在缓存中的时间，实现长时间未登录就会重新登录，一直点击就不会重新登录
+            redisUtil.expire("bmUserToken:"+userId,5, TimeUnit.HOURS);
+
+
+        }catch (Exception e){
+            //toekn解析失败或过期
+            throw new BaseException(HttpStatus.UNAUTHORIZED, MessageUtil.getMessage("bm.loginTimeOut"));
+        }
 
         return true;
     }
