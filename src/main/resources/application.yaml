@@ -4,6 +4,9 @@ server:
   servlet:
     context-path: /api/bm
 
+bm:
+  profile: /home/bm/uploadPath
+
 #数据源配置
 spring:
   datasource:

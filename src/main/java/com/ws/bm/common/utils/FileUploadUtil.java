@@ -2,6 +2,7 @@ package com.ws.bm.common.utils;
 
 import com.ws.bm.common.constant.HttpStatus;
 import com.ws.bm.exception.BaseException;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -31,16 +32,14 @@ public class FileUploadUtil {
         // 判断文件格式
         assertAllowed(file, allowedExtension);
 
-        String fileName = extractFilename(file);
-
         String absPath = null;
         try {
-            absPath = getAbsoluteFile(baseDir, fileName).getAbsolutePath();
+            absPath = getAbsoluteFile(baseDir, file.getOriginalFilename()).getAbsolutePath();
             file.transferTo(Paths.get(absPath));
         } catch (IOException e) {
             throw new BaseException(HttpStatus.ERROR,MessageUtil.getMessage("bm.file.fileUploadError"));
         }
-        return absPath;
+        return "/bmFile/"+file.getOriginalFilename();
     }
 
     public static final void assertAllowed(MultipartFile file, List<String> allowedExtension) {
@@ -49,7 +48,6 @@ public class FileUploadUtil {
             throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.file.fileLengthError"));
         }
 
-        String fileName = file.getOriginalFilename();
         String extension = getExtension(file);
         if (allowedExtension != null && !allowedExtension.contains(extension)) {
             throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.file.fileTypeError"));

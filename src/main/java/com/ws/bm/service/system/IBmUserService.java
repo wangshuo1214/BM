@@ -2,6 +2,9 @@ package com.ws.bm.service.system;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ws.bm.domain.entity.system.BmUser;
+import org.apache.tomcat.util.http.fileupload.FileItem;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -31,4 +34,6 @@ public interface IBmUserService extends IService<BmUser> {
     boolean updateUserProfile(BmUser bmUser);
 
     boolean updateUserPwd(BmUser bmUser);
+
+    String uploadAvatar(MultipartFile file, BmUser bmUser);
 }

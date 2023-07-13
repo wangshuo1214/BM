@@ -55,19 +55,25 @@ public class BaseConstant {
     /** ParentView组件标识 */
     public final static String PARENT_VIEW = "ParentView";
 
-    //商品排序标识
+    // 商品排序标识
     public final static String MaterialOrderBySell = "0"; //Sell
     public final static String MaterialOrderByBuy = "1"; //Buy
     public final static String MaterialOrderByMake = "2"; //Make
 
-    //商品类型
+    // 商品类型
     public final static String MaterialSell = "0"; //销售商品
     public final static String MaterialBuy = "1"; //采购商品
     public final static String MaterialMake = "2"; //生产商品
 
-    //订单类型
+    // 订单类型
     public final static String SellOrder = "0";
     public final static String BuyOrder = "1";
+
+    // 图片上传类型
+    public static final String[] IMAGE_EXTENSION = { "gif", "jpg", "jpeg", "png" };
+
+    // 请求白名单
+    public static final String[] WHITE_LIST = {"avatar"};
 
 
 }

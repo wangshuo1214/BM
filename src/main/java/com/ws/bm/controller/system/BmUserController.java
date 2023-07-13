@@ -7,6 +7,7 @@ import com.ws.bm.domain.model.Result;
 import com.ws.bm.service.system.IBmUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -83,5 +84,10 @@ public class BmUserController extends BaseController {
     public Result updateUserPwd(@RequestBody BmUser bmUser){
         bmUser.setUserId(getUserId());
         return computeResult(iBmUserService.updateUserPwd(bmUser));
+    }
+
+    @PostMapping("/avatar")
+    public Result uploadAvatar(@RequestParam("avatarfile") MultipartFile file){
+        return success(iBmUserService.uploadAvatar(file,getBmUser()));
     }
 }

@@ -26,6 +26,8 @@ public class BmUser extends BaseEntity {
     private String password;
 
     private String realName;
+    
+    private String avatar;
 
     private String status;
 
