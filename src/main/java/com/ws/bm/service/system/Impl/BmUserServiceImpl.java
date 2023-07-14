@@ -253,7 +253,7 @@ public class BmUserServiceImpl extends ServiceImpl<BmUserMapper, BmUser> impleme
             throw new BaseException(HttpStatus.BAD_REQUEST, MessageUtil.getMessage("bm.paramsError"));
         }
         BmUser old = getById(bmUser.getUserId());
-        old.setRoleName(bmUser.getRealName());
+        old.setRealName(bmUser.getRealName());
         old.setUpdateDate(new Date());
         return updateById(old);
     }
